@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const montserrat = Montserrat({
+  subsets: ['latin', 'cyrillic'],
+});
 
 export const metadata: Metadata = {
   title: "Dashboard AV",
   description: "Created by AppVentures",
 };
+
+
 
 export default function RootLayout({
   children,
@@ -16,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={montserrat.className}>{children}</body>
     </html>
   );
 }

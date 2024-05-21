@@ -13,6 +13,7 @@ enum IconPeopleType {
 enum IconBagType {
     Carry = "carry",
     Bag = "bag",
+    Special = "special",
 }
 
 export type IconType = IconPeopleType | IconBagType;

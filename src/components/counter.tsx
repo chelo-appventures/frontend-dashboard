@@ -1,5 +1,4 @@
 'use client'
-import { Stringifier } from "postcss";
 import Image from "next/image";
 import { useState } from "react";
 import icons from "@/ui/icons";  

@@ -8,6 +8,7 @@ export default function Home() {
       <div>Main Site</div>
       <Link href="/login"> Login </Link>
       <Link href="/booking"> Booking</Link>
+      <Link href="/booking/passengers"> Passengers</Link>
     </main>
   );
 }

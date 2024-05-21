@@ -9,9 +9,11 @@ export default function HeaderAV() {
   return (
     <>
       <div className="flex items-center bg-black h-[40px] text-[14px] font-medium text-white">
-        <div className="flex">
-          <p>CALL CENTER 4702-6533 / 4701-6574</p>
-          <div className="flex">
+        <div className="flex flex-row w-full justify-between mx-10 my-5">
+          <div className="flex ">
+            <p>CALL CENTER 4702-6533 / 4701-6574</p>
+          </div>
+          <div className="flex justify-between">
             <Link href="#">
               <Image alt="Logo Facebook" src={facebook} className="mr-2" />
             </Link>
@@ -42,7 +44,7 @@ export default function HeaderAV() {
             </li>
             <li className=" px-3">
               <Link href="#" className="hover:text-orange-500">
-                Viajes Exlucisvos
+                Viajes Exlusivos
               </Link>
             </li>
             <li className=" px-3">

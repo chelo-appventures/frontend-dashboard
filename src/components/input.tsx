@@ -22,7 +22,6 @@ export function LabelInput (props: Props) {
     <div>
       <label className="relative font-semibold">
         <input 
-          required
           className="block w-full rounded-md shadow-sm border border-gray-300
           text-[16px] hover:shadow-md focus:shadow-md focus:border-gray-500
           focus:border-1 disabled:bg-gray-200

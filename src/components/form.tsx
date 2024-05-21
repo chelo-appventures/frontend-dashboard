@@ -1,3 +1,5 @@
+import { isCompositeComponentWithType } from "react-dom/test-utils";
+import AVCounter, { IconType} from "./counter";
 import { LabelInput } from "./input";
 import RadioButton from "./radioButton";
 import Select from "./select";
@@ -72,29 +74,23 @@ export default function AVForm () {
             <div className="py-6">
               <Separator title="Pasajeros" />
             </div>
-            <div>
-                <select name="pax" id="pax" className="border rounded-md p-2 mr-4">
-                    <option value="1">1 pasajero</option>
-                    <option value="2">2 pasajeros</option>
-                    <option value="3">3 pasajeros</option>
-                    <option value="4">4 pasajeros</option>
-                    <option value="5">5 pasajeros</option>
-                    <option value="6">6 pasajeros</option>
-                    <option value="7">7 pasajeros</option>
-                    <option value="8">8 pasajeros</option>
-                </select>
-                <select name="puppies" id="puppies" className="border rounded-md p-2 mr-4">
-                    <option value="0">0 mascotas</option>
-                    <option value="1">1 mascota</option>
-                    <option value="2">2 mascotas</option>
-                    <option value="3">3 mascotas</option>
-                </select>
-                <select name="bags" id="bags" className="border rounded-md p-2 mr-4">
-                    <option value="0">0 maletas</option>
-                    <option value="1">1 maletac</option>
-                    <option value="2">2 maletas</option>
-                    <option value="3">3 maletas</option>
-                </select>
+            <div className="flex flex-column justify-between">
+                <AVCounter 
+                  icon={"adult" as IconType}
+                  title='Pasajeros'
+                  subtitle='18 o mas anios'
+                />
+                <AVCounter 
+                  icon={"puppie" as IconType}
+                  title='Mascotas'
+                  subtitle='18 o mas anios'
+                />
+                  <AVCounter 
+                  icon={"bag" as IconType}
+                  title='Maletas'
+                  subtitle='18 o mas anios'
+                />
+
             </div>
             <div className="flex justify-end py-4">
                 <input type="button" value="Cotizar" className="border-2 border-solid border-orange-500 bg-orange-500 text-white py-3 px-6 rounded-md"/>

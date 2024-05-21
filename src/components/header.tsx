@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import logo from "@/ui/img/logo.png";
+import logo from "@/ui/img/Logo.png";
 import facebook from "@/ui/img/FACEBOOK.png";
 import twitter from "@/ui/img/TWITTER.png";
 import skype from "@/ui/img/SKYPE.png";

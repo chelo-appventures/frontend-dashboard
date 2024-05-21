@@ -4,9 +4,17 @@ import { LabelInput } from "@/components/input";
 export default function Person () {
     return (
         <>
-            <div>
-                <input type="checkbox" name="buy_corp" id="buy_corp" />
-                <label htmlFor="but_corp"> Comprar por empresa</label>
+            <div className="flex items-center">
+                <input 
+                    type="checkbox" 
+                    className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
+                    focus:outline-none duration-500 hover:shadow-md "
+                />
+                <label 
+                    className="text-black p-2"
+                >
+                    Comprar por empresa
+                </label>
             </div>
             <div className="flex flex-row ">
                 <div className="w-1/2 mr-2">
@@ -73,10 +81,9 @@ export default function Person () {
                         <select 
                             className="block border border-gray-300 rounded-md px-3 py-3 my-5 w-full
                             hover:shadow-md focus:shadow-md outline-none focus:border-black">
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
+                            <option value="adult">Adulto</option>
+                            <option value="child">Niño</option>
+                            <option value="baby">Bebé</option>
                         </select>
                         <span 
                             className="absolute text-sm left-2 top-2 bg-white  px-2
@@ -86,11 +93,11 @@ export default function Person () {
                     </label>
                 </div>
                 <div className="sexo flex items-center w-9/12">
-                    <input type="radio" name="sexo" id="man" className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[25px] h-[25px]" />
+                    <input type="radio" name="sexo" id="man" className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]" />
                     <label htmlFor="man">Hombre</label>
-                    <input type="radio" name="sexo" id="woman" className="mx-4 accent-orange-500 bg-white hover:shadow-md"/>
+                    <input type="radio" name="sexo" id="woman" className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"/>
                     <label htmlFor="man">Mujer</label>
-                    <input type="radio" name="sexo" id="nores" className="mx-4 accent-orange-500 bg-white hover:shadow-md"/>
+                    <input type="radio" name="sexo" id="nores" className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"/>
                     <label htmlFor="man">Prefiero no decirlo</label>
                 </div>
             </div>
@@ -129,35 +136,7 @@ export default function Person () {
                     <LabelInput type="text" placeholder="Correo Electrónico" />
                 </div>
             </div>
-            <div>
-                <Separator title="Dirección (por donde pasaremos a buscarte)" />
-                <div className="flex flex-row">
-                    <div className="w-1/2">
-                        <div className="flex justify-between">
-                            <div className="w-1/2 mx-1">
-                                <LabelInput type="text" placeholder="Ciudad" disabled />
-                            </div>
-                            <div className="w-1/2 mx-1">
-                                <LabelInput type="text" placeholder="Barrio" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="w-1/2"></div>
-                </div>
-                <div className="flex flex-row">
-                    <div className="w-1/2 mr-2">
-                        <LabelInput placeholder="Calle" type="text"/>
-                    </div>
-                    <div className="flex w-1/2 justify-between">
-                        <div className="w-1/2 mx-1">
-                            <LabelInput type="text" placeholder="Número" />
-                        </div>
-                        <div className=" w-1/2 mx-1">
-                            <LabelInput type="text" placeholder="Depto./Timbre/Otro" />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </>
     )
 }

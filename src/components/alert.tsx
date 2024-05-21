@@ -10,7 +10,7 @@ export default function Alert () {
         }>
             <p>
                 <span className="font-semibold">Importante: Un adulto</span> quién será responsable administrativo del viaje y,
-                con quién nos comunicaremos para actualizar sobre el estado del mismo, sea o no pasajero del servicio
+                con quién nos comunicaremos para actualizar sobre el estado del mismo, sea o no pasajero del servicio.
             </p> 
         </div>
     )

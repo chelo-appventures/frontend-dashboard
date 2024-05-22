@@ -57,7 +57,7 @@ export function NavBar() {
           </li>
           <li className=" px-3">
             <Link href="#" className="hover:text-orange-500">
-              Viajes Exlusivos
+              Viajes Exclusivos
             </Link>
           </li>
           <li className=" px-3">
@@ -87,4 +87,20 @@ export function NavBar() {
       </nav>
     </div>
   );
+}
+
+export function OptionHeader () {
+  return (
+    <>
+      <div 
+          className="booking_header 
+          flex flex-row py-4 items-center justify-between bg-white
+          text-[14px] font-bold text-[#10004f] border-t-2 border-gray-300">
+          <div className="px-5 text-center border-r-2 border-gray-300 w-full ">Belgrano - Pinamar</div>
+          <div className="px-5 text-center border-r-2 border-gray-300 w-full ">jue, 15 de Feb - jue, 29 de Feb</div>
+          <div className="px-5 text-center border-r-2 border-gray-300 w-full ">8 Adultos / 1 mascota en asiento</div>
+          <div className="px-5 text-center border-r-2 border-gray-300 w-full ">8 Maletas</div>
+      </div>
+    </>
+  )
 }

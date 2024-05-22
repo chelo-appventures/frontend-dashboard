@@ -4,6 +4,7 @@ import { LabelInput } from "./input";
 import RadioButton from "./radioButton";
 import Select from "./select";
 import Separator from "./separator";
+import TextArea from "./textArea";
 
 export default function AVForm () {
     return(
@@ -20,7 +21,7 @@ export default function AVForm () {
               <div className="w-1/2">
                 <Select />
               </div>
-              <div>
+              <div className="flex">
                 <RadioButton name="travel_type" title="Ida y vuelta"/>
                 <RadioButton name="travel_type" title="Solo ida"/>
               </div>
@@ -112,6 +113,9 @@ export default function AVForm () {
                   subtitle='Importante detallarlos, condicionan el tipo de vehículo'
                 />
 
+            </div>
+            <div>
+                <TextArea label="Detalle equipajes epseciales"/>
             </div>
             <div className="flex justify-end py-4">
                 <input type="button" value="Cotizar" className="border-2 border-solid border-orange-500 bg-orange-500 text-white py-3 px-6 rounded-md"/>

@@ -6,7 +6,8 @@ import icons from "@/ui/icons";
 enum IconPeopleType {
     Adult = "adult",
     Child = "child",
-    Puppie = "puppie",
+    PuppieSmall = "puppieSmall",
+    PuppieBig = "puppieBig",
     Baby = "baby",
 }
 enum IconBagType {
@@ -38,23 +39,23 @@ export default function AVCounter(
     const decrement = () => setCount(count - 1 > 0 ? count - 1 : 0);
 
     return (
-        <div className="flex flex-row items-center gap-2 border border-gray-200 p-2 rounded-lg">
+        <div className="flex flex-row items-center border border-gray-300 p-1 rounded-lg hover:shadow-md duration-500 focus:border-gray-500 outline-none">
             <AVCounterIcon icon={icon} />
             <div className="flex flex-col">
-                <p className="text-sm font-bold">{title}</p>
-                <p className="text-xs font-normal text-gray-500">{subtitle}</p>
+                <p className="text-[16px] font-bold">{title}</p>
+                <p className="text-[10px] font-normal text-gray-500">{subtitle}</p>
             </div>
             <div className="flex flex-row items-center justify-center">
                 <button 
-                  className="m-2 w-7 h-7 rounded-full border border-red-500" 
+                  className="m-2 w-7 h-7 rounded-full border border-red-500 text-[20px]" 
                   onClick={(e)=> {
                     e.preventDefault();
                     increment();
                   }}
                 > + </button>       
-                <span className="w-3 text-center">{count}</span>
+                <span className="w-3 text-center text-[20px]">{count}</span>
                 <button 
-                  className="m-2 w-7 h-7 rounded-full border border-red-500" 
+                  className="m-2 w-7 h-7 rounded-full border border-red-500 text-[20px]" 
                   onClick={(e)=> {
                     e.preventDefault();
                     decrement();

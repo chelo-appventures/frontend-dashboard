@@ -20,7 +20,7 @@ export default function Select () {
                 <span
                     className="absolute left-0 top-3 bg-white mx-3 px-2
                     peer focus:text-gray-300 duration-200 text-[16px]
-                    text-sm font-normal" 
+                    text-xs font-normal" 
                 >
                     Tipo de traslado
                 </span>

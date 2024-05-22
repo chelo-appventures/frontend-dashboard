@@ -1,26 +1,26 @@
-import { isCompositeComponentWithType } from "react-dom/test-utils";
 import AVCounter, { IconType} from "./counter";
 import { LabelInput } from "./input";
 import RadioButton from "./radioButton";
 import Select from "./select";
 import Separator from "./separator";
+import TextArea from "./textArea";
 
 export default function AVForm () {
     return(
         <div 
           className="bg-white rounded-md shadow-lg flex flex-col items-center 
-          -m-20 border border-solid w-3/4">
+          -m-20 border border-solid w-[1052px]">
           <h3 
             className="font-bold text-[#10004F] text-[32px] my-6 w-10/12">
             Cotiza tu viaje ahora
           </h3>
-          <form action="#" className="py-8 text-sm text-gray-500 font-bold w-10/12">
+          <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
             <Separator title="Tipo de viaje"/>
             <div className="flex items-center">
               <div className="w-1/2">
                 <Select />
               </div>
-              <div>
+              <div className="flex">
                 <RadioButton name="travel_type" title="Ida y vuelta"/>
                 <RadioButton name="travel_type" title="Solo ida"/>
               </div>
@@ -32,8 +32,8 @@ export default function AVForm () {
               </div> */}
             </div>
             
+            <Separator title="Disponibilidad de vehículos" />
             <div className="py-6">
-              <Separator title="Disponibilidad de vehículos" />
               <div className="inline ">
                 <input type="radio" className="mr-3" name="vehicle_disp"/>
                 Solo durante la ida/vuelta
@@ -42,9 +42,7 @@ export default function AVForm () {
               </div>
             </div>
             
-            <div>
-              <Separator title="Salida / Regreso" />
-            </div>
+            <Separator title="Salida / Regreso" />
             <div className="flex flex-row pr-4 pt-3">
                 <div className="w-1/2 mr-2">
                   <LabelInput type="search" placeholder="Salida" />
@@ -71,10 +69,8 @@ export default function AVForm () {
                     <input type="time" name="final_time" id="final_time" className="border rounded-md p-2"/>
                 </div>
             </div>
-            <div className="py-6">
-              <Separator title="Pasajeros" />
-            </div>
-            <div className="flex flex-column justify-between">
+            <Separator title="Pasajeros" />
+            <div className="flex flex-column justify-left">
                 <AVCounter 
                   icon={"adult" as IconType}
                   title='Adulto'
@@ -92,26 +88,42 @@ export default function AVForm () {
                 />
 
             </div>
-            <div className="py-6">
-              <Separator title="Equipaje" />
-            </div>
-            <div className="flex flex-column justify-between">
+            <div className="flex flex-column justify-left my-4">
                 <AVCounter 
-                  icon={"adult" as IconType}
-                  title='Carry-on'
+                  icon={"puppySmall" as IconType}
+                  title='Hasta 8kg'
+                  subtitle='Mascota en falda'
+                />
+                <AVCounter 
+                  icon={"puppyBig" as IconType}
+                  title='Mas de 8kg'
+                  subtitle='Mascota en asiento'
+                />
+            </div>
+            <Separator title="Equipaje" />
+            <div className="flex flex-column justify-left">
+                <AVCounter 
+                  icon={"carry_1" as IconType}
+                  title='Carry-on 15kg'
+                  alert
                   subtitle='El número de maletas definen el tipo de vehículo'
                 />
                 <AVCounter 
-                  icon={"child" as IconType}
-                  title='Maleta'
+                  icon={"bag_1" as IconType}
+                  title='Maleta 23kg'
+                  alert
                   subtitle='El número de maletas definen el tipo de vehículo'
                 />
                   <AVCounter 
-                  icon={"baby" as IconType}
+                  icon={"special" as IconType}
                   title='Equipaje especial'
+                  alert
                   subtitle='Importante detallarlos, condicionan el tipo de vehículo'
                 />
 
+            </div>
+            <div>
+                <TextArea label="Detalle equipajes epseciales"/>
             </div>
             <div className="flex justify-end py-4">
                 <input type="button" value="Cotizar" className="border-2 border-solid border-orange-500 bg-orange-500 text-white py-3 px-6 rounded-md"/>

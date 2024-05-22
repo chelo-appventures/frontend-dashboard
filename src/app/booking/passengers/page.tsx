@@ -6,6 +6,7 @@ import Hero from "@/components/hero";
 import Important from "@/components/important";
 import { LabelInput } from "@/components/input";
 import Separator, { SeparatorHeading } from "@/components/separator";
+import TextArea from "@/components/textArea";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 
@@ -84,6 +85,7 @@ export default function Passengers() {
                                         Deseo recibir ofertas y novedades de Turismo Ruggeri a mi correo.
                                     </label>
                                 </div>
+                                
                                 <div className="flex my-10 items-center justify-end">
                                     <button 
                                         type="button"

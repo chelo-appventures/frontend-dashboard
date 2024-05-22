@@ -2,6 +2,7 @@ import { StaticImageData } from 'next/image';
 
 import adult from './adult.svg'
 import child from './child.svg'
+import baby from './baby.svg'
 import person_bold from './person_bold.svg'
 
 import exclamation from './exclamation.svg'
@@ -21,6 +22,7 @@ interface IDictionary {
 export default {
     adult,
     child,
+    baby,
     person_bold,
     exclamation,
     bag_1,

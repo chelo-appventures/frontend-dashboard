@@ -77,18 +77,39 @@ export default function AVForm () {
             <div className="flex flex-column justify-between">
                 <AVCounter 
                   icon={"adult" as IconType}
-                  title='Pasajeros'
-                  subtitle='18 o mas anios'
+                  title='Adulto'
+                  subtitle='18 o más años'
                 />
                 <AVCounter 
-                  icon={"puppie" as IconType}
-                  title='Mascotas'
-                  subtitle='18 o mas anios'
+                  icon={"child" as IconType}
+                  title='Niño'
+                  subtitle='De 3 a 17 años'
                 />
                   <AVCounter 
-                  icon={"bag" as IconType}
-                  title='Maletas'
-                  subtitle='18 o mas anios'
+                  icon={"baby" as IconType}
+                  title='Bebé'
+                  subtitle='Hasta 3 años'
+                />
+
+            </div>
+            <div className="py-6">
+              <Separator title="Equipaje" />
+            </div>
+            <div className="flex flex-column justify-between">
+                <AVCounter 
+                  icon={"adult" as IconType}
+                  title='Carry-on'
+                  subtitle='El número de maletas definen el tipo de vehículo'
+                />
+                <AVCounter 
+                  icon={"child" as IconType}
+                  title='Maleta'
+                  subtitle='El número de maletas definen el tipo de vehículo'
+                />
+                  <AVCounter 
+                  icon={"baby" as IconType}
+                  title='Equipaje especial'
+                  subtitle='Importante detallarlos, condicionan el tipo de vehículo'
                 />
 
             </div>

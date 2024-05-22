@@ -41,8 +41,8 @@ export default function AVCounter(
         <div className="flex flex-row items-center gap-2 border border-gray-200 p-2 rounded-lg">
             <AVCounterIcon icon={icon} />
             <div className="flex flex-col">
-                <p className="text-smfont-bold">{title}</p>
-                <p className="text-xs text-gray-500">{subtitle}</p>
+                <p className="text-sm font-bold">{title}</p>
+                <p className="text-xs font-normal text-gray-500">{subtitle}</p>
             </div>
             <div className="flex flex-row items-center justify-center">
                 <button 

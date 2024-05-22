@@ -1,4 +1,3 @@
-import { isCompositeComponentWithType } from "react-dom/test-utils";
 import AVCounter, { IconType} from "./counter";
 import { LabelInput } from "./input";
 import RadioButton from "./radioButton";
@@ -87,7 +86,7 @@ export default function AVForm () {
                   subtitle='De 3 a 17 años'
                 />
                   <AVCounter 
-                  icon={"baby" as IconType}
+                  icon={"child" as IconType}
                   title='Bebé'
                   subtitle='Hasta 3 años'
                 />
@@ -98,17 +97,17 @@ export default function AVForm () {
             </div>
             <div className="flex flex-column justify-between">
                 <AVCounter 
-                  icon={"adult" as IconType}
+                  icon={"carry_1" as IconType}
                   title='Carry-on'
                   subtitle='El número de maletas definen el tipo de vehículo'
                 />
                 <AVCounter 
-                  icon={"child" as IconType}
+                  icon={"bag_1" as IconType}
                   title='Maleta'
                   subtitle='El número de maletas definen el tipo de vehículo'
                 />
                   <AVCounter 
-                  icon={"baby" as IconType}
+                  icon={"special" as IconType}
                   title='Equipaje especial'
                   subtitle='Importante detallarlos, condicionan el tipo de vehículo'
                 />

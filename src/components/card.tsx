@@ -13,8 +13,29 @@ import mic from "@/ui/icons/mic.svg"
 import light from "@/ui/icons/light.svg"
 import Link from "next/link"
 import { Ruda } from "next/font/google"
+import vehicles from "@/ui/img/vehicles/index"
 
 const ruda = Ruda({ subsets: ["latin"] });
+
+enum ImgIconType {
+    Sharan = "sharan",
+    Cronos = "cronos",
+    Sprinter = "sprinter"
+}
+
+export type IconType = ImgIconType
+
+function CarIcon({icon, className = ''}: {icon: IconType, className?: string}) {
+    return (
+      <Image 
+        src={vehicles[icon as string]} 
+        alt={icon as string} 
+        width={160} 
+        height={124}
+        className={`p-1 ${className}`}
+      />
+    );
+}
 
 export default function CardOption (
     {
@@ -38,7 +59,7 @@ export default function CardOption (
         final_time: string,
         cant_car: string,
         car: string,
-        car_img: string,
+        car_img: IconType,
         seats: string,
         cant_carry: string,
         cant_bag: string,
@@ -50,7 +71,8 @@ export default function CardOption (
                     <div className="bg-white w-[814px] h-[162px] rounded-t-lg px-6">
                         <div className="flex justify-between ">
                             <div className="flex flex-row">
-                                <Image src={sprinter} alt="sprinter" />
+                                <CarIcon icon={car_img} />
+                                {/* <Image src={sprinter} alt="sprinter" /> */}
                                 <div className="mt-5 ">
                                     <h4 className="font-bold text-[20px]">{cant_car} x {car}</h4>
                                     <h4 className={`${ruda.className} font-semibold text-[16px]`}>{seats} asientos</h4>
@@ -105,7 +127,7 @@ function Accordion () {
                             <li>1 Equipaje mediano (70x40 cm)</li>
                             <li>1 Mascota en Asiento (menos de 8kg)</li>
                             <li>1 Parada (opcional)</li>
-                        </ul>
+                        </ul>s
                     </div>
                     <div className="flex flex-row py-3">
                         <Image src={police} alt="police"  className="mr-1"/>

@@ -1,6 +1,6 @@
 export default function RadioButton ({name, title}:{name:string, title:string}) {
     return (
-        <div className="px-6">
+        <div className="mx-6">
             <input 
                 type="radio" 
                 name={name}

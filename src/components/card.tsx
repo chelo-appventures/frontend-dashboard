@@ -12,8 +12,8 @@ import confort_seat from "@/ui/icons/confort_seat.svg"
 import mic from "@/ui/icons/mic.svg"
 import light from "@/ui/icons/light.svg"
 import Link from "next/link"
-import { Ruda } from "next/font/google"
 import vehicles from "@/ui/img/vehicles/index"
+import { Ruda } from "next/font/google"
 
 const ruda = Ruda({ subsets: ["latin"] });
 

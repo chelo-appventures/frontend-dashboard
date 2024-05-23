@@ -43,10 +43,10 @@ export default function PartialPay () {
                                                 focus:border-1 px-4 py-3 my-5 duration-200 outline-none 
                                                 bg-inherit"
                                                 >
-                                                <option value="25" title="25%" />
-                                                <option value="50" title="50%" />
-                                                <option value="75" title="75%" />
-                                                <option value="100" title="100%" />
+                                                <option value="25" label="25%" />
+                                                <option value="50" label="50%" />
+                                                <option value="75" label="75%" />
+                                                <option value="100" label="100%" />
                                             </select>
                                             <span
                                                 className="absolute left-0 top-3 bg-white mx-3 px-2

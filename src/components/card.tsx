@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image"
 import sprinter from "@/ui/img/vehicles/Sprinter_Minibus_17_1_PPD 1.png"
 import sharan from "@/ui/img/vehicles/Sharan.png"
@@ -14,6 +15,8 @@ import light from "@/ui/icons/light.svg"
 import Link from "next/link"
 import vehicles from "@/ui/img/vehicles/index"
 import { Ruda } from "next/font/google"
+import { useState } from "react"
+import {useRouter} from "next/navigation"
 
 const ruda = Ruda({ subsets: ["latin"] });
 
@@ -65,6 +68,12 @@ export default function CardOption (
         cant_bag: string,
         price:string
     }) {
+        const [open, setOpen] = useState(false);
+        const openAccordion = (e: any) => {
+            e.preventDefault()
+            setOpen(!open)
+        }
+
         return(
             <>
                 <div className="shadow-lg m-5 opacity-50 hover:opacity-100 duration-300">
@@ -80,7 +89,13 @@ export default function CardOption (
 
                             </div>
                             <div className="mt-5">
-                                <Link href="#" className="font-semibold text-orange-500">Detalle</Link>
+                                <a 
+                                    href="#" 
+                                    className="font-semibold text-orange-500" 
+                                    onClick={openAccordion}
+                                >
+                                    Detalle
+                                </a>
                             </div>
                         </div> 
                         <div className="flex flex-row text-[26px] text-[#10004F] justify-between">
@@ -104,12 +119,21 @@ export default function CardOption (
                         </div>
                     </div>
                 </div>
-                <Accordion />
+                {open && <Accordion />}
             </>
         )
 }
 
 function Accordion () {
+    const router = useRouter();
+    const redirect = (path: string) => {
+        router.push(path);
+    }
+
+    const handleSubmit = (e: any) => {
+        e.preventDefault()
+        redirect("/booking/checkout")
+    }
     return (
         <>
             <div className="">
@@ -143,14 +167,10 @@ function Accordion () {
                     className="bg-orange-500 w-[814px] h-[54px] rounded-b-lg
                     text-white text-[18px] font-bold 
                     flex justify-center items-center">
-                    <button>Seleccionar</button>
+                    <button onClick={handleSubmit}>Seleccionar</button>
                 </div>
             </div>
         </>
     )
 }
 
-
-function openAccordion() {
-
-}

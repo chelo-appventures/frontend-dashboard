@@ -10,6 +10,7 @@ export default function Home() {
       <Link href="/booking"> Booking</Link>
       <Link href="/booking/passengers"> Passengers</Link>
       <Link href="/booking/travel_options"> Travel Options</Link>
+      <Link href="/booking/checkout">Partial Pay</Link>
     </main>
   );
 }

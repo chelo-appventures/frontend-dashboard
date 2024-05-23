@@ -1,11 +1,25 @@
+'use client'
+import { useRouter } from 'next/navigation'
 import AVCounter, { IconType} from "./counter";
 import { LabelInput } from "./input";
 import RadioButton from "./radioButton";
 import Select from "./select";
 import Separator from "./separator";
 import TextArea from "./textArea";
+import { MouseEventHandler } from 'react';
 
 export default function AVForm () {
+    const router = useRouter();
+    const redirect = (path: string) => {
+      router.push(path);
+    }
+
+    const submitHandler = (e: any) => {
+      e.preventDefault();
+      console.log('AVFORM >> SubmitHandler');
+      redirect('/booking/passengers');
+    }
+
     return(
         <div 
           className="bg-white rounded-md shadow-lg flex flex-col items-center 
@@ -126,7 +140,12 @@ export default function AVForm () {
                 <TextArea label="Detalle equipajes epseciales"/>
             </div>
             <div className="flex justify-end py-4">
-                <input type="button" value="Cotizar" className="border-2 border-solid border-orange-500 bg-orange-500 text-white py-3 px-6 rounded-md"/>
+                <input 
+                  type="button" 
+                  value="Cotizar" 
+                  className="border-2 border-solid border-orange-500 bg-orange-500 text-white py-3 px-6 rounded-md"
+                  onClick={submitHandler}
+                />
             </div>
           </form>
         </div>

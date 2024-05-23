@@ -1,3 +1,4 @@
+'use client'
 import Alert from "@/components/alert";
 import Person from "@/components/booking/passengers/Person";
 import Pax from "@/components/booking/passengers/pax";
@@ -9,10 +10,22 @@ import Separator, { SeparatorHeading } from "@/components/separator";
 import TextArea from "@/components/textArea";
 import { Inter } from "next/font/google";
 import Link from "next/link";
+import { useRouter } from "next/navigation";    
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Passengers() {
+    const router = useRouter();
+    const redirect = (path: string) => {
+      router.push(path);
+    }
+
+    const submitHandler = (e: any) => {
+      e.preventDefault();
+      console.log('AVFORM >> SubmitHandler');
+      redirect('/booking/travel_options');
+    }
+
     
     return (
         <>
@@ -91,6 +104,7 @@ export default function Passengers() {
                                         type="button"
                                         className="bg-orange-500 text-white text-[18px] px-7 py-4 rounded-md
                                         duration-500 hover:shadow-md" 
+                                        onClick={submitHandler}
                                     >
                                         Continuar
                                     </button>

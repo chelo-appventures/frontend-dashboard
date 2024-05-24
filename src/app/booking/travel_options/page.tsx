@@ -5,7 +5,7 @@ export default function TravelOptions() {
   return (
     <>
       <div className="flex min-h-screen flex-col items-center bg-gray-300 max-h-screen">
-        <div className=" bg-[#F4F4F7] w-full min-h-full flex flex-col">
+        <div className=" bg-[#F4F4F7] w-[1280px] min-h-full flex flex-col">
           <HeaderAV />
           <OptionHeader />
 

@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import AVQRCode from "@/components/qrcode"
+import AVQRCode from "@/components/qrcode";
 
-export default function() {
-    return (
-        <>
-            <h1>hola</h1>
-            <AVQRCode text='hola mundo' />  
-        </>
-    )
+export default function qrcode() {
+  return (
+    <>
+      <h1>hola</h1>
+      <AVQRCode text="hola mundo" />
+    </>
+  );
 }

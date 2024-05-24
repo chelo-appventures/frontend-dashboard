@@ -15,6 +15,8 @@ import special from './special.svg'
 import puppyBig from './puppyBig.svg'
 import puppySmall from './puppySmall.svg'
 
+import card from "@/ui/icons/card.svg"
+import mp from "@/ui/icons/mercadopago.png"
 
 interface IDictionary {
     [index: string]: StaticImageData;
@@ -30,5 +32,7 @@ export default {
     carry_1,
     special,
     puppyBig,
-    puppySmall
+    puppySmall, 
+    card, 
+    mp
 } as IDictionary;

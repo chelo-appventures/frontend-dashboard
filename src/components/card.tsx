@@ -1,8 +1,5 @@
 'use client'
 import Image from "next/image"
-import sprinter from "@/ui/img/vehicles/Sprinter_Minibus_17_1_PPD 1.png"
-import sharan from "@/ui/img/vehicles/Sharan.png"
-import cronos from "@/ui/img/vehicles/fiat_cronos_versiones 1.png"
 import carry from "@/ui/icons/carry_1.svg"
 import bag from "@/ui/icons/bag_1.svg"
 import police from "@/ui/icons/police.svg"
@@ -12,8 +9,9 @@ import abs from "@/ui/icons/abs.svg"
 import confort_seat from "@/ui/icons/confort_seat.svg"
 import mic from "@/ui/icons/mic.svg"
 import light from "@/ui/icons/light.svg"
-import Link from "next/link"
+
 import vehicles from "@/ui/img/vehicles/index"
+import logos from "@/ui/icons/index"
 import { Ruda } from "next/font/google"
 import { useState } from "react"
 import {useRouter} from "next/navigation"
@@ -26,19 +24,38 @@ enum ImgIconType {
     Sprinter = "sprinter"
 }
 
-export type IconType = ImgIconType
+enum LogoIconType {
+    card = "card",
+    MercadoPago = "mp",
+}
 
-function CarIcon({icon, className = ''}: {icon: IconType, className?: string}) {
+export type IconType = ImgIconType | LogoIconType
+
+function Icon({icon, className = ''}: {icon: IconType, className?: string}) {
     return (
-      <Image 
-        src={vehicles[icon as string]} 
-        alt={icon as string} 
-        width={160} 
-        height={124}
-        className={`p-1 ${className}`}
-      />
+        <Image 
+            src={vehicles[icon as string]} 
+            alt={icon as string} 
+            width={160} 
+            height={124}
+            className={`p-1 ${className}`}
+        />
     );
 }
+
+function IconLogos({icon, className = ''}: {icon: IconType, className?: string}) {
+    return (
+        <Image 
+            src={logos[icon as string]} 
+            alt={icon as string} 
+            width={30} 
+            
+            className={`p-1 ${className}`}
+        />
+    );
+}
+
+
 
 export default function CardOption (
     {
@@ -80,8 +97,7 @@ export default function CardOption (
                     <div className="bg-white w-[814px] h-[162px] rounded-t-lg px-6">
                         <div className="flex justify-between ">
                             <div className="flex flex-row">
-                                <CarIcon icon={car_img} />
-                                {/* <Image src={sprinter} alt="sprinter" /> */}
+                                <Icon icon={car_img} />
                                 <div className="mt-5 ">
                                     <h4 className="font-bold text-[20px]">{cant_car} x {car}</h4>
                                     <h4 className={`${ruda.className} font-semibold text-[16px]`}>{seats} asientos</h4>
@@ -122,6 +138,40 @@ export default function CardOption (
                 {open && <Accordion />}
             </>
         )
+}
+
+export function CardPaymentMethod (
+    {
+        icon,
+        title,
+        subtitle
+    }:{
+        icon: IconType,
+        title: string,
+        subtitle: string
+    }) {
+    return (
+        <div 
+            className="cardPaymentMethod 
+            flex flex-row h-[82px] border border-gray-300 rounded-lg my-4
+            hover:shadow-md duration-300">
+            
+            <div className="iconCard 
+                w-2/6 flex items-center justify-center">
+                <IconLogos icon={icon} />
+            </div>
+            <div className="flex items-center w-full">
+                <div className="">
+                    <div className="flex">
+                        <p className="font-bold text-left">{title}</p>
+                    </div>
+                    <div className="flex">
+                        <p>{subtitle}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 function Accordion () {

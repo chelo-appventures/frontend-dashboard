@@ -12,6 +12,7 @@ export default function Home() {
       <Link href="/booking/travel_options"> Travel Options</Link>
       <Link href="/booking/checkout">Partial Pay</Link>
       <Link href="/booking/checkout/payment-method">Payment method</Link>
+      <Link href="/booking/checkout/qr">QR</Link>
     </main>
   );
 }

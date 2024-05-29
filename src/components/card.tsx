@@ -124,22 +124,36 @@ export default function CardOption (
                         </div>
 
                     </div>
-                    <div className="bg-white w-[814px] h-[76px] rounded-b-lg border-t border-gray-200 flex items-center px-6">
-                        <div className="flex flex-row items-center">
-                            <Image src={carry} alt="carry" />
-                            <p className="text-[14px] text-[#10004f] font-bold px-3">{cant_carry} Bolso de mano o mochila</p>
-                        </div>
-                        <div className="flex flex-row items-center ml-3">
-                            <Image src={bag} alt="carry" />
-                            <p className="text-[14px] text-[#10004f] font-bold px-3">{cant_bag} Valija mediana (70x40)</p>
-                        </div>
-                    </div>
+                    {!open && <Luggage cant_carry={cant_carry} cant_bag={cant_bag} />}
+                    {open && <Accordion />}
                 </div>
-                {open && <Accordion />}
             </>
         )
 }
 
+function Luggage(
+    {
+        cant_carry, 
+        cant_bag
+    }:{
+        cant_carry:string, 
+        cant_bag:string
+    }) {
+    return (
+        <>
+            <div className="bg-white w-[814px] h-[76px] rounded-b-lg border-t border-gray-200 flex items-center px-6" >
+                <div className="flex flex-row items-center">
+                    <Image src={carry} alt="carry" />
+                    <p className="text-[14px] text-[#10004f] font-bold px-3">{cant_carry} Bolso de mano o mochila</p>
+                </div>
+                <div className="flex flex-row items-center ml-3">
+                    <Image src={bag} alt="carry" />
+                    <p className="text-[14px] text-[#10004f] font-bold px-3">{cant_bag} Valija mediana (70x40)</p>
+                </div>
+            </div>
+        </>
+    )
+}
 export function CardPaymentMethod (
     {
         icon,

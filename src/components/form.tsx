@@ -2,11 +2,16 @@
 import { useRouter } from 'next/navigation'
 import AVCounter, { IconType} from "./counter";
 import { LabelInput } from "./input";
-import RadioButton from "./radioButton";
+import { RadioButtonComponent } from "./radioButton";
 import Select from "./select";
 import Separator from "./separator";
 import TextArea from "./textArea";
-import { MouseEventHandler } from 'react';
+import Image from 'next/image';
+import React, {  useState } from 'react';
+import { Inter } from "next/font/google";
+import exclamation from "@/ui/icons/exclamation.svg"
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm () {
     const router = useRouter();
@@ -19,6 +24,14 @@ export default function AVForm () {
       console.log('AVFORM >> SubmitHandler');
       redirect('/booking/passengers');
     }
+
+    const [travelType, setTravelType] = useState('idaVuelta')
+    
+    const isSelected = (value: string): boolean => travelType === value
+    const handlerRadioChange = (e: React.ChangeEvent<HTMLInputElement> ) : void => {
+      console.log(travelType)
+      setTravelType(e.currentTarget.value)
+    } 
 
     return(
         <div 
@@ -35,26 +48,14 @@ export default function AVForm () {
                 <Select />
               </div>
               <div className="flex">
-                <RadioButton name="travel_type" title="Ida y vuelta"/>
-                <RadioButton name="travel_type" title="Solo ida"/>
-              </div>
-              {/* <div className="px-6">
-                <input type="radio" className="mx-3" name="travel_type"/>
-                Ida y vuelta
-                <input type="radio" className="mx-3" name="travel_type"/>
-                Solo ida
-              </div> */}
-            </div>
-            
-            <Separator title="Disponibilidad de vehículos" />
-            <div className="py-6">
-              <div className="inline ">
-                <input type="radio" className="mr-3" name="vehicle_disp"/>
-                Solo durante la ida/vuelta
-                <input type="radio" className="mx-3" name="vehicle_disp"/>
-                100% del tiempo
+                <RadioButtonComponent name='type' label="Ida y vuelta" value="idaVuelta" checked={isSelected('idaVuelta')}
+                  onChange={handlerRadioChange}/>
+                <RadioButtonComponent name='type' label="Solo ida" value="ida" checked={isSelected('ida')} 
+                onChange={handlerRadioChange}/>
               </div>
             </div>
+
+            {travelType === 'idaVuelta' && <ShowDisponibility /> }
             
             <Separator title="Salida / Regreso" />
             <div className="flex flex-row pr-4 pt-3">
@@ -150,4 +151,45 @@ export default function AVForm () {
           </form>
         </div>
     )
+}
+
+function ShowDisponibility () {
+  const [disponibility, setDisponibility] = useState('travelOnly')
+  const isSelected = (value: string): boolean => disponibility === value
+  const handlerRadioChange = (e: React.ChangeEvent<HTMLInputElement> ) : void => {
+      setDisponibility(e.currentTarget.value)
+    }
+  
+  return (
+    <>
+    <div>
+      <Separator title="Disponibilidad de vehículos" />
+        <div className="py-6">
+          <div className="flex">
+            <RadioButtonComponent name='disp' label="Solo durante la ida/vuelta" value="travelOnly" checked={isSelected('travelOnly')}
+              onChange={handlerRadioChange}/>
+            <RadioButtonComponent name='disp' label="100% del tiempo" value="allTime" checked={isSelected('allTime')} 
+            onChange={handlerRadioChange}/>
+          </div>
+        </div>
+        {disponibility === 'allTime' && <AllTimeMessage />}
+    </div>
+    </>
+  )
+}
+
+function AllTimeMessage () {
+  return (
+    <>
+      <div className={`${inter.className} border border-[#4658DF] text-[#10004f] rounded-lg px-4 py-6 text-[16px] font-normal`}>
+        <p className='text-[18px] font-bold ' >Importante:</p>
+        <p className='mt-2 '>El o los vehículos y sus condutores estarán a disposición durante todo el viaje, incluyendo hasta 50km de recorrido libre sin cargo por hora esperada (no inlcuye posibles peajes u otros cargos)</p>
+
+        <div className='border border-[#4658DF] rounded-lg bg-[#D9DDF8] mt-4 p-2 flex flex-row'>
+          <Image src={exclamation} alt="exclamation" className='m-2' />
+          <p>Si las necesidades del viaje excedieran este tope emitiremos una factura posterior con este detalle. El valor del km extra es de $300</p>
+        </div>
+      </div>
+    </>
+  )
 }

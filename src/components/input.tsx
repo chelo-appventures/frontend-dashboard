@@ -33,7 +33,7 @@ export function LabelInput (props: Props) {
           className="absolute left-0 top-3 font-normal text-opacity-80 bg-white mx-3 px-2
           peer focus:text-gray-300 duration-200 text-[16px]
           peer-focus:text-xs peer-focus:font-normal peer-focus:-translate-y-5 
-          peer-valid:text-xs peer-valid:-translate-y-5 peer-disabled:-translate-y-5 peer-disabled:bg-inherit"
+          peer-valid:text-xs peer-valid:-translate-y-5 peer-disabled:-translate-y-5 peer-disabled:bg-inherit peer-disabled:text-xs"
         >
           {props.placeholder}
         </span>

@@ -1,21 +1,51 @@
-import Separator from "@/components/separator"
+import Separator, { SeparatorPersona, SeparatorResponsible } from "@/components/separator"
 import { LabelInput } from "@/components/input";
+import React, { useState } from "react";
+import Alert from "@/components/alert";
+import Important from "@/components/important";
 
 export default function Person () {
+
     return (
         <>
-            <div className="flex items-center">
-                <input 
-                    type="checkbox" 
-                    className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
-                    focus:outline-none duration-500 hover:shadow-md "
-                />
-                <label 
-                    className="text-black p-2"
-                >
-                    Comprar por empresa
-                </label>
+            <SeparatorPersona title="Pasajero ##"/>
+            <IsResponsible />
+            <SameAddress />
+        </>
+    )
+}
+
+export function Responsible() {
+    
+
+    return (
+        <>
+            <SeparatorResponsible title="Responsable del viaje" />
+            <Alert />
+            <IsCompany /> 
+            <PersonalData />
+            <Address />
+            <Important />
+        </>
+    )
+}
+
+function Company() {
+    return (
+        <div className="flex flex-row">
+            <div className="w-1/2 mr-2">
+                <LabelInput type="text" placeholder="Empresa" />
             </div>
+            <div className="w-1/2 ml-2">
+                <LabelInput type="text" placeholder="CUIT" />
+            </div>
+        </div>
+    )
+}
+
+function PersonalData () {
+    return (
+        <>
             <div className="flex flex-row ">
                 <div className="w-1/2 mr-2">
                     <LabelInput placeholder="Nombre"/>
@@ -101,7 +131,15 @@ export default function Person () {
                     <label htmlFor="man">Prefiero no decirlo</label>
                 </div>
             </div>
-            <div>
+            <ContactData />
+        </>
+    )
+}
+
+function ContactData () {
+    return (
+        <>
+            <div> 
                 <Separator title="Datos de contacto" />
             </div>
             <div className="flex flex-row">
@@ -136,7 +174,125 @@ export default function Person () {
                     <LabelInput type="text" placeholder="Correo Electrónico" />
                 </div>
             </div>
+        </>
+    )
+}
+
+function SameAddress () {
+    const [sameAdress, setSameAdress] = useState(true)
+    const handlerCheckbox = (e: any) => {
+        console.log(e.currentTarget.checked)
+        setSameAdress(e.currentTarget.checked)
+    }
+    return (
+        <>
+            <Separator title="Dirección (por donde pasaremos a buscarte)" />
+            <div className="flex items-center">
+                <input 
+                    type="checkbox" 
+                    className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
+                    focus:outline-none duration-500 hover:shadow-md " 
+                    checked={sameAdress}
+                    onChange={handlerCheckbox}
+                />
+                <label 
+                    className="text-black p-2"
+                >
+                    Es la misma dirección que la anterior
+                </label>
+            </div>
+
+            { !sameAdress && <Address /> }
             
+        </>
+    )
+}
+
+function Address () {
+    return (
+        <>
+            <div>
+                <div className="flex flex-row ">
+                    <div className="w-1/2">
+                        <div className="flex justify-between">
+                            <div className="w-1/2 mx-1">
+                                <LabelInput type="text" placeholder="Ciudad" disabled />
+                            </div>
+                            <div className="w-1/2 mx-1">
+                                <LabelInput type="text" placeholder="Barrio" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-1/2"></div>
+                </div>
+                <div className="flex flex-row">
+                    <div className="w-1/2 mr-2">
+                        <LabelInput placeholder="Calle" type="text"/>
+                    </div>
+                    <div className="flex w-1/2 justify-between">
+                        <div className="w-1/2 mx-1">
+                            <LabelInput type="text" placeholder="Número" />
+                        </div>
+                        <div className=" w-1/2 mx-1">
+                            <LabelInput type="text" placeholder="Depto./Timbre/Otro" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+function IsCompany() {
+    const [isCompany, setIsCompany] = useState(false)
+    const handlerCheckbox = (e : any) => {
+        console.log(e.currentTarget.checked)
+        setIsCompany(e.currentTarget.checked)
+    }
+
+    return (
+        <>
+            <div className="flex flex-row items-center">
+                <input 
+                    type="checkbox" 
+                    className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
+                    focus:outline-none duration-500 hover:shadow-md"
+                    checked={isCompany}
+                    onChange={handlerCheckbox}
+                />
+                <label 
+                    className="text-black p-2"
+                >
+                    Comprar por empresa
+                </label>
+            </div>
+            {isCompany && <Company />}
+        </>
+    )
+}
+
+function IsResponsible() {
+    const [isResponsible, setIsResponsible] =useState(false)
+    const handlerCheckbox = ( e:any ) => {
+        setIsResponsible(e.currentTarget.checked)
+    }
+    return (
+        <>
+            <div className="flex items-center">
+                <input 
+                    type="checkbox" 
+                    className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
+                    focus:outline-none duration-500 hover:shadow-md"
+                    checked={isResponsible}
+                    onChange={handlerCheckbox}
+                />
+                <label 
+                    className="text-black p-2"
+                >
+                    Es el responsable del viaje
+                </label>
+            </div>
+            {!isResponsible && <PersonalData /> }
         </>
     )
 }

@@ -4,11 +4,13 @@ import React, { useState } from "react";
 import Alert from "@/components/alert";
 import Important from "@/components/important";
 
-export default function Person () {
+export default function Person ({key}:{key:string}) {
+    console.log(key)
+    const personNumber = key
 
     return (
         <>
-            <SeparatorPersona title="Pasajero ##"/>
+            <SeparatorPersona title= {`Pasajero ${personNumber}`}/>
             <IsResponsible />
             <SameAddress />
         </>
@@ -44,6 +46,11 @@ function Company() {
 }
 
 function PersonalData () {
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [identificationType, setIdentificationType] = useState("")
+    const [identificationNumber, setIdentificationNumber] = useState("")
+    const [identificationCountry, setIdentificationCountry] = useState("")
     return (
         <>
             <div className="flex flex-row ">
@@ -212,6 +219,7 @@ function Address () {
     return (
         <>
             <div>
+                <Separator title="Dirección (por donde pasaremos a buscarte)" />
                 <div className="flex flex-row ">
                     <div className="w-1/2">
                         <div className="flex justify-between">

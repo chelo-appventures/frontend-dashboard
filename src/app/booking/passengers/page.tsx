@@ -15,9 +15,67 @@ export default function Passengers() {
     const submitHandler = (e: any) => {
         e.preventDefault();
         console.log('AVFORM >> SubmitHandler');
-        redirect('/booking/travel_options');
+        // redirect('/booking/travel_options');
+
+    //     const data = {
+    //         responsible: {
+    //             is_company,
+    //             company: {
+    //                 company_name,
+    //                 cuit
+    //             },
+    //             first_name,
+    //             last_name,
+    //             identification: {
+    //                 type,
+    //                 number,
+    //                 country
+    //             },
+    //             age,
+    //             gender,
+    //             contact: {
+    //                 phone_number,
+    //                 email,
+    //                 address: {
+    //                     street,
+    //                     number,
+    //                     city,
+    //                     neighborhood,
+    //                     other
+    //                 }
+    //             }
+    //         passengers: [
+    //             {
+    //                 first_name,
+    //                 last_name,
+    //                 identification: {
+    //                     type,
+    //                     number,
+    //                     country
+    //                 },
+    //                 age,
+    //                 gender,
+    //                 contact: {
+    //                     phone_number,
+    //                     email,
+    //                     address: {
+    //                         street,
+    //                         number,
+    //                         city,
+    //                         neighborhood,
+    //                         other
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //         agreements: {
+    //             terms_conditions,
+    //             newsletter
+    //         }
+    //     },
     }
 
+    const numPeople = 5
     
     return (
         <>
@@ -35,7 +93,10 @@ export default function Passengers() {
                             </h3>
                             <form action="#" className="py-8 text-sm text-gray-500 font-bold w-10/12">
                                 <Responsible />
-                                <Person />
+
+                                {Array.from( { length: numPeople }, (_, i) => i + 1).map((personIndex) => (
+                                    <Person key={personIndex.toString()}/>
+                                ))}
                                 <TermsConditions />
                                 
                                 <div className="flex my-10 items-center justify-end">

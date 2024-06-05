@@ -31,12 +31,12 @@ function AVCounterIcon({icon, className = ''}: {icon: IconType, className?: stri
 }
 
 export default function AVCounter(
-    {icon, title, subtitle, alert = false}: 
-    {icon: IconType, title: string, subtitle: string, alert?: boolean}
+    {icon, title, subtitle, alert = false, value, handleValue}: 
+    {icon: IconType, title: string, subtitle: string, alert?: boolean, value: number, handleValue: Function}
     ) {
-    const [count, setCount] = useState(0);
-    const increment = () => setCount(count + 1 > 0 ? count + 1 : 0);
-    const decrement = () => setCount(count - 1 > 0 ? count - 1 : 0);
+    // const [count, setCount] = useState(0);
+    const increment = () => handleValue(value + 1 > 0 ? value + 1 : 0);
+    const decrement = () => handleValue(value - 1 > 0 ? value - 1 : 0);
 
     return (
         <div className="flex flex-row mr-4 py-1 px-2 items-center border border-gray-300 rounded-lg hover:shadow-md duration-500 focus:border-gray-500 outline-none">
@@ -61,7 +61,7 @@ export default function AVCounter(
                       decrement();
                     }}
                   > - </button> 
-                    <span className="w-3 text-center text-[20px]">{count}</span>  
+                    <span className="w-3 text-center text-[20px]">{value}</span>  
                   <button 
                     className="m-2 w-7 h-7 rounded-full border border-red-500 text-[20px]" 
                     onClick={(e)=> {

@@ -33,7 +33,7 @@ export default function Passengers() {
                 Datos de los pasajeros
               </h3>
               <PassengerDataProvider>
-                <FormPassengersData />
+                <FormPassengersData passengers={9} />
               </PassengerDataProvider>
             </div>
           </div>

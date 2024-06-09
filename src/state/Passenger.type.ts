@@ -13,6 +13,7 @@ interface Address {
 }
 
 interface Contact {
+  phoneCode: string;
   phoneNumber: string;
   email: string;
   address: Address;
@@ -25,10 +26,12 @@ interface Identification {
 }
 
 export interface Passenger {
+  company?: Company;
+  isResponsible: boolean;
   firstName: string;
   lastName: string;
   identification: Identification;
-  age: number;
+  age: string;
   gender: Gender;
   contact: Contact;
 }
@@ -38,17 +41,12 @@ interface Company {
   cuit: string;
 }
 
-export interface ResponsiblePassenger extends Passenger {
-  company?: Company;
-}
-
 interface Agreements {
   termsCondition: boolean;
   newsletter: boolean;
 }
 
 export interface TripDataForm2 {
-  responsible: ResponsiblePassenger;
   passengers: Passenger[];
   agreements: Agreements;
 }

@@ -15,51 +15,16 @@ const PassengerDataProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [passengerData, setPassengerData] = useState<PassengerData>({
-    responsible: {
-      firstName: "",
-      lastName: "",
-      identification: { type: "", number: "", country: "" },
-      age: 0,
-      gender: Gender.Male,
-      contact: {
-        phoneNumber: "",
-        email: "",
-        address: {
-          street: "",
-          number: "",
-          city: "",
-          neighborhood: "",
-          other: "",
-        },
-      },
-    },
     passengers: [
       {
+        isResponsible: true,
         firstName: "",
         lastName: "",
         identification: { type: "", number: "", country: "" },
-        age: 0,
+        age: "",
         gender: Gender.Male,
         contact: {
-          phoneNumber: "",
-          email: "",
-          address: {
-            street: "",
-            number: "",
-            city: "",
-            neighborhood: "",
-            other: "",
-          },
-        },
-      },
-
-      {
-        firstName: "",
-        lastName: "",
-        identification: { type: "", number: "", country: "" },
-        age: 0,
-        gender: Gender.Male,
-        contact: {
+          phoneCode: "",
           phoneNumber: "",
           email: "",
           address: {

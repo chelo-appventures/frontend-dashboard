@@ -52,8 +52,8 @@ export default function Passengers({
   const submitHandler = (e: any) => {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");
-    // redirect('/booking/travel_options');
     console.log(passengerData);
+    redirect("/booking/travel_options");
   };
 
   return (

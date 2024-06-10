@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import Person, { Responsible } from "@/components/booking/passengers/Person";
 import { useRouter } from "next/navigation";
 import HeaderAV from "@/components/header";
@@ -7,16 +8,31 @@ import { PassengerDataProvider } from "@/state/booking/PassengerContext";
 import FormPassengersData from "@/components/FormPassengersData";
 
 export default function Passengers() {
+  const [passengers, setPassengers] = useState<number>(0);
+
   const router = useRouter();
   const redirect = (path: string) => {
     router.push(path);
   };
+
+  useEffect(() => {
+    const form0Data = JSON.parse(localStorage.getItem("form0"));
+    if (form0Data) {
+      const ps = form0Data.passengers.adult + form0Data.passengers.kid;
+      console.log("suma", ps);
+      setPassengers(ps);
+    }
+  }, []);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");
     redirect("/booking/travel_options");
   };
+
+  if (passengers < 1) {
+    return <div> ... </div>;
+  }
 
   return (
     <>
@@ -33,7 +49,7 @@ export default function Passengers() {
                 Datos de los pasajeros
               </h3>
               <PassengerDataProvider>
-                <FormPassengersData passengers={9} />
+                <FormPassengersData passengers={passengers} />
               </PassengerDataProvider>
             </div>
           </div>

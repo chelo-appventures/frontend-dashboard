@@ -13,6 +13,7 @@ export default function Passengers({
   passengers: number;
 }) {
   const { passengerData, setPassengerData } = usePassengerData();
+
   const router = useRouter();
   const redirect = (path: string) => {
     router.push(path);
@@ -44,15 +45,24 @@ export default function Passengers({
       }),
     );
 
-    setPassengerData({
-      ...passengerData,
-      passengers,
-    });
+    let initialData = { ...passengerData, passengers };
+
+    try {
+      const form1Data = window.localStorage.getItem("form1");
+      initialData = form1Data ? JSON.parse(form1Data) : initialData;
+      console.log(initialData);
+    } catch (error) {
+      console.log(error);
+    }
+
+    setPassengerData(initialData);
   }, []);
   const submitHandler = (e: any) => {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");
     console.log(passengerData);
+    const persistedData = JSON.stringify(passengerData);
+    window.localStorage.setItem("form1", persistedData);
     redirect("/booking/travel_options");
   };
 

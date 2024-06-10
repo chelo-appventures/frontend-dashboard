@@ -218,6 +218,7 @@ function Accordion(props: any) {
     e.preventDefault();
     console.log(props);
     console.log;
+    localStorage.setItem("form2", JSON.stringify(props));
     redirect("/booking/checkout");
   };
   return (

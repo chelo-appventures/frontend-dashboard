@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AVCounter, { IconType } from "./counter";
 import { LabelInput } from "./input";
@@ -16,17 +17,29 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
-
-  console.log("Trip", trip, setTrip);
   const router = useRouter();
   const redirect = (path: string) => {
     router.push(path);
   };
+  let initialData = trip;
+  useEffect(() => {
+    try {
+      const form0Data = window.localStorage.getItem("form0");
+      initialData = form0Data ? JSON.parse(form0Data) : trip;
+      console.log(initialData);
+    } catch (error) {
+      console.log(error);
+    }
+    setTrip(initialData);
+  }, []);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");
     console.log(trip);
+
+    const persistedData = JSON.stringify(trip);
+    window.localStorage.setItem("form0", persistedData);
     redirect("/booking/passengers");
   };
 
@@ -51,6 +64,7 @@ export default function AVForm() {
                     text-[16x] hover:shadow-md focus:shadow-md focus:border-gray-500
                     focus:border-1 px-4 py-3 my-5 duration-200 outline-none 
                     bg-inherit"
+                  value={trip.tripType.transferType}
                   onChange={(e: any) => {
                     setTrip({
                       ...trip,
@@ -156,6 +170,7 @@ export default function AVForm() {
             <LabelInput
               type="search"
               placeholder="Salida"
+              value={trip.departure.city}
               onChange={(e: any) => {
                 setTrip({
                   ...trip,
@@ -171,6 +186,7 @@ export default function AVForm() {
             <LabelInput
               type="search"
               placeholder="Destino"
+              value={trip.return.city}
               onChange={(e: any) => {
                 setTrip({
                   ...trip,
@@ -189,6 +205,7 @@ export default function AVForm() {
               <LabelInput
                 type="date"
                 placeholder="Fecha de partida"
+                value={trip.departure.date}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -206,6 +223,7 @@ export default function AVForm() {
               <LabelInput
                 type="time"
                 placeholder="Hora de partida"
+                value={trip.departure.time}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -223,6 +241,7 @@ export default function AVForm() {
               <LabelInput
                 type="date"
                 placeholder="Fecha de regreso"
+                value={trip.return.date}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -240,6 +259,7 @@ export default function AVForm() {
               <LabelInput
                 type="time"
                 placeholder="Hora de regreso"
+                value={trip.return.time}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,

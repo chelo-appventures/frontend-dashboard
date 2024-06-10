@@ -140,6 +140,7 @@ export default function PartialPay() {
                                         bg-orange-500 text-[18px] font-bold text-white
                                         w-1/2 py-2 disabled:bg-gray-300 disabled:text-gray-500"
                     onClick={() => {
+                      localStorage.setItem("form3", JSON.stringify(checkout));
                       redirect("/booking/checkout/payment-method");
                     }}
                   >

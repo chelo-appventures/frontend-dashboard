@@ -281,7 +281,20 @@ export default function PassengerForm({
                   </div>
                 </div>
                 <div className="w-1/2">
-                  <LabelInput type="text" placeholder="Correo Electrónico" />
+                  <LabelInput
+                    type="text"
+                    placeholder="Correo Electrónico"
+                    value={passenger.contact.email}
+                    onChange={(e) => {
+                      setPassenger({
+                        ...passenger,
+                        contact: {
+                          ...passenger.contact,
+                          email: e.target.value,
+                        },
+                      });
+                    }}
+                  />
                 </div>
               </div>
             </>

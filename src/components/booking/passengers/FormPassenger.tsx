@@ -2,7 +2,7 @@ import Separator, {
   SeparatorPersona,
   SeparatorResponsible,
 } from "@/components/separator";
-import { LabelInput } from "@/components/input";
+import LabelInput from "@/components/input";
 import React, { useState } from "react";
 import Alert from "@/components/alert";
 import Important from "@/components/important";
@@ -40,7 +40,7 @@ export default function PassengerForm({
             <LabelInput
               placeholder="Nombre"
               value={passenger.firstName}
-              onChange={(e) => {
+              onChange={(e:any) => {
                 setPassenger({
                   ...passenger,
                   firstName: e.target.value,
@@ -52,7 +52,7 @@ export default function PassengerForm({
             <LabelInput
               placeholder="Apellido"
               value={passenger.lastName}
-              onChange={(e) => {
+              onChange={(e:any) => {
                 setPassenger({
                   ...passenger,
                   lastName: e.target.value,
@@ -95,7 +95,7 @@ export default function PassengerForm({
                 <LabelInput
                   placeholder="Número de documento"
                   value={passenger.identification.number}
-                  onChange={(e) => {
+                  onChange={(e:any) => {
                     setPassenger({
                       ...passenger,
                       identification: {
@@ -267,7 +267,7 @@ export default function PassengerForm({
                       <LabelInput
                         placeholder="Número de teléfono"
                         value={passenger.contact.phoneNumber}
-                        onChange={(e) => {
+                        onChange={(e:any) => {
                           setPassenger({
                             ...passenger,
                             contact: {
@@ -285,7 +285,7 @@ export default function PassengerForm({
                     type="text"
                     placeholder="Correo Electrónico"
                     value={passenger.contact.email}
-                    onChange={(e) => {
+                    onChange={(e:any) => {
                       setPassenger({
                         ...passenger,
                         contact: {
@@ -308,7 +308,7 @@ export default function PassengerForm({
                     type="text"
                     placeholder="Ciudad"
                     value={passenger.contact.address.city}
-                    onChange={(e) => {
+                    onChange={(e:any) => {
                       setPassenger({
                         ...passenger,
                         contact: {
@@ -327,7 +327,7 @@ export default function PassengerForm({
                     type="text"
                     placeholder="Barrio"
                     value={passenger.contact.address.neighborhood}
-                    onChange={(e) => {
+                    onChange={(e:any) => {
                       setPassenger({
                         ...passenger,
                         contact: {
@@ -351,7 +351,7 @@ export default function PassengerForm({
                 placeholder="Calle"
                 type="text"
                 value={passenger.contact.address.street}
-                onChange={(e) => {
+                onChange={(e:any) => {
                   setPassenger({
                     ...passenger,
                     contact: {
@@ -371,7 +371,7 @@ export default function PassengerForm({
                   type="text"
                   placeholder="Número"
                   value={passenger.contact.address.number}
-                  onChange={(e) => {
+                  onChange={(e:any) => {
                     setPassenger({
                       ...passenger,
                       contact: {
@@ -390,7 +390,7 @@ export default function PassengerForm({
                   type="text"
                   placeholder="Depto./Timbre/Otro"
                   value={passenger.contact.address.other}
-                  onChange={(e) => {
+                  onChange={(e:any) => {
                     setPassenger({
                       ...passenger,
                       contact: {

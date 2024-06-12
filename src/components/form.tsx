@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AVCounter, { IconType } from "./counter";
-import { LabelInput } from "./input";
 import { RadioButtonComponent } from "./radioButton";
 import Select from "./select";
 import Separator from "./separator";
@@ -12,15 +11,126 @@ import React, { useState } from "react";
 import { Inter } from "next/font/google";
 import exclamation from "@/ui/icons/exclamation.svg";
 import { useTrip } from "@/state/booking/TripContext";
+import LabelInput from "./input";
+import { RedAlert } from "./alert";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
+  const errorsInitialState: any = {
+    tripType: {
+      transferType: "",
+      roundTrip: "",
+    },
+    fullTime: "",
+    departure: {
+      city: "",
+      date: "",
+      time: "",
+    },
+    return: {
+      city: "",
+      date: "",
+      time: "",
+    },
+    passengers: {
+      adult: "",
+      kid: "",
+      baby: "",
+      pets: {
+        small: "",
+        big: "",
+      },
+    },
+    luggage: {
+      carryOn: 0,
+      bag23: 0,
+      special: {
+        quantity: 0,
+        detail: "",
+      },
+    },
+  };
+  
+  const [errors, setErrors] = useState(errorsInitialState);
+
   const router = useRouter();
   const redirect = (path: string) => {
     router.push(path);
   };
+
+  const isError = (v: string): boolean => v === "";
+
+  const errorsMessages: any = {
+    tripType: {
+        transferType: "Selecciona una opción",
+        roundTrip: "",
+    },
+    fullTime: "",
+    departure: {
+        city: "Escribe y selecciona una opción válida",
+        date: "Selecciona una fecha",
+        time: "Selecciona una hora",
+    },
+    return: {
+        city: "Escribe y selecciona una opción válida",
+        date: "Selecciona una fecha",
+        time: "Selecciona una hora",
+    },
+    passengers: {
+        adult: "",
+        kid: "",
+        baby: "",
+        pets: {
+            small: "",
+            big: "",
+        },
+    },
+    luggage: {
+    carryOn: 0,
+    bag23: 0,
+    special: {
+        quantity: 0,
+        detail: "Detalla tu equipaje especial por tipo, medidas y peso",
+    },
+    },
+  };
+  const errorsMsg: any = {
+    tripType: {
+        transferType: "Selecciona una opción",
+        roundTrip: "",
+    },
+    fullTime: "",
+    departure: {
+        city: "Escribe y selecciona una opción válida",
+        date: "Selecciona una fecha",
+        time: "Selecciona una hora",
+    },
+    return: {
+        city: "Escribe y selecciona una opción válida",
+        date: "Selecciona una fecha",
+        time: "Selecciona una hora",
+    },
+    passengers: {
+        adult: "",
+        kid: "",
+        baby: "",
+        pets: {
+            small: "",
+            big: "",
+        },
+    },
+    luggage: {
+    carryOn: 0,
+    bag23: 0,
+    special: {
+        quantity: 0,
+        detail: "Detalla tu equipaje especial por tipo, medidas y peso",
+    },
+    },
+};
+
   let initialData = trip;
   useEffect(() => {
     try {
@@ -52,6 +162,9 @@ export default function AVForm() {
         Cotiza tu viaje ahora
       </h3>
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
+        <RedAlert>
+          <p><strong>Hay datos sin completar.</strong> Por favor revisa el formulario.</p>
+        </RedAlert>
         <Separator title="Tipo de viaje" />
         <div className="flex items-center">
           <div className="w-1/2">
@@ -60,11 +173,12 @@ export default function AVForm() {
                 <select
                   name="travel_type"
                   id="travel_type"
-                  className="w-full rounded-md shadow-sm border border-gray-300
+                  className={`w-full rounded-md shadow-sm border border-gray-300
                     text-[16x] hover:shadow-md focus:shadow-md focus:border-gray-500
                     focus:border-1 px-4 py-3 my-5 duration-200 outline-none 
-                    bg-inherit"
+                    bg-inherit ${isError(errors.tripType.transferType) ? "border-red-500" : ""}`}
                   value={trip.tripType.transferType}
+                  
                   onChange={(e: any) => {
                     setTrip({
                       ...trip,
@@ -75,6 +189,7 @@ export default function AVForm() {
                     });
                   }}
                 >
+                  <option value="" defaultValue="" disabled>Selecciona una opción</option>
                   <option value="particular" label="Traslado Particular" />
                   <option value="corporative" label="Traslado Corporativo" />
                   <option value="nat_airport" label="Aeroportuario Nacional" />
@@ -84,9 +199,9 @@ export default function AVForm() {
                   />
                 </select>
                 <span
-                  className="absolute left-0 top-3 bg-white mx-3 px-2
+                  className={`absolute left-0 top-3 bg-white mx-3 px-2
                     peer focus:text-gray-300 duration-200 text-[16px]
-                    text-xs font-normal"
+                    text-xs font-normal ${isError(errors.tripType.transferType) ? "text-red-500 font-semibold" : ""}`}
                 >
                   Tipo de traslado
                 </span>
@@ -171,6 +286,8 @@ export default function AVForm() {
               type="search"
               placeholder="Salida"
               value={trip.departure.city}
+              errorField={errors.departure.city}
+              errorMsg={errorsMsg.departure.city}
               onChange={(e: any) => {
                 setTrip({
                   ...trip,
@@ -187,6 +304,8 @@ export default function AVForm() {
               type="search"
               placeholder="Destino"
               value={trip.return.city}
+              errorField={errors.return.city}
+              errorMsg={errorsMsg.return.city}
               onChange={(e: any) => {
                 setTrip({
                   ...trip,
@@ -206,6 +325,8 @@ export default function AVForm() {
                 type="date"
                 placeholder="Fecha de partida"
                 value={trip.departure.date}
+                errorField={errors.departure.date}
+                errorMsg={errorsMsg.departure.date}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -224,6 +345,8 @@ export default function AVForm() {
                 type="time"
                 placeholder="Hora de partida"
                 value={trip.departure.time}
+                errorField={errors.departure.time}
+                errorMsg={errorsMsg.departure.time}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -241,7 +364,9 @@ export default function AVForm() {
               <LabelInput
                 type="date"
                 placeholder="Fecha de regreso"
+                errorField={errors.return.date}
                 value={trip.return.date}
+                errorMsg={errorsMsg.return.date}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -260,6 +385,8 @@ export default function AVForm() {
                 type="time"
                 placeholder="Hora de regreso"
                 value={trip.return.time}
+                errorField={errors.departure.time}
+                errorMsg={errorsMsg.departure.time}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,

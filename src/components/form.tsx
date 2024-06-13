@@ -175,7 +175,7 @@ export default function AVForm() {
                   id="travel_type"
                   className={`w-full rounded-md shadow-sm border border-gray-300
                     text-[16x] hover:shadow-md focus:shadow-md focus:border-gray-500
-                    focus:border-1 px-4 py-3 my-5 duration-200 outline-none 
+                    focus:border-1 px-4 py-3 mt-5 mb-1 duration-200 outline-none 
                     bg-inherit ${isError(errors.tripType.transferType) ? "border-red-500" : ""}`}
                   value={trip.tripType.transferType}
                   

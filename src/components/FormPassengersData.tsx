@@ -57,6 +57,8 @@ export default function Passengers({
 
     setPassengerData(initialData);
   }, []);
+
+  
   const submitHandler = (e: any) => {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");

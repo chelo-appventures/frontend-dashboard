@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Person, { Responsible } from "@/components/booking/passengers/Person";
 import { useRouter } from "next/navigation";
 import HeaderAV from "@/components/header";
 import Hero from "@/components/hero";

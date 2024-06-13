@@ -13,13 +13,17 @@ import exclamation from "@/ui/icons/exclamation.svg";
 import { useTrip } from "@/state/booking/TripContext";
 import LabelInput from "./input";
 import { RedAlert } from "./alert";
-import { ErrorMessage } from "./ErrorMessage";
+import { isError, ErrorMessage } from "./ErrorMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
   const errorsInitialState: any = {
+    globals: [
+      "Hay datos sin completar. Revisa el formulario",
+      "No podes poner pibes sin adulto",
+    ],
     tripType: {
       transferType: "Elegí algo",
       roundTrip: "",
@@ -27,21 +31,21 @@ export default function AVForm() {
     fullTime: "",
     departure: {
       city: "Escribe una ciudad",
-      date: "",
-      time: "",
+      date: "x",
+      time: "i",
     },
     return: {
-      city: "",
+      city: "a",
       date: "Selecciona una fecha de regreso",
-      time: "",
+      time: "b",
     },
     passengers: {
-      adult: "",
-      kid: "",
-      baby: "",
+      adult: "x",
+      kid: "x",
+      baby: "a",
       pets: {
-        small: "",
-        big: "",
+        small: "ia",
+        big: "x",
       },
     },
     luggage: {
@@ -53,18 +57,13 @@ export default function AVForm() {
       },
     },
   };
-  
+
   const [errors, setErrors] = useState(errorsInitialState);
 
   const router = useRouter();
   const redirect = (path: string) => {
     router.push(path);
   };
-
-  const isError = (v: string): boolean => v !== "";
-
-
-
 
   let initialData = trip;
   useEffect(() => {
@@ -97,7 +96,11 @@ export default function AVForm() {
         Cotiza tu viaje ahora
       </h3>
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
-        <RedAlert><strong>Hay datos sin completar.</strong> Por favor revisa el formulario.</RedAlert>
+        {isError(errors.globals)
+          ? errors.globals.map((err: string, index: number) => (
+              <RedAlert key={index}>{err}</RedAlert>
+            ))
+          : null}
         <Separator title="Tipo de viaje" />
         <div className="flex items-center">
           <div className="w-1/2">
@@ -109,9 +112,12 @@ export default function AVForm() {
                   className={`w-full rounded-md shadow-sm border border-gray-300
                     text-[16x] hover:shadow-md focus:shadow-md focus:border-gray-500
                     focus:border-1 px-4 py-3 mt-5 mb-1 duration-200 outline-none 
-                    bg-inherit ${isError(errors.tripType.transferType) ? "border-red-500" : ""}`}
+                    bg-inherit ${
+                      isError(errors.tripType.transferType)
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   value={trip.tripType.transferType}
-                  
                   onChange={(e: any) => {
                     setTrip({
                       ...trip,
@@ -122,7 +128,9 @@ export default function AVForm() {
                     });
                   }}
                 >
-                  <option value="" defaultValue="" disabled>Selecciona una opción</option>
+                  <option value="" defaultValue="" disabled>
+                    Selecciona una opción
+                  </option>
                   <option value="particular" label="Traslado Particular" />
                   <option value="corporative" label="Traslado Corporativo" />
                   <option value="nat_airport" label="Aeroportuario Nacional" />
@@ -134,15 +142,17 @@ export default function AVForm() {
                 <span
                   className={`absolute left-0 top-3 bg-white mx-3 px-2
                     peer focus:text-gray-300 duration-200 text-[16px]
-                    text-xs font-normal ${isError(errors.tripType.transferType) ? "text-red-500 font-semibold" : ""}`}
+                    text-xs font-normal ${
+                      isError(errors.tripType.transferType)
+                        ? "text-red-500 font-semibold"
+                        : ""
+                    }`}
                 >
                   Tipo de traslado
                 </span>
-                { isError(errors.tripType.transferType) && 
-                  <ErrorMessage 
-                    field={errors.tripType.transferType} 
-                  />
-                }
+                {isError(errors.tripType.transferType) && (
+                  <ErrorMessage field={errors.tripType.transferType} />
+                )}
               </div>
             </div>
           </div>

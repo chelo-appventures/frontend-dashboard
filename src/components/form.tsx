@@ -13,6 +13,7 @@ import exclamation from "@/ui/icons/exclamation.svg";
 import { useTrip } from "@/state/booking/TripContext";
 import LabelInput from "./input";
 import { RedAlert } from "./alert";
+import { ErrorMessage } from "./ErrorMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,18 +21,18 @@ export default function AVForm() {
   const { trip, setTrip } = useTrip();
   const errorsInitialState: any = {
     tripType: {
-      transferType: "",
+      transferType: "Elegí algo",
       roundTrip: "",
     },
     fullTime: "",
     departure: {
-      city: "",
+      city: "Escribe una ciudad",
       date: "",
       time: "",
     },
     return: {
       city: "",
-      date: "",
+      date: "Selecciona una fecha de regreso",
       time: "",
     },
     passengers: {
@@ -60,76 +61,10 @@ export default function AVForm() {
     router.push(path);
   };
 
-  const isError = (v: string): boolean => v === "";
+  const isError = (v: string): boolean => v !== "";
 
-  const errorsMessages: any = {
-    tripType: {
-        transferType: "Selecciona una opción",
-        roundTrip: "",
-    },
-    fullTime: "",
-    departure: {
-        city: "Escribe y selecciona una opción válida",
-        date: "Selecciona una fecha",
-        time: "Selecciona una hora",
-    },
-    return: {
-        city: "Escribe y selecciona una opción válida",
-        date: "Selecciona una fecha",
-        time: "Selecciona una hora",
-    },
-    passengers: {
-        adult: "",
-        kid: "",
-        baby: "",
-        pets: {
-            small: "",
-            big: "",
-        },
-    },
-    luggage: {
-    carryOn: 0,
-    bag23: 0,
-    special: {
-        quantity: 0,
-        detail: "Detalla tu equipaje especial por tipo, medidas y peso",
-    },
-    },
-  };
-  const errorsMsg: any = {
-    tripType: {
-        transferType: "Selecciona una opción",
-        roundTrip: "",
-    },
-    fullTime: "",
-    departure: {
-        city: "Escribe y selecciona una opción válida",
-        date: "Selecciona una fecha",
-        time: "Selecciona una hora",
-    },
-    return: {
-        city: "Escribe y selecciona una opción válida",
-        date: "Selecciona una fecha",
-        time: "Selecciona una hora",
-    },
-    passengers: {
-        adult: "",
-        kid: "",
-        baby: "",
-        pets: {
-            small: "",
-            big: "",
-        },
-    },
-    luggage: {
-    carryOn: 0,
-    bag23: 0,
-    special: {
-        quantity: 0,
-        detail: "Detalla tu equipaje especial por tipo, medidas y peso",
-    },
-    },
-};
+
+
 
   let initialData = trip;
   useEffect(() => {
@@ -162,9 +97,7 @@ export default function AVForm() {
         Cotiza tu viaje ahora
       </h3>
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
-        <RedAlert>
-          <p><strong>Hay datos sin completar.</strong> Por favor revisa el formulario.</p>
-        </RedAlert>
+        <RedAlert><strong>Hay datos sin completar.</strong> Por favor revisa el formulario.</RedAlert>
         <Separator title="Tipo de viaje" />
         <div className="flex items-center">
           <div className="w-1/2">
@@ -205,6 +138,11 @@ export default function AVForm() {
                 >
                   Tipo de traslado
                 </span>
+                { isError(errors.tripType.transferType) && 
+                  <ErrorMessage 
+                    field={errors.tripType.transferType} 
+                  />
+                }
               </div>
             </div>
           </div>
@@ -287,7 +225,6 @@ export default function AVForm() {
               placeholder="Salida"
               value={trip.departure.city}
               errorField={errors.departure.city}
-              errorMsg={errorsMsg.departure.city}
               onChange={(e: any) => {
                 setTrip({
                   ...trip,
@@ -305,7 +242,6 @@ export default function AVForm() {
               placeholder="Destino"
               value={trip.return.city}
               errorField={errors.return.city}
-              errorMsg={errorsMsg.return.city}
               onChange={(e: any) => {
                 setTrip({
                   ...trip,
@@ -326,7 +262,6 @@ export default function AVForm() {
                 placeholder="Fecha de partida"
                 value={trip.departure.date}
                 errorField={errors.departure.date}
-                errorMsg={errorsMsg.departure.date}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -346,7 +281,6 @@ export default function AVForm() {
                 placeholder="Hora de partida"
                 value={trip.departure.time}
                 errorField={errors.departure.time}
-                errorMsg={errorsMsg.departure.time}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -366,7 +300,6 @@ export default function AVForm() {
                 placeholder="Fecha de regreso"
                 errorField={errors.return.date}
                 value={trip.return.date}
-                errorMsg={errorsMsg.return.date}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -386,7 +319,6 @@ export default function AVForm() {
                 placeholder="Hora de regreso"
                 value={trip.return.time}
                 errorField={errors.departure.time}
-                errorMsg={errorsMsg.departure.time}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,

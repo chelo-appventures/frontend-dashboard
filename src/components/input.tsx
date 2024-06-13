@@ -3,14 +3,13 @@ import  {ErrorMessage}  from './ErrorMessage';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder: string;
-  errorField?: string;
-  errorMsg?: string;
+  errorField?: string | undefined;
 }
 
-const isError = (value: string | undefined): boolean => value === ""
+const isError = (value: string | undefined): boolean => value !== ""
 
 const LabelInput: React.FC<Props> = (props) => {
-  const { placeholder, errorField, errorMsg, ...inputProps } = props;
+  const { placeholder, errorField, ...inputProps } = props;
 
   return (
     <>
@@ -24,17 +23,10 @@ const LabelInput: React.FC<Props> = (props) => {
             peer bg-inherit placeholder-transparent ${isError(errorField) ? "border-red-500" : ""}` }
             {...inputProps} 
             placeholder={placeholder}
-            // onBlur={(e:any) => {
-            //   isError((e.currentTarget.value !== "") ? 
-            //     e.currentTarget.className = "block w-full rounded-md shadow-sm border border-gray-300 text-[16px] hover:shadow-md focus:shadow-md focus:border-gray-500 focus:border-1 disabled:bg-gray-200 px-4 py-3 my-5 duration-200 outline-none peer bg-inherit placeholder-transparent"
-            //   :
-            //     e.currentTarget.className = "block w-full rounded-md shadow-sm border border-gray-300 text-[16px] hover:shadow-md focus:shadow-md focus:border-gray-500 focus:border-1 disabled:bg-gray-200 px-4 py-3 my-5 duration-200 outline-none peer bg-inherit placeholder-transparent"
-            //   )
-            // }}
           />
           <span 
             className={`absolute left-0 top-3 font-normal text-opacity-80 bg-white mx-3 px-2
-            peer-focus:text-gray-300 duration-200 text-[16px]
+            peer-focus:text-gray-500 duration-200 text-[16px]
             peer-focus:text-xs peer-focus:font-normal peer-focus:-translate-y-5 
             peer-valid:text-xs peer-valid:-translate-y-5 peer-disabled:-translate-y-5 peer-disabled:bg-inherit peer-disabled:text-xs ${isError(errorField) ? "text-red-500 font-semibold" : ""}`}
           >
@@ -42,7 +34,7 @@ const LabelInput: React.FC<Props> = (props) => {
           </span>
         </label>
         {isError(errorField) && 
-          <ErrorMessage field={errorField} message={errorMsg}/>
+          <ErrorMessage field={errorField} />
         }
       </div>
     </>

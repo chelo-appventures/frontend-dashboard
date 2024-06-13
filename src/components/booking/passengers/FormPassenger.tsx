@@ -72,7 +72,7 @@ export default function PassengerForm({
     
   const [errors, setErrors] = useState(errorsInitialState)
 
-  const isError = (value: string): boolean => value === "";
+  const isError = (value: string): boolean => value !== "";
   const handleSameAddress = (e: any) => {
     setSameAdress(e.currentTarget.checked);
   };
@@ -93,7 +93,6 @@ export default function PassengerForm({
               placeholder="Nombre"
               value={passenger.firstName}
               errorField={errors.passenger.firstName}
-              errorMsg={errorsMessages.passenger.firstName}
               onChange={(e:any) => {
                 setPassenger({
                   ...passenger,
@@ -107,7 +106,6 @@ export default function PassengerForm({
               placeholder="Apellido"
               value={passenger.lastName}
               errorField={errors.passenger.lastName}
-              errorMsg={errorsMessages.passenger.lastName}
               onChange={(e:any) => {
                 setPassenger({
                   ...passenger,
@@ -126,8 +124,6 @@ export default function PassengerForm({
                     className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black
                       ${isError(passenger.identification.type) ? "border-red-500" : ""}`}
                     value={passenger.identification.type}
-                    // errorField={errors.passenger.firstName}
-                    // errorMsg={errorsMessages.passenger.firstName}
                     onChange={(e) => {
                       setPassenger({
                         ...passenger,
@@ -151,7 +147,6 @@ export default function PassengerForm({
                 { isError(errors.passenger.identification.type) && 
                   <ErrorMessage 
                     field={errors.passenger.identification.type} 
-                    message={errorsMessages.passenger.identification.type} 
                   />
                 }
               </div>
@@ -162,7 +157,6 @@ export default function PassengerForm({
                   placeholder="Número de documento"
                   value={passenger.identification.number}
                   errorField={errors.passenger.identification.number}
-                  errorMsg={errorsMessages.passenger.identification.number}
                   onChange={(e:any) => {
                     setPassenger({
                       ...passenger,
@@ -210,7 +204,6 @@ export default function PassengerForm({
               { isError(errors.passenger.identification.country) && 
                   <ErrorMessage 
                     field={errors.passenger.identification.country} 
-                    message={errorsMessages.passenger.identification.country} 
                   />
               }
             </div>
@@ -245,7 +238,6 @@ export default function PassengerForm({
               { isError(errors.passenger.age) && 
                   <ErrorMessage 
                     field={errors.passenger.age} 
-                    message={errorsMessages.passenger.age} 
                   />
               }
           </div>
@@ -353,7 +345,6 @@ export default function PassengerForm({
                       { isError(errors.passenger.contact.phoneCode) && 
                           <ErrorMessage 
                             field={errors.passenger.contact.phoneCode} 
-                            message={errorsMessages.passenger.contact.phoneCode} 
                           />
                       }
                     </div>
@@ -364,7 +355,6 @@ export default function PassengerForm({
                         placeholder="Número de teléfono"
                         value={passenger.contact.phoneNumber}
                         errorField={errors.passenger.contact.phoneNumber}
-                        errorMsg={errorsMessages.passenger.contact.phoneNumber}
                         onChange={(e:any) => {
                           setPassenger({
                             ...passenger,
@@ -384,7 +374,6 @@ export default function PassengerForm({
                     placeholder="Correo Electrónico"
                     value={passenger.contact.email}
                     errorField={errors.passenger.contact.email}
-                    errorMsg={errorsMessages.passenger.contact.email}
                     onChange={(e:any) => {
                       setPassenger({
                         ...passenger,
@@ -428,7 +417,6 @@ export default function PassengerForm({
                     placeholder="Barrio"
                     value={passenger.contact.address.neighborhood}
                     errorField={errors.passenger.contact.address.neighborhood}
-                    errorMsg={errorsMessages.passenger.contact.address.neighborhood}
                     onChange={(e:any) => {
                       setPassenger({
                         ...passenger,
@@ -454,7 +442,6 @@ export default function PassengerForm({
                 type="text"
                 value={passenger.contact.address.street}
                 errorField={errors.passenger.contact.address.street}
-                errorMsg={errorsMessages.passenger.contact.address.street}
                 onChange={(e:any) => {
                   setPassenger({
                     ...passenger,
@@ -476,7 +463,6 @@ export default function PassengerForm({
                   placeholder="Número"
                   value={passenger.contact.address.number}
                   errorField={errors.passenger.contact.address.number}
-                  errorMsg={errorsMessages.passenger.contact.address.number}
                   onChange={(e:any) => {
                     setPassenger({
                       ...passenger,
@@ -497,7 +483,6 @@ export default function PassengerForm({
                   placeholder="Depto./Timbre/Otro"
                   value={passenger.contact.address.other}
                   errorField={errors.passenger.contact.address.other}
-                errorMsg={errorsMessages.passenger.contact.address.other}
                   onChange={(e:any) => {
                     setPassenger({
                       ...passenger,

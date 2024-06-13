@@ -1,6 +1,6 @@
 
 import Link from "next/link";
-import Input, {LabelInput} from "./input";
+import LabelInput from "./input";
 
 export default function LoginComp () {
     return (

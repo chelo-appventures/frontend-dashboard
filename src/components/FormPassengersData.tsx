@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import FormPassenger from "@/components/booking/passengers/FormPassenger";
 import Separator from "@/components/separator";
 import Link from "next/link";
@@ -7,12 +7,19 @@ import { useRouter } from "next/navigation";
 import { usePassengerData } from "@/state/booking/PassengerContext";
 import { Gender, Passenger } from "@/state/Passenger.type";
 
+const errorInitialState = {
+  passengers: [],
+  termsCondition: "",
+  newsletter: "",
+};
+
 export default function Passengers({
   passengers: amountPassegengers,
 }: {
   passengers: number;
 }) {
   const { passengerData, setPassengerData } = usePassengerData();
+  const [error, setError] = useState(errorInitialState);
 
   const router = useRouter();
   const redirect = (path: string) => {
@@ -44,7 +51,6 @@ export default function Passengers({
         },
       }),
     );
-
     let initialData = { ...passengerData, passengers };
 
     try {
@@ -56,9 +62,37 @@ export default function Passengers({
     }
 
     setPassengerData(initialData);
+
+    const errorPassengers = passengers.map((_p) => ({
+      firstName: "",
+      lastName: "",
+      gender: "",
+      identification: {
+        type: "",
+        number: "",
+        country: "",
+      },
+      age: "",
+      contact: {
+        phoneNumber: "",
+        email: "",
+        address: {
+          street: "",
+          number: "",
+          city: "",
+          neighborhood: "",
+        },
+      },
+    }));
+
+    const initialErrorData = {
+      ...errorInitialState,
+      passengers: errorPassengers,
+    };
+
+    setError(initialErrorData);
   }, []);
 
-  
   const submitHandler = (e: any) => {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");

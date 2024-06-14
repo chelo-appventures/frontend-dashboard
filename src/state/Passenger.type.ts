@@ -27,12 +27,11 @@ interface Identification {
 
 export interface Passenger {
   company?: Company;
-  isResponsible: boolean;
   firstName: string;
   lastName: string;
-  identification: Identification;
-  age: string;
   gender: Gender;
+  age: number;
+  identification: Identification;
   contact: Contact;
 }
 

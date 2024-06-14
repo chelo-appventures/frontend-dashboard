@@ -29,27 +29,30 @@ export default function Passengers({
   useEffect(() => {
     const passengers: Passenger[] = Array.from(
       { length: amountPassegengers },
-      (_) => ({
-        firstName: "",
-        lastName: "",
-        gender: Gender.Male,
-        identification: {
-          type: "",
-          number: "",
-          country: "",
-        },
-        age: 0,
-        contact: {
-          phoneNumber: "",
-          email: "",
-          address: {
-            street: "",
+      (_) =>
+        ({
+          firstName: "",
+          lastName: "",
+          gender: Gender.Male,
+          age: 0,
+          identification: {
+            type: "",
             number: "",
-            city: "",
-            neighborhood: "",
+            country: "",
           },
-        },
-      }),
+          contact: {
+            phoneCode: "",
+            phoneNumber: "",
+            email: "",
+            address: {
+              street: "",
+              number: "",
+              city: "",
+              neighborhood: "",
+              other: "",
+            },
+          },
+        }) as Passenger,
     );
     let initialData = { ...passengerData, passengers };
 
@@ -90,7 +93,7 @@ export default function Passengers({
       passengers: errorPassengers,
     };
 
-    setError(initialErrorData);
+    setError(initialErrorData as any);
   }, []);
 
   const submitHandler = (e: any) => {

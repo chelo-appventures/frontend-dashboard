@@ -11,7 +11,7 @@ import { isError } from "./ErrorMessage";
 
 const errorInitialState = {
   passengers: [],
-  termsCondition: "",
+  termsCondition: "Tenes que aceptar esto",
   newsletter: "",
   globals: ["este es un error global", "este es otro error"],
 };
@@ -166,7 +166,7 @@ export default function Passengers({
           }
         />
         <label className="text-black p-2">
-          Al continua con la cotización acepta los{" "}
+          Al continuar con la cotización acepta los{" "}
           <Link href="#" className="text-orange-500 underline">
             Términos y Condiciones
           </Link>{" "}

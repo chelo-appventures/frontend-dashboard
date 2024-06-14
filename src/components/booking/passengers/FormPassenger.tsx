@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Important from "@/components/important";
 import { usePassengerData } from "@/state/booking/PassengerContext";
 import { Passenger, Gender } from "@/state/Passenger.type";
-import { isError, ErrorMessage } from "@/components/ErrorMessage";
+import { ErrorMessage, isError } from "@/components/ErrorMessage";
 
 export default function PassengerForm({
   errors,
@@ -20,31 +20,6 @@ export default function PassengerForm({
   index: number;
 }) {
   const [sameAdress, setSameAdress] = useState(true);
-
-  const errorsInitialState: any = {
-    passenger: {
-      firstName: "",
-      lastName: "",
-      gender: Gender.Male,
-      identification: {
-        type: "",
-        number: "",
-        country: "",
-      },
-      age: 0,
-      contact: {
-        phoneCode: "",
-        phoneNumber: "",
-        email: "",
-        address: {
-          street: "",
-          number: "",
-          city: "",
-          neighborhood: "",
-        },
-      },
-    },
-  };
 
   const handleSameAddress = (e: any) => {
     setSameAdress(e.currentTarget.checked);
@@ -193,7 +168,7 @@ export default function PassengerForm({
           </div>
         </div>
         <div className="flex flex-row w-full justify-between">
-          <div className="edad w-3/12">
+          <div className="flex flex-col w-3/12">
             <div>
               <label className="relative font-normal">
                 <select
@@ -224,49 +199,48 @@ export default function PassengerForm({
               <ErrorMessage field={errors.age} />
             </div>
           </div>
-          <div className="sexo flex items-center w-9/12">
-            <input
-              className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
-              type="radio"
-              name="sexo"
-              checked={passenger.gender === Gender.Male}
-              onChange={() => {
-                setPassenger({
-                  ...passenger,
-                  gender: Gender.Male,
-                });
-              }}
-            />
-            <label htmlFor="man">Hombre</label>
-            <input
-              className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
-              type="radio"
-              name="sexo"
-              checked={passenger.gender === Gender.Female ? true : false}
-              onChange={() => {
-                setPassenger({
-                  ...passenger,
-                  gender: Gender.Female,
-                });
-              }}
-            />
-            <label htmlFor="man">Mujer</label>
-            <input
-              className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
-              type="radio"
-              name="sexo"
-              checked={passenger.gender === Gender.Other}
-              onChange={(e) => {
-                console.log(passenger);
-                if (!e.target.checked) {
+          <div className="flex flex-row items-center w-9/12">
+            <div className="flex">
+              <input
+                className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
+                type="radio"
+                name="sexo"
+                checked={passenger.gender === Gender.Male}
+                onChange={() => {
+                  setPassenger({
+                    ...passenger,
+                    gender: Gender.Male,
+                  });
+                }}
+              />
+              <label htmlFor="man">Hombre</label>
+              <input
+                className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
+                type="radio"
+                name="sexo"
+                checked={passenger.gender === Gender.Female}
+                onChange={() => {
+                  setPassenger({
+                    ...passenger,
+                    gender: Gender.Female,
+                  });
+                }}
+              />
+              <label htmlFor="man">Mujer</label>
+              <input
+                className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
+                type="radio"
+                name="sexo"
+                checked={passenger.gender === Gender.Other}
+                onChange={() => {
                   setPassenger({
                     ...passenger,
                     gender: Gender.Other,
                   });
-                }
-              }}
-            />
-            <label htmlFor="man">Prefiero no decirlo</label>
+                }}
+              />
+              <label htmlFor="man">Prefiero no decirlo</label>
+            </div>
           </div>
         </div>
       </>
@@ -489,39 +463,6 @@ export default function PassengerForm({
           </div>
 
           {isResponsible && <Important />}
-        </div>
-      )}
-    </>
-  );
-}
-
-function IsCompany() {
-  const [isCompany, setIsCompany] = useState(false);
-  const handlerCheckbox = (e: any) => {
-    console.log(e.currentTarget.checked);
-    setIsCompany(e.currentTarget.checked);
-  };
-
-  return (
-    <>
-      <div className="flex flex-row items-center">
-        <input
-          type="checkbox"
-          className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
-                    focus:outline-none duration-500 hover:shadow-md"
-          checked={isCompany}
-          onChange={handlerCheckbox}
-        />
-        <label className="text-black p-2">Comprar por empresa</label>
-      </div>
-      {isCompany && (
-        <div className="flex flex-row">
-          <div className="w-1/2 mr-2">
-            <LabelInput type="text" placeholder="Empresa" />
-          </div>
-          <div className="w-1/2 ml-2">
-            <LabelInput type="text" placeholder="CUIT" />
-          </div>
         </div>
       )}
     </>

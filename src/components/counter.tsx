@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import icons from "@/ui/icons";  
+import { isError } from "./ErrorMessage";
 
 enum IconPeopleType {
     Adult = "adult",
@@ -31,15 +32,17 @@ function AVCounterIcon({icon, className = ''}: {icon: IconType, className?: stri
 }
 
 export default function AVCounter(
-    {icon, title, subtitle, alert = false, value, handleValue}: 
-    {icon: IconType, title: string, subtitle: string, alert?: boolean, value: number, handleValue: Function}
+    {icon, title, subtitle, alert = false, value, handleValue, errorField}: 
+    {icon: IconType, title: string, subtitle: string, alert?: boolean, value: number, handleValue: Function, errorField: string | undefined}
     ) {
     // const [count, setCount] = useState(0);
     const increment = () => handleValue(value + 1 > 0 ? value + 1 : 0);
     const decrement = () => handleValue(value - 1 > 0 ? value - 1 : 0);
 
     return (
-        <div className="flex flex-row mr-4 py-1 px-2 items-center border border-gray-300 rounded-lg hover:shadow-md duration-500 focus:border-gray-500 outline-none">
+        <div className={`flex flex-row mr-4 py-1 px-2 items-center border border-gray-300 rounded-lg hover:shadow-md duration-500 focus:border-gray-500 outline-none ${
+          isError(errorField) ? "border-red-500" : ""
+        }`}>
             <AVCounterIcon icon={icon} />
             <div className="flex flex-row">
               <div className="flex flex-col">

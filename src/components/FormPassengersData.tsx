@@ -6,10 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePassengerData } from "@/state/booking/PassengerContext";
 import { Gender, Passenger } from "@/state/Passenger.type";
+import { ErrorMessage, isError } from "./ErrorMessage";
 
 const errorInitialState = {
   passengers: [],
-  termsCondition: "",
+  termsCondition: "Tenes que aceptar esto",
   newsletter: "",
 };
 
@@ -137,7 +138,7 @@ export default function Passengers({
           }
         />
         <label className="text-black p-2">
-          Al continua con la cotización acepta los{" "}
+          Al continuar con la cotización acepta los{" "}
           <Link href="#" className="text-orange-500 underline">
             Términos y Condiciones
           </Link>{" "}

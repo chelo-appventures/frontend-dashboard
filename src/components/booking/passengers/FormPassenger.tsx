@@ -8,7 +8,7 @@ import Alert from "@/components/alert";
 import Important from "@/components/important";
 import { usePassengerData } from "@/state/booking/PassengerContext";
 import { Passenger, Gender } from "@/state/Passenger.type";
-import { isError, ErrorMessage } from "@/components/ErrorMessage";
+import Select from "@/components/select";
 
 export default function PassengerForm({
   passenger,
@@ -23,7 +23,7 @@ export default function PassengerForm({
 
   const errorsInitialState: any = {
     passenger: {
-      firstName: "",
+      firstName: "Como te llamassss",
       lastName: "",
       gender: Gender.Male,
       identification: {
@@ -31,7 +31,7 @@ export default function PassengerForm({
         number: "",
         country: "",
       },
-      age: 0,
+      age: "",
       contact: {
         phoneCode: "",
         phoneNumber: "",
@@ -41,34 +41,12 @@ export default function PassengerForm({
           number: "",
           city: "",
           neighborhood: "",
+          other: ""
         },
       },
     },
   };
-  const errorsMessages: any = {
-    passenger: {
-      firstName: "Completa el campo",
-      lastName: "Completa el campo",
-      gender: Gender.Male,
-      identification: {
-        type: "Selecciona uno",
-        number: "El formato escrito no es válido",
-        country: "Selecciona el país de emisión",
-      },
-      age: "Selecciona una opción",
-      contact: {
-        phoneCode: "Selecciona uno",
-        phoneNumber: "Completa el campo\nEl formato escrito no es válido",
-        email: "Completa el campo El formato escrito no es válido",
-        address: {
-          street: "Completa el campo",
-          number: "Completa el campo El formato escrito no es válido",
-          neighborhood: "Escribe y selecciona una opción válida",
-        },
-      },
-    },
-  };
-
+  
   const [errors, setErrors] = useState(errorsInitialState);
 
   const handleSameAddress = (e: any) => {
@@ -117,14 +95,9 @@ export default function PassengerForm({
           <div className="w-1/2 flex flex-row">
             <div className="w-1/3">
               <div>
-                <label className="relative font-normal">
-                  <select
-                    className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black
-                      ${
-                        isError(passenger.identification.type)
-                          ? "border-red-500"
-                          : ""
-                      }`}
+                  <Select
+                    label="Documento"
+                    errorField={errors.passenger.identification.type}
                     value={passenger.identification.type}
                     onChange={(e) => {
                       setPassenger({
@@ -141,20 +114,8 @@ export default function PassengerForm({
                     <option value="passport">Pasaporte</option>
                     <option value="ci">CI (URU)</option>
                     <option value="rut">RUT (CHI)</option>
-                  </select>
-                  <span
-                    className={`absolute text-xs left-2 -top-2 bg-white  px-2 ${
-                      isError(passenger.identification.type)
-                        ? "text-red-500 "
-                        : ""
-                    }`}
-                  >
-                    Documento
-                  </span>
-                </label>
-                {isError(errors.passenger.identification.type) && (
-                  <ErrorMessage field={errors.passenger.identification.type} />
-                )}
+                  </Select>
+                  
               </div>
             </div>
             <div className="w-3/4">
@@ -178,14 +139,9 @@ export default function PassengerForm({
           </div>
           <div className="w-1/2">
             <div>
-              <label className="relative font-normal">
-                <select
-                  className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black 
-                    ${
-                      isError(errors.passenger.identification.country)
-                        ? "border-red-500"
-                        : ""
-                    }`}
+                <Select
+                  label="País de emisión"
+                  errorField={errors.passenger.identification.country}
                   value={passenger.identification.country}
                   onChange={(e) => {
                     setPassenger({
@@ -205,31 +161,16 @@ export default function PassengerForm({
                   <option value="bol">Bolivia</option>
                   <option value="col">Colombia</option>
                   <option value="ven">Venezuela</option>
-                </select>
-                <span
-                  className={`absolute text-xs left-2 -top-2 bg-white px-2 
-                  ${
-                    isError(errors.passenger.identification.country)
-                      ? "text-red-500"
-                      : ""
-                  }`}
-                >
-                  País de emisión
-                </span>
-              </label>
-              {isError(errors.passenger.identification.country) && (
-                <ErrorMessage field={errors.passenger.identification.country} />
-              )}
+                </Select>
             </div>
           </div>
         </div>
         <div className="flex flex-row w-full justify-between">
-          <div className="edad w-3/12">
+          <div className="flex flex-col w-3/12">
             <div>
-              <label className="relative font-normal">
-                <select
-                  className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black 
-                    ${isError(errors.passenger.age) ? "border-red-500" : ""}`}
+                <Select
+                  label="Edad"
+                  errorField={errors.passenger.age}
                   value={passenger.age}
                   onChange={(e) => {
                     setPassenger({
@@ -238,68 +179,55 @@ export default function PassengerForm({
                     });
                   }}
                 >
-                  <option disabled defaultValue="">
-                    --
-                  </option>
+                  <option disabled defaultValue="">--</option>
                   <option value="adult">Adulto</option>
                   <option value="child">Niño</option>
                   <option value="baby">Bebé</option>
-                </select>
-                <span
-                  className={`absolute text-xs left-2 -top-2 bg-white px-2 
-                  ${isError(errors.passenger.age) ? "text-red-500" : ""}`}
-                >
-                  Edad
-                </span>
-              </label>
-              {isError(errors.passenger.age) && (
-                <ErrorMessage field={errors.passenger.age} />
-              )}
+                </Select>
             </div>
           </div>
-          <div className="sexo flex items-center w-9/12">
-            <input
-              className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
-              type="radio"
-              name="sexo"
-              checked={passenger.gender === Gender.Male}
-              onChange={() => {
-                setPassenger({
-                  ...passenger,
-                  gender: Gender.Male,
-                });
-              }}
-            />
-            <label htmlFor="man">Hombre</label>
-            <input
-              className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
-              type="radio"
-              name="sexo"
-              checked={passenger.gender === Gender.Female ? true : false}
-              onChange={() => {
-                setPassenger({
-                  ...passenger,
-                  gender: Gender.Female,
-                });
-              }}
-            />
-            <label htmlFor="man">Mujer</label>
-            <input
-              className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
-              type="radio"
-              name="sexo"
-              checked={passenger.gender === Gender.Other}
-              onChange={(e) => {
-                console.log(passenger);
-                if (!e.target.checked) {
+          <div className="flex flex-row items-center w-9/12">
+            <div className="flex">
+              <input
+                className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
+                type="radio"
+                name="sexo"
+                checked={passenger.gender === Gender.Male}
+                onChange={() => {
                   setPassenger({
                     ...passenger,
-                    gender: Gender.Other,
+                    gender: Gender.Male,
                   });
-                }
-              }}
-            />
-            <label htmlFor="man">Prefiero no decirlo</label>
+                }}
+              />
+              <label htmlFor="man">Hombre</label>
+              <input
+                className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
+                type="radio"
+                name="sexo"
+                checked={passenger.gender === Gender.Female}
+                onChange={() => {
+                  setPassenger({
+                    ...passenger,
+                    gender: Gender.Female,
+                  });
+                }}
+              />
+              <label htmlFor="man">Mujer</label>
+              <input
+                className="mx-4 accent-orange-500 bg-white hover:shadow-md w-[20px] h-[20px]"
+                type="radio"
+                name="sexo"
+                checked={passenger.gender === Gender.Other}
+                onChange={() => {
+                    setPassenger({
+                      ...passenger,
+                      gender: Gender.Other,
+                    });
+                }}
+              />
+              <label htmlFor="man">Prefiero no decirlo</label>
+            </div>
           </div>
         </div>
       </>
@@ -331,17 +259,9 @@ export default function PassengerForm({
                 <div className="w-1/2 flex flex-row">
                   <div className="w-1/3">
                     <div>
-                      <label className="relative font-normal">
-                        <select
-                          className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full
-                                    hover:shadow-md focus:shadow-md outline-none focus:border-black
-                                    ${
-                                      isError(
-                                        errors.passenger.contact.phoneCode,
-                                      )
-                                        ? "border-red-500"
-                                        : ""
-                                    }`}
+                        <Select
+                          label="Código de Área"
+                          errorField={errors.passenger.contact.phoneCode}
                           onChange={(e) => {
                             setPassenger({
                               ...passenger,
@@ -357,23 +277,7 @@ export default function PassengerForm({
                           <option value="55">+55</option>
                           <option value="56">+56</option>
                           <option value="57">+57</option>
-                        </select>
-                        <span
-                          className={`absolute text-xs left-2 -top-2 bg-white  px-2 
-                          ${
-                            isError(errors.passenger.contact.phoneCode)
-                              ? "text-red-500"
-                              : ""
-                          }`}
-                        >
-                          Código de Área
-                        </span>
-                      </label>
-                      {isError(errors.passenger.contact.phoneCode) && (
-                        <ErrorMessage
-                          field={errors.passenger.contact.phoneCode}
-                        />
-                      )}
+                        </Select>
                     </div>
                   </div>
                   <div className="w-3/4">

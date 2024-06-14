@@ -6,11 +6,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePassengerData } from "@/state/booking/PassengerContext";
 import { Gender, Passenger } from "@/state/Passenger.type";
+import { RedAlert } from "./alert";
+import { isError } from "./ErrorMessage";
 
 const errorInitialState = {
   passengers: [],
   termsCondition: "",
   newsletter: "",
+  globals: ["este es un error global", "este es otro error"],
 };
 
 export default function Passengers({
@@ -19,7 +22,7 @@ export default function Passengers({
   passengers: number;
 }) {
   const { passengerData, setPassengerData } = usePassengerData();
-  const [error, setError] = useState(errorInitialState);
+  const [errors, setError] = useState(errorInitialState);
 
   const router = useRouter();
   const redirect = (path: string) => {
@@ -88,6 +91,7 @@ export default function Passengers({
       },
     }));
 
+    console.log(errorPassengers);
     const initialErrorData = {
       ...errorInitialState,
       passengers: errorPassengers,
@@ -107,21 +111,43 @@ export default function Passengers({
 
   return (
     <form action="#" className="py-8 text-sm text-gray-500 font-bold w-10/12">
-      {passengerData.passengers.map((passenger, index) => (
-        <FormPassenger
-          passenger={passenger}
-          setPassenger={(newP) => {
-            const passengers = passengerData.passengers.map((oldP, i) =>
-              index === i ? newP : oldP,
-            );
-            setPassengerData({
-              ...passengerData,
-              passengers,
-            });
-          }}
-          index={index}
-        />
-      ))}
+      {errors.globals.map(isError).reduce((x: boolean, y: boolean) => x || y)
+        ? errors.globals.map((err: string, index: number) => (
+            <RedAlert key={index}>{err}</RedAlert>
+          ))
+        : null}
+
+      {errors.passengers.length > 0 &&
+        passengerData.passengers.map((passenger, index: number) => {
+          console.log(errors.passengers, index);
+          console.log(errors.passengers[index]);
+          return (
+            <FormPassenger
+              errors={errors.passengers[index]}
+              setError={(newError: any) => {
+                const passengers: any = errors.passengers.map((oldError, i) =>
+                  index === i ? newError : oldError,
+                );
+                setError({
+                  ...errors,
+                  passengers,
+                });
+              }}
+              key={index}
+              passenger={passenger}
+              setPassenger={(newP) => {
+                const passengers = passengerData.passengers.map((oldP, i) =>
+                  index === i ? newP : oldP,
+                );
+                setPassengerData({
+                  ...passengerData,
+                  passengers,
+                });
+              }}
+              index={index}
+            />
+          );
+        })}
       <Separator title="Otros" />
       <div className="flex items-center">
         <input

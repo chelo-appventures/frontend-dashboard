@@ -96,7 +96,7 @@ export default function AVForm() {
         Cotiza tu viaje ahora
       </h3>
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
-        {isError(errors.globals)
+        {errors.globals.map(isError).reduce((x: boolean, y: boolean) => x || y)
           ? errors.globals.map((err: string, index: number) => (
               <RedAlert key={index}>{err}</RedAlert>
             ))

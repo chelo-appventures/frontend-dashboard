@@ -1,20 +1,20 @@
-import Separator, {
-  SeparatorPersona,
-  SeparatorResponsible,
-} from "@/components/separator";
+import Separator, { SeparatorPersona } from "@/components/separator";
 import LabelInput from "@/components/input";
 import React, { useState } from "react";
-import Alert from "@/components/alert";
 import Important from "@/components/important";
 import { usePassengerData } from "@/state/booking/PassengerContext";
 import { Passenger, Gender } from "@/state/Passenger.type";
 import { isError, ErrorMessage } from "@/components/ErrorMessage";
 
 export default function PassengerForm({
+  errors,
+  setError,
   passenger,
   setPassenger,
   index,
 }: {
+  errors: any;
+  setError: (error: any) => void;
   passenger: Passenger;
   setPassenger: (passenger: Passenger) => void;
   index: number;
@@ -45,31 +45,6 @@ export default function PassengerForm({
       },
     },
   };
-  const errorsMessages: any = {
-    passenger: {
-      firstName: "Completa el campo",
-      lastName: "Completa el campo",
-      gender: Gender.Male,
-      identification: {
-        type: "Selecciona uno",
-        number: "El formato escrito no es válido",
-        country: "Selecciona el país de emisión",
-      },
-      age: "Selecciona una opción",
-      contact: {
-        phoneCode: "Selecciona uno",
-        phoneNumber: "Completa el campo\nEl formato escrito no es válido",
-        email: "Completa el campo El formato escrito no es válido",
-        address: {
-          street: "Completa el campo",
-          number: "Completa el campo El formato escrito no es válido",
-          neighborhood: "Escribe y selecciona una opción válida",
-        },
-      },
-    },
-  };
-
-  const [errors, setErrors] = useState(errorsInitialState);
 
   const handleSameAddress = (e: any) => {
     setSameAdress(e.currentTarget.checked);
@@ -90,7 +65,7 @@ export default function PassengerForm({
             <LabelInput
               placeholder="Nombre"
               value={passenger.firstName}
-              errorField={errors.passenger.firstName}
+              errorField={errors.firstName}
               onChange={(e: any) => {
                 setPassenger({
                   ...passenger,
@@ -103,7 +78,7 @@ export default function PassengerForm({
             <LabelInput
               placeholder="Apellido"
               value={passenger.lastName}
-              errorField={errors.passenger.lastName}
+              errorField={errors.lastName}
               onChange={(e: any) => {
                 setPassenger({
                   ...passenger,
@@ -121,7 +96,7 @@ export default function PassengerForm({
                   <select
                     className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black
                       ${
-                        isError(passenger.identification.type)
+                        isError(errors.identification.type)
                           ? "border-red-500"
                           : ""
                       }`}
@@ -152,9 +127,7 @@ export default function PassengerForm({
                     Documento
                   </span>
                 </label>
-                {isError(errors.passenger.identification.type) && (
-                  <ErrorMessage field={errors.passenger.identification.type} />
-                )}
+                <ErrorMessage field={errors.identification.type} />
               </div>
             </div>
             <div className="w-3/4">
@@ -162,7 +135,7 @@ export default function PassengerForm({
                 <LabelInput
                   placeholder="Número de documento"
                   value={passenger.identification.number}
-                  errorField={errors.passenger.identification.number}
+                  errorField={errors.identification.number}
                   onChange={(e: any) => {
                     setPassenger({
                       ...passenger,
@@ -182,7 +155,7 @@ export default function PassengerForm({
                 <select
                   className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black 
                     ${
-                      isError(errors.passenger.identification.country)
+                      isError(errors.identification.country)
                         ? "border-red-500"
                         : ""
                     }`}
@@ -209,17 +182,13 @@ export default function PassengerForm({
                 <span
                   className={`absolute text-xs left-2 -top-2 bg-white px-2 
                   ${
-                    isError(errors.passenger.identification.country)
-                      ? "text-red-500"
-                      : ""
+                    isError(errors.identification.country) ? "text-red-500" : ""
                   }`}
                 >
                   País de emisión
                 </span>
               </label>
-              {isError(errors.passenger.identification.country) && (
-                <ErrorMessage field={errors.passenger.identification.country} />
-              )}
+              <ErrorMessage field={errors.identification.country} />
             </div>
           </div>
         </div>
@@ -229,7 +198,7 @@ export default function PassengerForm({
               <label className="relative font-normal">
                 <select
                   className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black 
-                    ${isError(errors.passenger.age) ? "border-red-500" : ""}`}
+                    ${isError(errors.age) ? "border-red-500" : ""}`}
                   value={passenger.age}
                   onChange={(e) => {
                     setPassenger({
@@ -247,14 +216,12 @@ export default function PassengerForm({
                 </select>
                 <span
                   className={`absolute text-xs left-2 -top-2 bg-white px-2 
-                  ${isError(errors.passenger.age) ? "text-red-500" : ""}`}
+                  ${isError(errors.age) ? "text-red-500" : ""}`}
                 >
                   Edad
                 </span>
               </label>
-              {isError(errors.passenger.age) && (
-                <ErrorMessage field={errors.passenger.age} />
-              )}
+              <ErrorMessage field={errors.age} />
             </div>
           </div>
           <div className="sexo flex items-center w-9/12">
@@ -336,9 +303,7 @@ export default function PassengerForm({
                           className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full
                                     hover:shadow-md focus:shadow-md outline-none focus:border-black
                                     ${
-                                      isError(
-                                        errors.passenger.contact.phoneCode,
-                                      )
+                                      isError(errors.contact.phoneCode)
                                         ? "border-red-500"
                                         : ""
                                     }`}
@@ -361,7 +326,7 @@ export default function PassengerForm({
                         <span
                           className={`absolute text-xs left-2 -top-2 bg-white  px-2 
                           ${
-                            isError(errors.passenger.contact.phoneCode)
+                            isError(errors.contact.phoneCode)
                               ? "text-red-500"
                               : ""
                           }`}
@@ -369,11 +334,7 @@ export default function PassengerForm({
                           Código de Área
                         </span>
                       </label>
-                      {isError(errors.passenger.contact.phoneCode) && (
-                        <ErrorMessage
-                          field={errors.passenger.contact.phoneCode}
-                        />
-                      )}
+                      <ErrorMessage field={errors.contact.phoneCode} />
                     </div>
                   </div>
                   <div className="w-3/4">
@@ -381,7 +342,7 @@ export default function PassengerForm({
                       <LabelInput
                         placeholder="Número de teléfono"
                         value={passenger.contact.phoneNumber}
-                        errorField={errors.passenger.contact.phoneNumber}
+                        errorField={errors.contact.phoneNumber}
                         onChange={(e: any) => {
                           setPassenger({
                             ...passenger,
@@ -400,7 +361,7 @@ export default function PassengerForm({
                     type="text"
                     placeholder="Correo Electrónico"
                     value={passenger.contact.email}
-                    errorField={errors.passenger.contact.email}
+                    errorField={errors.contact.email}
                     onChange={(e: any) => {
                       setPassenger({
                         ...passenger,
@@ -443,7 +404,7 @@ export default function PassengerForm({
                     type="text"
                     placeholder="Barrio"
                     value={passenger.contact.address.neighborhood}
-                    errorField={errors.passenger.contact.address.neighborhood}
+                    errorField={errors.contact.address.neighborhood}
                     onChange={(e: any) => {
                       setPassenger({
                         ...passenger,
@@ -468,7 +429,7 @@ export default function PassengerForm({
                 placeholder="Calle"
                 type="text"
                 value={passenger.contact.address.street}
-                errorField={errors.passenger.contact.address.street}
+                errorField={errors.contact.address.street}
                 onChange={(e: any) => {
                   setPassenger({
                     ...passenger,
@@ -489,7 +450,7 @@ export default function PassengerForm({
                   type="text"
                   placeholder="Número"
                   value={passenger.contact.address.number}
-                  errorField={errors.passenger.contact.address.number}
+                  errorField={errors.contact.address.number}
                   onChange={(e: any) => {
                     setPassenger({
                       ...passenger,
@@ -509,7 +470,7 @@ export default function PassengerForm({
                   type="text"
                   placeholder="Depto./Timbre/Otro"
                   value={passenger.contact.address.other}
-                  errorField={errors.passenger.contact.address.other}
+                  errorField={errors.contact.address.other}
                   onChange={(e: any) => {
                     setPassenger({
                       ...passenger,

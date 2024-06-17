@@ -2,12 +2,12 @@ import React from "react";
 import { isError, ErrorMessage } from "./ErrorMessage";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-  placeholder: string;
+  placeholder?: string;
   errorField?: string | undefined;
 }
 
 const LabelInput: React.FC<Props> = (props) => {
-  const { placeholder, errorField, ...inputProps } = props;
+  const { placeholder, errorField = "", ...inputProps } = props;
 
   return (
     <>
@@ -41,4 +41,32 @@ const LabelInput: React.FC<Props> = (props) => {
   );
 };
 
+const Checkbox: React.FC<Props> = (props) => {
+  const {className, ...checkProps} = props
+  return (
+    <>
+    <div className="relative inline-block w-5 h-5">
+        <input
+          type="checkbox"
+          className="custom-checkbox appearance-none w-full h-full bg-transparent border-2 border-gray-300 rounded-md cursor-pointer peer"
+          {...props}
+        />
+        <div className="absolute inset-0 bg-orange-500 opacity-0 peer-checked:opacity-100 rounded-md transition-opacity duration-200"></div>
+        <svg
+          className="absolute w-3 h-3 text-white left-1 top-1 opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+    </div>
+    </>
+  )
+}
 export default LabelInput;
+export {Checkbox}

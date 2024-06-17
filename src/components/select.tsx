@@ -2,12 +2,12 @@ import React, { ReactNode } from "react";
 import { ErrorMessage, isError } from "./ErrorMessage";
 interface Props extends React.SelectHTMLAttributes<HTMLSelectElement> {
     children:ReactNode;
-    label: string;
+    label?: string;
     errorField?: string | undefined;
 }
 
 
-const Select:React.FC<Props> = ( props ) => {
+const Select:React.FC<Props> = ({children, label, errorField="", ...props }) => {
     return (
         <div>
             <div className="relative">
@@ -15,27 +15,27 @@ const Select:React.FC<Props> = ( props ) => {
                     <select
                         className={`block border font-normal border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black 
                             ${
-                                isError(props.errorField)
+                                isError(errorField)
                                 ? "border-red-500"
                                 : ""
                             }`}
                         {...props}
                         >
-                        {props.children}
+                        {children}
                     </select>
                 </label>
                 <span
                     className={`absolute font-semibold text-xs left-2 -top-2 bg-white px-2 
                         ${
-                        isError(props.errorField)
+                        isError(errorField)
                             ? "text-red-500"
                             : ""
                         }`}
                 >
-                    {props.label}
+                    {label}
                 </span>
             </div>
-            {isError(props.errorField) && <ErrorMessage field={props.errorField} />}
+            {isError(errorField) && <ErrorMessage field={errorField} />}
         </div>
     )
 }

@@ -80,6 +80,7 @@ export default function Passengers({
       },
       age: "",
       contact: {
+        phoneCode:"",
         phoneNumber: "",
         email: "",
         address: {

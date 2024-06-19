@@ -12,8 +12,8 @@ import exclamation from "@/ui/icons/exclamation.svg";
 import { useTrip } from "@/state/booking/TripContext";
 import LabelInput from "./input";
 import { RedAlert } from "./alert";
-import { isError, ErrorMessage } from "./ErrorMessage";
-import TextArea from "./TextArea";
+import { isError } from "./ErrorMessage";
+import TextArea from "./TextArea"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,22 +30,22 @@ export default function AVForm() {
     },
     fullTime: "",
     departure: {
-      city: "Escribe una ciudad",
-      date: "x",
-      time: "i",
+      city: "",
+      date: "",
+      time: "",
     },
     return: {
-      city: "a",
-      date: "Selecciona una fecha de regreso",
-      time: "b",
+      city: "",
+      date: "",
+      time: "",
     },
     passengers: {
-      adult: "x",
-      kid: "x",
-      baby: "a",
+      adult: "",
+      kid: "",
+      baby: "",
       pets: {
-        small: "ia",
-        big: "x",
+        small: "",
+        big: "",
       },
     },
     luggage: {
@@ -488,12 +488,12 @@ export default function AVForm() {
         </div>
 
         <div className="flex justify-end py-4">
-          <input
-            type="button"
-            value="Cotizar"
-            className="border-2 border-solid border-orange-500 bg-orange-500 text-white py-3 px-6 rounded-md"
+          <button
+            className="py-3 px-6"
             onClick={submitHandler}
-          />
+          >
+            Cotizar
+          </button>
         </div>
       </form>
     </div>

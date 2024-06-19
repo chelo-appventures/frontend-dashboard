@@ -10,7 +10,7 @@ interface AccordionProps {
 }
 
 const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [height, setHeight] = useState('0px');
     const contentRef = useRef<HTMLDivElement>(null);
 
@@ -27,7 +27,8 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
     return (
         <div className="w-full mt-10">
             <div 
-                className="flex justify-between items-center px-5 pt-3 pb-1 border-b border-blue-900 text-black font-bold rounded-t-lg cursor-pointer"
+                className="flex justify-between items-center px-5 pt-3 pb-1 border-b border-blue-900 text-black font-bold rounded-t-lg cursor-pointer
+                hover:drop-shadow-xl hover:shadow-blue-500 duration-300"
                 onClick={toggleAccordion}
             >
                 
@@ -36,12 +37,12 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
                     {title}
                 </h1>
                 <span className="text-2xl">
-                    <ChevronDownIcon className={`size-4 ${isOpen ? 'rotate-180 duration-300' : 'duration-300'}`} />
+                    <ChevronDownIcon className={`size-6 ${isOpen ? 'rotate-180 duration-300 text-orange-500' : 'duration-300'}`} />
                 </span>
             </div>
             <div
                 ref={contentRef}
-                className="px-5  rounded-b-lg overflow-hidden transition-all duration-300 ease-in-out"
+                className="  rounded-b-lg overflow-hidden transition-all duration-300 ease-in-out"
                 style={{ maxHeight: height }}
             >
                 <div className="py-5">

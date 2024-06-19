@@ -102,7 +102,7 @@ export default function PaymentMethod() {
                     onClick={() => {
                       redirect("/booking/checkout/qr");
                     }}
-                    className="w-full bg-orange-500 text-white py-2 rounded-md font-bold"
+                    className="w-full "
                   >
                     Continuar
                   </button>

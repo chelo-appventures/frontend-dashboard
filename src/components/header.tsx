@@ -79,7 +79,7 @@ export function NavBar() {
             <p>|</p>
           </li>
           <li className=" px-3">
-            <button className="border-2 border-solid border-orange-500 p-2 rounded-md">
+            <button className="px-4 font-semibold">
               Iniciar sesión
             </button>
           </li>

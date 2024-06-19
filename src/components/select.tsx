@@ -13,7 +13,7 @@ const Select:React.FC<Props> = ({children, label, errorField="", ...props }) => 
             <div className="relative">
                 <label>
                     <select
-                        className={`block border font-normal border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black 
+                        className={`
                             ${
                                 isError(errorField)
                                 ? "border-red-500"
@@ -23,17 +23,17 @@ const Select:React.FC<Props> = ({children, label, errorField="", ...props }) => 
                         >
                         {children}
                     </select>
+                    <span
+                        className={`absolute font-semibold text-xs left-2 -top-2 bg-white px-2 
+                            ${
+                            isError(errorField)
+                                ? "text-red-500"
+                                : ""
+                            }`}
+                    >
+                        {label}
+                    </span>
                 </label>
-                <span
-                    className={`absolute font-semibold text-xs left-2 -top-2 bg-white px-2 
-                        ${
-                        isError(errorField)
-                            ? "text-red-500"
-                            : ""
-                        }`}
-                >
-                    {label}
-                </span>
             </div>
             {isError(errorField) && <ErrorMessage field={errorField} />}
         </div>
@@ -42,48 +42,3 @@ const Select:React.FC<Props> = ({children, label, errorField="", ...props }) => 
 
 export default Select;
 
-{/* <div>
-    <label className="relative font-normal">
-    <select
-        className={`block border border-gray-300 rounded-md px-3 py-3 mt-5 mb-1 w-full hover:shadow-md focus:shadow-md outline-none focus:border-black 
-        ${
-            isError(errors.passenger.identification.country)
-            ? "border-red-500"
-            : ""
-        }`}
-        value={passenger.identification.country}
-        onChange={(e) => {
-        setPassenger({
-            ...passenger,
-            identification: {
-            ...passenger.identification,
-            country: e.target.value,
-            },
-        });
-        }}
-    >
-        <option disabled defaultValue=""></option>
-        <option value="arg">Argentina</option>
-        <option value="bra">Brasil</option>
-        <option value="chi">Chile</option>
-        <option value="uru">Uruguay</option>
-        <option value="bol">Bolivia</option>
-        <option value="col">Colombia</option>
-        <option value="ven">Venezuela</option>
-    </select>
-    <span
-        className={`absolute text-xs left-2 -top-2 bg-white px-2 
-        ${
-        isError(errors.passenger.identification.country)
-            ? "text-red-500"
-            : ""
-        }`}
-    >
-        País de emisión
-    </span>
-    </label>
-    {isError(errors.passenger.identification.country) && (
-    <ErrorMessage field={errors.passenger.identification.country} />
-    )}
-</div>
-</div> */}

@@ -1,14 +1,29 @@
-
+'use client'
 import Link from "next/link";
-import Input, {LabelInput} from "./input";
+import LabelInput from "./input";
+import { useState } from "react";
 
 export default function LoginComp () {
+    const errorInitialState = {
+        user: "Usuario incorrecto",
+        password: ""
+    }
+    const [errors, setErrors] = useState(errorInitialState)
+
     return (
         <div className="container bg-white rounded-lg shadow-md lg:px-12 px-6 py-8  lg:w-1/2 sm:w-0.8 max-w-full sm:max-w-md md:max-w-lg m-0 ">
             <h2 className="text-center text-2xl  mb-6"><span className="font-bold">Iniciar</span> tu sesión</h2>
             <form action="#">
-                <LabelInput placeholder="Usuario" type="text"/>
-                <LabelInput placeholder="Contraseña" type="password"/>
+                <LabelInput 
+                    placeholder="Usuario" 
+                    type="text"
+                    errorField={errors.user}
+                />
+                <LabelInput 
+                    placeholder="Contraseña" 
+                    type="password"
+                    errorField={errors.password}
+                />
                 <div className="mb-6 flex flex-wrap justify-between items-center">
                     <Link href="#" className="text-blue-500 hover:underline">Olvidé mi contraseña</Link>
                 </div>

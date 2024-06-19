@@ -2,25 +2,69 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AVCounter, { IconType } from "./counter";
-import { LabelInput } from "./input";
 import { RadioButtonComponent } from "./radioButton";
 import Select from "./select";
 import Separator from "./separator";
-import TextArea from "./textArea";
 import Image from "next/image";
 import React, { useState } from "react";
 import { Inter } from "next/font/google";
 import exclamation from "@/ui/icons/exclamation.svg";
 import { useTrip } from "@/state/booking/TripContext";
+import LabelInput from "./input";
+import { RedAlert } from "./alert";
+import { isError, ErrorMessage } from "./ErrorMessage";
+import TextArea from "./TextArea";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
+  const errorsInitialState: any = {
+    globals: [
+      "Hay datos sin completar. Revisa el formulario",
+      "No podes poner pibes sin adulto",
+    ],
+    tripType: {
+      transferType: "Elegí algo",
+      roundTrip: "",
+    },
+    fullTime: "",
+    departure: {
+      city: "Escribe una ciudad",
+      date: "x",
+      time: "i",
+    },
+    return: {
+      city: "a",
+      date: "Selecciona una fecha de regreso",
+      time: "b",
+    },
+    passengers: {
+      adult: "x",
+      kid: "x",
+      baby: "a",
+      pets: {
+        small: "ia",
+        big: "x",
+      },
+    },
+    luggage: {
+      carryOn: "",
+      bag23: "",
+      special: {
+        quantity: "",
+        detail: "",
+      },
+    },
+  };
+
+  const [errors, setErrors] = useState(errorsInitialState);
+
   const router = useRouter();
   const redirect = (path: string) => {
     router.push(path);
   };
+
   let initialData = trip;
   useEffect(() => {
     try {
@@ -52,46 +96,34 @@ export default function AVForm() {
         Cotiza tu viaje ahora
       </h3>
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
+        {errors.globals.map(isError).reduce((x: boolean, y: boolean) => x || y)
+          ? errors.globals.map((err: string, index: number) => (
+              <RedAlert key={index}>{err}</RedAlert>
+            ))
+          : null}
         <Separator title="Tipo de viaje" />
         <div className="flex items-center">
           <div className="w-1/2">
-            <div>
-              <div className="relative font-semibold">
-                <select
-                  name="travel_type"
-                  id="travel_type"
-                  className="w-full rounded-md shadow-sm border border-gray-300
-                    text-[16x] hover:shadow-md focus:shadow-md focus:border-gray-500
-                    focus:border-1 px-4 py-3 my-5 duration-200 outline-none 
-                    bg-inherit"
-                  value={trip.tripType.transferType}
-                  onChange={(e: any) => {
-                    setTrip({
-                      ...trip,
-                      tripType: {
-                        ...trip.tripType,
-                        transferType: e.currentTarget.value,
-                      },
-                    });
-                  }}
-                >
-                  <option value="particular" label="Traslado Particular" />
-                  <option value="corporative" label="Traslado Corporativo" />
-                  <option value="nat_airport" label="Aeroportuario Nacional" />
-                  <option
-                    value="int_airport"
-                    label="Aeroportuario Internacional"
-                  />
-                </select>
-                <span
-                  className="absolute left-0 top-3 bg-white mx-3 px-2
-                    peer focus:text-gray-300 duration-200 text-[16px]
-                    text-xs font-normal"
-                >
-                  Tipo de traslado
-                </span>
-              </div>
-            </div>
+            <Select
+              errorField={errors.tripType.transferType}
+              label="Tipo de traslado"
+              value={trip.tripType.transferType}
+              onChange={(e: any) => {
+                setTrip({
+                  ...trip,
+                  tripType: {
+                    ...trip.tripType,
+                    transferType: e.currentTarget.value,
+                  },
+                });
+              }}
+              >
+                <option value="" defaultValue="" disabled>Selecciona una opción</option>
+                <option value="particular">Traslado Particular</option>
+                <option value="corporative">Traslado Corporativo</option>
+                <option value="nat_airport">Aeroportuario Nacional</option>
+                <option value="int_airport">Aeroportuario Internacional</option>
+            </Select>
           </div>
           <div className="flex">
             <RadioButtonComponent
@@ -171,6 +203,7 @@ export default function AVForm() {
               type="search"
               placeholder="Salida"
               value={trip.departure.city}
+              errorField={errors.departure.city}
               onChange={(e: any) => {
                 setTrip({
                   ...trip,
@@ -187,6 +220,7 @@ export default function AVForm() {
               type="search"
               placeholder="Destino"
               value={trip.return.city}
+              errorField={errors.return.city}
               onChange={(e: any) => {
                 setTrip({
                   ...trip,
@@ -206,6 +240,7 @@ export default function AVForm() {
                 type="date"
                 placeholder="Fecha de partida"
                 value={trip.departure.date}
+                errorField={errors.departure.date}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -224,6 +259,7 @@ export default function AVForm() {
                 type="time"
                 placeholder="Hora de partida"
                 value={trip.departure.time}
+                errorField={errors.departure.time}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -241,6 +277,7 @@ export default function AVForm() {
               <LabelInput
                 type="date"
                 placeholder="Fecha de regreso"
+                errorField={errors.return.date}
                 value={trip.return.date}
                 onChange={(e: any) => {
                   setTrip({
@@ -260,6 +297,7 @@ export default function AVForm() {
                 type="time"
                 placeholder="Hora de regreso"
                 value={trip.return.time}
+                errorField={errors.departure.time}
                 onChange={(e: any) => {
                   setTrip({
                     ...trip,
@@ -281,6 +319,7 @@ export default function AVForm() {
             title="Adulto"
             subtitle="18 o más años"
             value={trip.passengers.adult}
+            errorField={errors.passengers.adult}
             handleValue={(adult: number) => {
               setTrip({
                 ...trip,
@@ -296,6 +335,7 @@ export default function AVForm() {
             title="Niño"
             subtitle="De 3 a 17 años"
             value={trip.passengers.kid}
+            errorField={errors.passengers.kid}
             handleValue={(kid: number) => {
               setTrip({
                 ...trip,
@@ -311,6 +351,7 @@ export default function AVForm() {
             title="Bebé"
             subtitle="Hasta 3 años"
             value={trip.passengers.baby}
+            errorField={errors.passengers.baby}
             handleValue={(baby: number) => {
               setTrip({
                 ...trip,
@@ -328,6 +369,7 @@ export default function AVForm() {
             title="Hasta 8kg"
             subtitle="Mascota en falda"
             value={trip.passengers.pets.small}
+            errorField={errors.passengers.pets.small}
             handleValue={(small: number) => {
               setTrip({
                 ...trip,
@@ -346,6 +388,7 @@ export default function AVForm() {
             title="Mas de 8kg"
             subtitle="Mascota en asiento"
             value={trip.passengers.pets.big}
+            errorField={errors.passengers.pets.big}
             handleValue={(big: number) => {
               setTrip({
                 ...trip,
@@ -361,7 +404,7 @@ export default function AVForm() {
           />
         </div>
 
-        {/*
+        
         <Separator title="Equipaje" />
         <div className="flex flex-column justify-left">
           <AVCounter
@@ -369,51 +412,81 @@ export default function AVForm() {
             title="Carry-on 15kg"
             alert
             subtitle="El número de maletas definen el tipo de vehículo"
-            value={carryOn}
-            handleValue={setCarryOn}
+            value={trip.luggage.carryOn}
+            errorField={errors.luggage.carryOn}
+            handleValue={ (carryOn: number) => {
+              setTrip({
+                ...trip,
+                luggage: {
+                  ...trip.luggage,
+                  carryOn,
+                },
+              });
+            }}
           />
           <AVCounter
             icon={"bag_1" as IconType}
             title="Maleta 23kg"
             alert
             subtitle="El número de maletas definen el tipo de vehículo"
-            value={bag23}
-            handleValue={setBag23}
+            value={trip.luggage.bag23}
+            errorField={errors.luggage.bag23}
+            handleValue={ (bag23: number) => {
+              setTrip({
+                ...trip,
+                luggage: {
+                  ...trip.luggage,
+                  bag23,
+                },
+              });
+            }}
           />
           <AVCounter
             icon={"special" as IconType}
             title="Equipaje especial"
             alert
             subtitle="Importante detallarlos, condicionan el tipo de vehículo"
-            value={specialQuantity}
-            handleValue={setSpecialQuantity}
+            value={trip.luggage.special.quantity}
+            errorField={errors.luggage.special.quantity}
+            handleValue={ (quantity: number) => {
+              setTrip({
+                ...trip,
+                luggage: {
+                  ...trip.luggage,
+                  special: {
+                    ...trip.luggage.special,
+                    quantity,
+                  }
+                },
+              });
+            }}
           />
         </div>
         <div>
-          {specialQuantity > 0 && (
+          {trip.luggage.special.quantity > 0 && (
             <>
-              <label className="relative font-semibold">
-                <textarea
-                  name="description"
-                  id=""
+                <TextArea
                   placeholder="Describa, ej. Ski, bicicleta, instrumentos..."
-                  className="border border-1 border-gray-300 w-full p-5 h-[200px] my-10 rounded-md placeholder:font-normal
-                          hover:shadow-md duration-500 focus:border-gray-500 focus:shadow-md focus:duration-500 outline-none"
+                  errorField={errors.luggage.special.detail}
+                  label="Detalle de equipajes especiales"
+
                   onChange={(e: any) => {
-                    setSpecialDetail(e.currentTarget.value);
+                    setTrip({
+                      ...trip,
+                      luggage: {
+                        ...trip.luggage,
+                        special: {
+                          ...trip.luggage.special,
+                          detail: e.currentTarget.value,
+                        }
+                      },
+                    });
                   }}
-                ></textarea>
-                <span
-                  className="absolute left-5 -top-[235px] px-2 font-normal text-opacity-80 bg-white
-                          text-xs"
-                >
-                  Detalle de equipajes especiales
-                </span>
-              </label>
+                ></TextArea>
             </>
           )}
         </div>
-        */}
+
         <div className="flex justify-end py-4">
           <input
             type="button"

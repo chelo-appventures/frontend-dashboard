@@ -1,11 +1,20 @@
 "use client";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import FormPassenger from "@/components/booking/passengers/FormPassenger";
 import Separator from "@/components/separator";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePassengerData } from "@/state/booking/PassengerContext";
 import { Gender, Passenger } from "@/state/Passenger.type";
+import { RedAlert } from "./alert";
+import { isError } from "./ErrorMessage";
+
+const errorInitialState = {
+  passengers: [],
+  termsCondition: "Tenes que aceptar esto",
+  newsletter: "",
+  globals: ["este es un error global", "este es otro error"],
+};
 
 export default function Passengers({
   passengers: amountPassegengers,
@@ -13,6 +22,7 @@ export default function Passengers({
   passengers: number;
 }) {
   const { passengerData, setPassengerData } = usePassengerData();
+  const [errors, setError] = useState(errorInitialState);
 
   const router = useRouter();
   const redirect = (path: string) => {
@@ -22,29 +32,31 @@ export default function Passengers({
   useEffect(() => {
     const passengers: Passenger[] = Array.from(
       { length: amountPassegengers },
-      (_) => ({
-        firstName: "",
-        lastName: "",
-        gender: Gender.Male,
-        identification: {
-          type: "",
-          number: "",
-          country: "",
-        },
-        age: 0,
-        contact: {
-          phoneNumber: "",
-          email: "",
-          address: {
-            street: "",
+      (_) =>
+        ({
+          firstName: "",
+          lastName: "",
+          gender: Gender.Male,
+          age: 0,
+          identification: {
+            type: "",
             number: "",
-            city: "",
-            neighborhood: "",
+            country: "",
           },
-        },
-      }),
+          contact: {
+            phoneCode: "",
+            phoneNumber: "",
+            email: "",
+            address: {
+              street: "",
+              number: "",
+              city: "",
+              neighborhood: "",
+              other: "",
+            },
+          },
+        }) as Passenger,
     );
-
     let initialData = { ...passengerData, passengers };
 
     try {
@@ -56,7 +68,38 @@ export default function Passengers({
     }
 
     setPassengerData(initialData);
+
+    const errorPassengers = passengers.map((_p) => ({
+      firstName: "",
+      lastName: "",
+      gender: "",
+      identification: {
+        type: "",
+        number: "",
+        country: "",
+      },
+      age: "",
+      contact: {
+        phoneNumber: "",
+        email: "",
+        address: {
+          street: "",
+          number: "",
+          city: "",
+          neighborhood: "",
+        },
+      },
+    }));
+
+    console.log(errorPassengers);
+    const initialErrorData = {
+      ...errorInitialState,
+      passengers: errorPassengers,
+    };
+
+    setError(initialErrorData as any);
   }, []);
+
   const submitHandler = (e: any) => {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");
@@ -68,21 +111,43 @@ export default function Passengers({
 
   return (
     <form action="#" className="py-8 text-sm text-gray-500 font-bold w-10/12">
-      {passengerData.passengers.map((passenger, index) => (
-        <FormPassenger
-          passenger={passenger}
-          setPassenger={(newP) => {
-            const passengers = passengerData.passengers.map((oldP, i) =>
-              index === i ? newP : oldP,
-            );
-            setPassengerData({
-              ...passengerData,
-              passengers,
-            });
-          }}
-          index={index}
-        />
-      ))}
+      {errors.globals.map(isError).reduce((x: boolean, y: boolean) => x || y)
+        ? errors.globals.map((err: string, index: number) => (
+            <RedAlert key={index}>{err}</RedAlert>
+          ))
+        : null}
+
+      {errors.passengers.length > 0 &&
+        passengerData.passengers.map((passenger, index: number) => {
+          console.log(errors.passengers, index);
+          console.log(errors.passengers[index]);
+          return (
+            <FormPassenger
+              errors={errors.passengers[index]}
+              setError={(newError: any) => {
+                const passengers: any = errors.passengers.map((oldError, i) =>
+                  index === i ? newError : oldError,
+                );
+                setError({
+                  ...errors,
+                  passengers,
+                });
+              }}
+              key={index}
+              passenger={passenger}
+              setPassenger={(newP) => {
+                const passengers = passengerData.passengers.map((oldP, i) =>
+                  index === i ? newP : oldP,
+                );
+                setPassengerData({
+                  ...passengerData,
+                  passengers,
+                });
+              }}
+              index={index}
+            />
+          );
+        })}
       <Separator title="Otros" />
       <div className="flex items-center">
         <input
@@ -101,7 +166,7 @@ export default function Passengers({
           }
         />
         <label className="text-black p-2">
-          Al continua con la cotización acepta los{" "}
+          Al continuar con la cotización acepta los{" "}
           <Link href="#" className="text-orange-500 underline">
             Términos y Condiciones
           </Link>{" "}

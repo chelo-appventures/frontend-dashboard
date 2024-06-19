@@ -92,62 +92,66 @@ function Budget () {
                 </div>
                 <div className="flex flex-row items-center justify-between">
                     <table className={`w-full my-10 shadow-lg ${ruda.className}`}>
-                        <tr className="bg-blue-500 text-white text-[16px] font-thin hover:opacity-90 duration-300">
-                            <th className="py-2 border-r-2 border-gray-200"></th>
-                            <th className="py-2 border-r-2 border-gray-200">SERVICIO</th>
-                            <th className="py-2 border-r-2 border-gray-200">ESTADO</th>
-                            <th className="py-2 border-r-2 border-gray-200">VEND.</th>
-                            <th className="py-2 border-r-2 border-gray-200">PX</th>
-                            <th className="py-2 border-r-2 border-gray-200">TRAMO</th>
-                            <th className="py-2 border-r-2 border-gray-200">ID VIAJE</th>
-                            <th className="py-2 border-r-2 border-gray-200">INICIO</th>
-                            <th className="py-2 border-r-2 border-gray-200">ORIGEN / DESTINO</th>
-                            <th className="py-2 border-r-2 border-gray-200">NOMBRE</th>
-                            <th className="py-2 border-r-2 border-gray-200">CUENTA</th>
-                            <th className="py-2 border-r-2 border-gray-200">ACREDITADO</th>
-                            <th className="py-2 border-r-2 border-gray-200">TOTAL</th>
-                            <th className="py-2 border-r-2 border-gray-200"></th>
-                        </tr>
-                        <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2" rowSpan={2}>
-                                <input type="checkbox" className="accent-orange-500 h-5 w-5"/>
-                            </th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2 ali" rowSpan={2}>
-                                <p className="underline">VE29059</p>
-                                <div className="flex justify-center">
-                                    <Image src={roundTrip} alt="round-trip" />
-                                </div>
-                            </th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2" rowSpan={2}>Seña 60%</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2" rowSpan={2}>ME</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2" rowSpan={2}>56</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2">IDA</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2">-</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2">23/12/24</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2 flex justify-between px-2">
-                                <p className="underline">Belgrano - Mar del Plata</p>
+                        <thead>
+                            <tr className="bg-blue-500 text-white text-[16px] font-thin hover:opacity-90 duration-300">
+                                <th className="py-2 border-r-2 border-gray-200"></th>
+                                <th className="py-2 border-r-2 border-gray-200">SERVICIO</th>
+                                <th className="py-2 border-r-2 border-gray-200">ESTADO</th>
+                                <th className="py-2 border-r-2 border-gray-200">VEND.</th>
+                                <th className="py-2 border-r-2 border-gray-200">PX</th>
+                                <th className="py-2 border-r-2 border-gray-200">TRAMO</th>
+                                <th className="py-2 border-r-2 border-gray-200">ID VIAJE</th>
+                                <th className="py-2 border-r-2 border-gray-200">INICIO</th>
+                                <th className="py-2 border-r-2 border-gray-200">ORIGEN / DESTINO</th>
+                                <th className="py-2 border-r-2 border-gray-200">NOMBRE</th>
+                                <th className="py-2 border-r-2 border-gray-200">CUENTA</th>
+                                <th className="py-2 border-r-2 border-gray-200">ACREDITADO</th>
+                                <th className="py-2 border-r-2 border-gray-200">TOTAL</th>
+                                <th className="py-2 border-r-2 border-gray-200"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="border-r-2 border-b-2 border-gray-200 p-2">
+                            <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2" rowSpan={2}>
+                                    <input type="checkbox" className="accent-orange-500 h-5 w-5"/>
+                                </td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2 " rowSpan={2}>
+                                    <p className="underline">VE29059</p>
+                                    <div className="flex justify-center">
+                                        <Image src={roundTrip} alt="round-trip" />
+                                    </div>
+                                </td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2" rowSpan={2}>Seña 60%</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2" rowSpan={2}>ME</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2" rowSpan={2}>56</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2">IDA</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2">-</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2">23/12/24</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2 flex justify-between px-2">
+                                    <p className="underline">Belgrano - Mar del Plata</p>
+                                    <p className="bg-yellow-200 px-1">5 par</p>
+                                </td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2" rowSpan={2}>Nombre Big 1</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2" rowSpan={2}>Cta Cte 1</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2 text-gray-400" rowSpan={2}>$150.000</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2" rowSpan={2}>$250.000</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2" rowSpan={2}>
+                                    <Image src={rowSettings} alt="partial-pay"/>
+                                </td>
+                            </tr>
+                            <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2">VUELTA</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2">-</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2">30/12/24</td>
+                                <td className="border-r-2 border-b-2 border-gray-200 p-2 flex justify-between px-2">
+                                <p className="underline">Mar del Plata - Belgrano</p>
                                 <p className="bg-yellow-200 px-1">5 par</p>
-                            </th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2" rowSpan={2}>Nombre Big 1</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2" rowSpan={2}>Cta Cte 1</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2 text-gray-400" rowSpan={2}>$150.000</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2" rowSpan={2}>$250.000</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2" rowSpan={2}>
-                                <Image src={rowSettings} alt="partial-pay"/>
-                            </th>
-                        </tr>
-                        <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2">VUELTA</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2">-</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2">30/12/24</th>
-                            <th className="border-r-2 border-b-2 border-gray-200 py-2 flex justify-between px-2">
-                            <p className="underline">Mar del Plata - Belgrano</p>
-                            <p className="bg-yellow-200 px-1">5 par</p>
-                            </th>
-                        </tr>
-                        <tfoot className="bg-gray-300 ">
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot className="bg-gray-300 border border-gray-200">
                             <tr>
-                                <td colSpan={14} className="px-2">Actualizado al 17/06/2024</td>
+                                <td colSpan={14} className="px-2 border border-gray-200">Actualizado al 17/06/2024</td>
                             </tr>
                         </tfoot>
                     </table>

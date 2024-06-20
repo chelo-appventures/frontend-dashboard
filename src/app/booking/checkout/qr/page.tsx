@@ -14,12 +14,12 @@ const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
 
 export default function QR() {
-  const [result, setResult] = useState([]);
+  const [result, setResult] = useState({});
   useEffect(() => {
-    const form0 = JSON.parse(localStorage.getItem("form0"));
-    const form1 = JSON.parse(localStorage.getItem("form1"));
-    const form2 = JSON.parse(localStorage.getItem("form2"));
-    const form3 = JSON.parse(localStorage.getItem("form3"));
+    const form0 = JSON.parse(localStorage.getItem("form0") || "");
+    const form1 = JSON.parse(localStorage.getItem("form1") || "");
+    const form2 = JSON.parse(localStorage.getItem("form2") || "");
+    const form3 = JSON.parse(localStorage.getItem("form3") || "");
 
     if (form0 && form1) {
       setResult({ form0, form1, form2, form3 });

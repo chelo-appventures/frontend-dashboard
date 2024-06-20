@@ -15,7 +15,7 @@ export default function Passengers() {
   };
 
   useEffect(() => {
-    const form0Data = JSON.parse(localStorage.getItem("form0"));
+    const form0Data = JSON.parse(localStorage.getItem("form0") || "");
     if (form0Data) {
       const ps = form0Data.passengers.adult + form0Data.passengers.kid;
       console.log("suma", ps);

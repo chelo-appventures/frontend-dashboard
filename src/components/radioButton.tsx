@@ -23,10 +23,12 @@ interface RadioButtonItem {
 
 export const RadioButtonComponent: React.FC<RadioButtonItem> = ({name, label, value, checked, onChange }) => {
     return (
-            <label className='flex'>
+        <div className="flex items-center">
+            <label className='flex items-center'>
                 <input type="radio" value={value} checked={checked} onChange={onChange} 
-                className='bg-orange-500 accent-orange-500 border border-orange-500 h-4 w-4 flex mx-5 rounder-lg'/>
+                className='flex mx-5'/>
                 {label}
             </label>
+        </div>
     );
 };

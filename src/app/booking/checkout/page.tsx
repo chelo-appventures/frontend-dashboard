@@ -4,6 +4,7 @@ import { useState } from "react";
 import HeaderAV, { OptionHeader } from "@/components/header";
 import RadioButton from "@/components/radioButton";
 import { Ruda, Inter } from "next/font/google";
+import Select from "@/components/select";
 
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -40,9 +41,9 @@ export default function PartialPay() {
                     ¿Qué tipo de factura necesitas?
                   </p>
                   <div className="flex my-2 ">
-                    <div className="mx-6">
+                    <div className="mx-6 flex items-center">
                       <input
-                        className="mx-3 font-semibold text-orange-500 border-orange-500"
+                        className="mx-3"
                         type="radio"
                         name="invoiceType"
                         checked={checkout.invoiceType === "A"}
@@ -55,9 +56,9 @@ export default function PartialPay() {
                       />
                       Factura A
                     </div>
-                    <div className="mx-6">
+                    <div className="mx-6 flex items-center">
                       <input
-                        className="mx-3 font-semibold text-orange-500 border-orange-500"
+                        className="mx-3 "
                         type="radio"
                         name="invoiceType"
                         checked={checkout.invoiceType === "B"}
@@ -91,13 +92,11 @@ export default function PartialPay() {
                       viaje?
                     </p>
                     <div className="relative font-semibold">
-                      <select
+                      <Select
+                        label="Porcentaje de pago"
                         name="percentage_pay"
                         id="percentage_pay"
-                        className="w-3/4 rounded-md shadow-sm border border-gray-300
-                                   text-[16x] hover:shadow-md focus:shadow-md focus:border-gray-500
-                                   focus:border-1 px-4 py-3 my-5 duration-200 outline-none 
-                                   bg-inherit"
+                        className="w-3/4"
                         onChange={(e) => {
                           setCheckout({
                             ...checkout,
@@ -108,18 +107,13 @@ export default function PartialPay() {
                           });
                         }}
                       >
+                        <option defaultValue=""></option>
                         <option value="25" label="25%" />
                         <option value="50" label="50%" />
                         <option value="75" label="75%" />
                         <option value="100" label="100%" />
-                      </select>
-                      <span
-                        className="absolute left-0 top-3 bg-white mx-3 px-2
-                                   peer focus:text-gray-300 duration-200 text-[16px]
-                                   text-xs font-normal"
-                      >
-                        Porcentaje de pago
-                      </span>
+                      </Select>
+                      
                     </div>
                   </div>
                   <div className="">

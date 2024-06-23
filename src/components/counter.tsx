@@ -58,7 +58,7 @@ export default function AVCounter(
               </div>
               <div className="flex flex-row items-center justify-center">
                   <button 
-                    className="m-2 w-7 h-7 rounded-full border border-red-500 text-[20px]" 
+                    className="m-2 w-7 h-7 rounded-full border border-orange-500 text-[20px] shadow-md bg-transparent text-gray-500" 
                     onClick={(e)=> {
                       e.preventDefault();
                       decrement();
@@ -66,7 +66,7 @@ export default function AVCounter(
                   > - </button> 
                     <span className="w-3 text-center text-[20px]">{value}</span>  
                   <button 
-                    className="m-2 w-7 h-7 rounded-full border border-red-500 text-[20px]" 
+                    className="m-2 w-7 h-7 rounded-full border border-orange-500 text-[20px] shadow-md bg-transparent text-gray-500" 
                     onClick={(e)=> {
                       e.preventDefault();
                       increment();

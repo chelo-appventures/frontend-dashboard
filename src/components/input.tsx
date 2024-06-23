@@ -14,11 +14,8 @@ const LabelInput: React.FC<Props> = (props) => {
       <div className="relative">
         <label className="relative font-semibold block">
           <input
-            className={`block w-full rounded-md shadow-sm border border-gray-300
-            text-[16px] hover:shadow-md focus:shadow-md focus:border-gray-500
-            focus:border-1 disabled:bg-gray-200
-            px-4 py-3 mt-5 mb-1 duration-200 outline-none
-            peer bg-inherit placeholder-transparent ${
+            className={`peer placeholder-transparent 
+            ${
               isError(errorField) ? "border-red-500" : ""
             }`}
             {...inputProps}

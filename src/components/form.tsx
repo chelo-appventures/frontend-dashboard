@@ -12,8 +12,8 @@ import exclamation from "@/ui/icons/exclamation.svg";
 import { useTrip } from "@/state/booking/TripContext";
 import LabelInput from "./input";
 import { RedAlert } from "./alert";
-import { isError, ErrorMessage } from "./ErrorMessage";
-import TextArea from "./TextArea";
+import { isError } from "./ErrorMessage";
+import TextArea from "./textArea";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,22 +30,22 @@ export default function AVForm() {
     },
     fullTime: "",
     departure: {
-      city: "Escribe una ciudad",
-      date: "x",
-      time: "i",
+      city: "",
+      date: "",
+      time: "",
     },
     return: {
-      city: "a",
-      date: "Selecciona una fecha de regreso",
-      time: "b",
+      city: "",
+      date: "",
+      time: "",
     },
     passengers: {
-      adult: "x",
-      kid: "x",
-      baby: "a",
+      adult: "",
+      kid: "",
+      baby: "",
       pets: {
-        small: "ia",
-        big: "x",
+        small: "",
+        big: "",
       },
     },
     luggage: {
@@ -117,12 +117,14 @@ export default function AVForm() {
                   },
                 });
               }}
-              >
-                <option value="" defaultValue="" disabled>Selecciona una opción</option>
-                <option value="particular">Traslado Particular</option>
-                <option value="corporative">Traslado Corporativo</option>
-                <option value="nat_airport">Aeroportuario Nacional</option>
-                <option value="int_airport">Aeroportuario Internacional</option>
+            >
+              <option value="" defaultValue="" disabled>
+                Selecciona una opción
+              </option>
+              <option value="particular">Traslado Particular</option>
+              <option value="corporative">Traslado Corporativo</option>
+              <option value="nat_airport">Aeroportuario Nacional</option>
+              <option value="int_airport">Aeroportuario Internacional</option>
             </Select>
           </div>
           <div className="flex">
@@ -404,7 +406,6 @@ export default function AVForm() {
           />
         </div>
 
-        
         <Separator title="Equipaje" />
         <div className="flex flex-column justify-left">
           <AVCounter
@@ -414,7 +415,7 @@ export default function AVForm() {
             subtitle="El número de maletas definen el tipo de vehículo"
             value={trip.luggage.carryOn}
             errorField={errors.luggage.carryOn}
-            handleValue={ (carryOn: number) => {
+            handleValue={(carryOn: number) => {
               setTrip({
                 ...trip,
                 luggage: {
@@ -431,7 +432,7 @@ export default function AVForm() {
             subtitle="El número de maletas definen el tipo de vehículo"
             value={trip.luggage.bag23}
             errorField={errors.luggage.bag23}
-            handleValue={ (bag23: number) => {
+            handleValue={(bag23: number) => {
               setTrip({
                 ...trip,
                 luggage: {
@@ -448,7 +449,7 @@ export default function AVForm() {
             subtitle="Importante detallarlos, condicionan el tipo de vehículo"
             value={trip.luggage.special.quantity}
             errorField={errors.luggage.special.quantity}
-            handleValue={ (quantity: number) => {
+            handleValue={(quantity: number) => {
               setTrip({
                 ...trip,
                 luggage: {
@@ -456,7 +457,7 @@ export default function AVForm() {
                   special: {
                     ...trip.luggage.special,
                     quantity,
-                  }
+                  },
                 },
               });
             }}
@@ -465,35 +466,31 @@ export default function AVForm() {
         <div>
           {trip.luggage.special.quantity > 0 && (
             <>
-                <TextArea
-                  placeholder="Describa, ej. Ski, bicicleta, instrumentos..."
-                  errorField={errors.luggage.special.detail}
-                  label="Detalle de equipajes especiales"
-
-                  onChange={(e: any) => {
-                    setTrip({
-                      ...trip,
-                      luggage: {
-                        ...trip.luggage,
-                        special: {
-                          ...trip.luggage.special,
-                          detail: e.currentTarget.value,
-                        }
+              <TextArea
+                placeholder="Describa, ej. Ski, bicicleta, instrumentos..."
+                errorField={errors.luggage.special.detail}
+                label="Detalle de equipajes especiales"
+                onChange={(e: any) => {
+                  setTrip({
+                    ...trip,
+                    luggage: {
+                      ...trip.luggage,
+                      special: {
+                        ...trip.luggage.special,
+                        detail: e.currentTarget.value,
                       },
-                    });
-                  }}
-                ></TextArea>
+                    },
+                  });
+                }}
+              ></TextArea>
             </>
           )}
         </div>
 
         <div className="flex justify-end py-4">
-          <input
-            type="button"
-            value="Cotizar"
-            className="border-2 border-solid border-orange-500 bg-orange-500 text-white py-3 px-6 rounded-md"
-            onClick={submitHandler}
-          />
+          <button className="py-3 px-6" onClick={submitHandler}>
+            Cotizar
+          </button>
         </div>
       </form>
     </div>

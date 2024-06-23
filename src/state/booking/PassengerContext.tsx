@@ -17,11 +17,10 @@ const PassengerDataProvider: React.FC<{ children: ReactNode }> = ({
   const [passengerData, setPassengerData] = useState<PassengerData>({
     passengers: [
       {
-        isResponsible: true,
         firstName: "",
         lastName: "",
         identification: { type: "", number: "", country: "" },
-        age: "",
+        age: 0,
         gender: Gender.Male,
         contact: {
           phoneCode: "",

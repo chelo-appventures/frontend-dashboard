@@ -243,7 +243,6 @@ function Accordion(props: any) {
               <li>1 Mascota en Asiento (menos de 8kg)</li>
               <li>1 Parada (opcional)</li>
             </ul>
-            s
           </div>
           <div className="flex flex-row py-3">
             <Image src={police} alt="police" className="mr-1" />

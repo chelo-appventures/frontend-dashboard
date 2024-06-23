@@ -2,29 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@layer base {
+  [type='text'],
+  input:where(:not([type])),
+  [type='email'],
+  [type='url'],
+  [type='password'],
+  [type='number'],
+  [type='date'],
+  [type='datetime-local'],
+  [type='month'],
+  [type='search'],
+  [type='tel'],
+  [type='time'],
+  [type='week'],
+  [multiple], 
+  select {
+    @apply block w-full rounded-md shadow-sm border border-gray-300 font-normal
+    text-[16px] hover:shadow-md focus:shadow-md focus:border-orange-400
+    disabled:bg-gray-200 focus:ring-1 focus:ring-orange-500
+    px-4 py-3 mt-5 mb-1 duration-200 outline-none
+    bg-inherit
+  }
+  textarea {
+    @apply border  border-gray-300 w-full p-5 h-[200px] mt-10 mb-1 rounded-md placeholder:font-normal
+    hover:shadow-md duration-500 focus:border-orange-500 focus:shadow-md focus:duration-500 outline-none focus:ring-orange-500
+  }
+  [type='checkbox'] {
+    @apply text-orange-500 flex focus:ring-2 focus:ring-orange-300 duration-300 font-normal rounded hover:opacity-80
+  }
+  [type='radio'] {
+    @apply text-orange-500 flex focus:ring-2 ring-1 ring-gray-500 ring-offset-4 border-none duration-300 shadow-md
+    focus:ring-offset-4 focus:ring-orange-300  hover:opacity-80 
+  }
+  button {
+    @apply outline-none
+    bg-orange-500 text-[18px] font-bold text-white
+    py-2 disabled:bg-gray-300 disabled:text-gray-500 shadow-sm hover:opacity-80 duration-300 focus:ring-1 focus:ring-orange-400 rounded-md
+    flex justify-center items-center
+  }
+  option {
+    @apply my-2
+  } 
+  th {
+    @apply py-2 border-r-2 border-gray-200 m-auto
+  }
+  td {
+    @apply border-r-2 border-b-2 border-gray-200 p-2 font-bold m-auto
+  }
+  tfoot {
+    @apply bg-gray-300 border border-gray-200
+  }
+  
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer components {
+  Link {
+    @apply hover:text-orange-500 duration-300
   }
 }
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-end-rgb));
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-} */

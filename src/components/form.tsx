@@ -21,16 +21,15 @@ export default function AVForm() {
   const { trip, setTrip } = useTrip();
   const errorsInitialState: any = {
     globals: [
-      "Hay datos sin completar. Revisa el formulario",
-      "No podes poner pibes sin adulto",
+      
     ],
     tripType: {
-      transferType: "Elegí algo",
+      transferType: "",
       roundTrip: "",
     },
     fullTime: "",
     departure: {
-      city: "error",
+      city: "",
       date: "",
       time: "",
     },
@@ -60,6 +59,41 @@ export default function AVForm() {
 
   const [errors, setErrors] = useState(errorsInitialState);
 
+  function errorChecker(resObj: any) {
+    const INCOMPLETE_FORM = "Hay datos incompletos en el formulario"
+    const NO_ADULTS = "Debe haber al menos 1 pasajero adulto"
+    const newErrors = { ...errors };
+  
+    if (resObj?.tripType?.transferType === "") 
+      newErrors.tripType.transferType = "Selecciona un tipo de traslado";
+  
+    if (resObj?.departure?.city === "") 
+      newErrors.departure.city = "Selecciona una ciudad";
+  
+    if (resObj?.departure?.date === "") 
+      newErrors.departure.date = "Selecciona una fecha de salida";
+  
+    if (resObj?.departure?.time === "") 
+      newErrors.departure.time = "Selecciona una hora de salida";
+  
+    if (resObj?.return?.city === "") 
+      newErrors.return.city = "Selecciona una ciudad";
+  
+    if (resObj?.return?.date === "") 
+      newErrors.return.date = "Selecciona una fecha de regreso";
+  
+    if (resObj?.return?.time === "") 
+      newErrors.return.time = "Selecciona una hora de regreso";
+  
+    if (resObj?.passengers?.adult === 0) 
+      newErrors.passengers.adult = "Debe haber al menos 1 pasajero adulto";
+    
+    if (resObj?.luggage?.special?.quantity > 0 && resObj?.luggage?.special?.detail === "") 
+      newErrors.luggage.special.detail = "Debes detallar tu equipaje";
+  
+    setErrors(newErrors);
+  }
+
   const router = useRouter();
   const redirect = (path: string) => {
     router.push(path);
@@ -81,10 +115,11 @@ export default function AVForm() {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");
     console.log(trip);
-
+    errorChecker(trip)
+    console.log(errors)
     const persistedData = JSON.stringify(trip);
-    window.localStorage.setItem("form0", persistedData);
-    redirect("/booking/passengers");
+    // window.localStorage.setItem("form0", persistedData);
+    // redirect("/booking/passengers");
   };
 
   return (
@@ -96,11 +131,13 @@ export default function AVForm() {
         Cotiza tu viaje ahora
       </h3>
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
-        {errors.globals.map(isError).reduce((x: boolean, y: boolean) => x || y)
+        {
+          errors.globals.length > 0 
           ? errors.globals.map((err: string, index: number) => (
               <RedAlert key={index}>{err}</RedAlert>
             ))
-          : null}
+          : null
+        }
         <Separator title="Tipo de viaje" />
         <div className="flex items-center">
           <div className="w-1/2">
@@ -109,6 +146,15 @@ export default function AVForm() {
               label="Tipo de traslado"
               value={trip.tripType.transferType}
               onChange={(e: any) => {
+                if (isError(errors.tripType.transferType)) {
+                  setErrors({
+                    ...errors,
+                  tripType: {
+                    ...errors.tripType,
+                    transferType: "",
+                  }
+                  })
+                }
                 setTrip({
                   ...trip,
                   tripType: {
@@ -204,20 +250,31 @@ export default function AVForm() {
             <SearchPlaces
               label="Salida"
               errorField={errors.departure.city}
+              onChange={(e:any) => {
+                if (isError(errors.departure.city)) {
+                  setErrors((errors: any) => ({
+                    ...errors,
+                    departure: {
+                      ...errors.departure,
+                      city: ""
+                    }
+                  }))
+                } 
+              }}
               onPlaceSelected={
                 (place: any) => {
-                setTrip({
+                setTrip((trip) => ({
                   ...trip,
                   departure: {
                     ...trip.departure,
-                    city: place.formatted_address,
+                    city: place?.formatted_address,
                     googlePlace: {
                       ...trip.departure.googlePlace,
-                      lat: place.geometry.location.lat(),
-                      lng: place.geometry.location.lng(),
+                      lat: place?.geometry.location.lat(),
+                      lng: place?.geometry.location.lng(),
                     }
                   },
-                })
+                }))
               }}
               
             />
@@ -225,21 +282,32 @@ export default function AVForm() {
           <div className="w-1/2 ml-2">
             <SearchPlaces
               label="Destino"
-              errorField={errors.departure.city}
+              errorField={errors.return.city}
+              onChange={(e:any) => {
+                if (isError(errors.return.city)) {
+                  setErrors((errors: any) => ({
+                    ...errors,
+                    return: {
+                      ...errors.return,
+                      city: ""
+                    }
+                  }))
+                } 
+              }}
               onPlaceSelected={
                 (place: any) => {
-                setTrip({
+                setTrip( (trip) => ({
                   ...trip,
                   return: {
                     ...trip.return,
-                    city: place.formatted_address,
+                    city: place?.formatted_address,
                     googlePlace: {
                       ...trip.return.googlePlace,
-                      lat: place.geometry.location.lat(),
-                      lng: place.geometry.location.lng(),
+                      lat: place?.geometry.location.lat(),
+                      lng: place?.geometry.location.lng(),
                     }
                   },
-                })
+                }))
               }}
               
             />
@@ -254,6 +322,15 @@ export default function AVForm() {
                 value={trip.departure.date}
                 errorField={errors.departure.date}
                 onChange={(e: any) => {
+                  if (isError(errors.departure.date)) {
+                    setErrors({
+                      ...errors,
+                    departure: {
+                      ...errors.departure,
+                      date: "",
+                    }
+                    })
+                  }
                   setTrip({
                     ...trip,
                     departure: {
@@ -273,6 +350,15 @@ export default function AVForm() {
                 value={trip.departure.time}
                 errorField={errors.departure.time}
                 onChange={(e: any) => {
+                  if (isError(errors.departure.time)) {
+                    setErrors({
+                      ...errors,
+                    departure: {
+                      ...errors.departure,
+                      time: "",
+                    }
+                    })
+                  }
                   setTrip({
                     ...trip,
                     departure: {
@@ -292,6 +378,15 @@ export default function AVForm() {
                 errorField={errors.return.date}
                 value={trip.return.date}
                 onChange={(e: any) => {
+                  if (isError(errors.return.date)) {
+                    setErrors({
+                      ...errors,
+                    return: {
+                      ...errors.return,
+                      date: "",
+                    }
+                    })
+                  }
                   setTrip({
                     ...trip,
                     return: {
@@ -309,8 +404,17 @@ export default function AVForm() {
                 type="time"
                 placeholder="Hora de regreso"
                 value={trip.return.time}
-                errorField={errors.departure.time}
+                errorField={errors.return.time}
                 onChange={(e: any) => {
+                  if (isError(errors.return.time)) {
+                    setErrors({
+                      ...errors,
+                    return: {
+                      ...errors.return,
+                      time: "",
+                    }
+                    })
+                  }
                   setTrip({
                     ...trip,
                     return: {
@@ -333,6 +437,15 @@ export default function AVForm() {
             value={trip.passengers.adult}
             errorField={errors.passengers.adult}
             handleValue={(adult: number) => {
+              if (isError(errors.passengers.adult)) {
+                setErrors({
+                  ...errors,
+                  passengers: {
+                    ...errors.passengers,
+                    adult: ""
+                  }
+                })
+              }
               setTrip({
                 ...trip,
                 passengers: {
@@ -481,6 +594,18 @@ export default function AVForm() {
                 errorField={errors.luggage.special.detail}
                 label="Detalle de equipajes especiales"
                 onChange={(e: any) => {
+                  if (isError(errors.luggage.special.detail)) {
+                    setErrors({
+                      ...errors,
+                      luggage: {
+                        ...errors.luggage,
+                        special: {
+                          ...errors.luggage.special,
+                          detail: "",
+                        },
+                      }
+                    })
+                  }
                   setTrip({
                     ...trip,
                     luggage: {

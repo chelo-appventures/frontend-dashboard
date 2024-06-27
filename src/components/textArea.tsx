@@ -17,6 +17,7 @@ const TextArea: React.FC<Props> = (props) => {
                                     isError(errorField) ? "border-red-500" : ""
                                 }`
                             }
+                            {...textAreaProps}
                         
                     />
                     

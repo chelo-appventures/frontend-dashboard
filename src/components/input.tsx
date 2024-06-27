@@ -47,7 +47,7 @@ const Checkbox: React.FC<Props> = (props) => {
         <input
           type="checkbox"
           className="custom-checkbox appearance-none w-full h-full bg-transparent border-2 border-gray-300 rounded-md cursor-pointer peer"
-          {...props}
+          {...checkProps}
         />
         <div className="absolute inset-0 bg-orange-500 opacity-0 peer-checked:opacity-100 rounded-md transition-opacity duration-200"></div>
         <svg
@@ -69,7 +69,7 @@ const Checkbox: React.FC<Props> = (props) => {
 
 interface Props extends ReactGoogleAutocompleteProps {
   label: string;
-  errorFlied?: string;
+  errorField?: string;
 }
 
 const SearchPlaces = (props: Props) => {
@@ -82,10 +82,9 @@ const SearchPlaces = (props: Props) => {
           <ReactGoogleAutocomplete
             apiKey={API_KEY}
             onPlaceSelected={onPlaceSelected}
-            // onPlaceSelected={(place) => console.log(place.geometry.location.lat())}
             className={`peer placeholder-transparent 
                     ${isError(errorField) ? "border-red-500" : ""}`}
-            place
+            // place
             {...searchProps}
           />
           <span
@@ -99,6 +98,7 @@ const SearchPlaces = (props: Props) => {
             {label}
           </span>
         </label>
+        {isError(errorField) && <ErrorMessage field={errorField} />}
       </div>
     </>
   );

@@ -3,10 +3,16 @@ interface TripType {
   roundTrip: boolean;
 }
 
+interface GooglePlace {
+  lat: number;
+  lng: number;
+}
+
 interface DepartureOrReturn {
   city: string;
   date: string;
   time: string;
+  googlePlace?: GooglePlace; 
 }
 
 interface Pets {

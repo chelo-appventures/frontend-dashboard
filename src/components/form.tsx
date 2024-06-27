@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { Inter } from "next/font/google";
 import exclamation from "@/ui/icons/exclamation.svg";
 import { useTrip } from "@/state/booking/TripContext";
-import LabelInput from "./input";
+import LabelInput, { SearchPlaces } from "./input";
 import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
 import TextArea from "./textArea";
@@ -30,7 +30,7 @@ export default function AVForm() {
     },
     fullTime: "",
     departure: {
-      city: "",
+      city: "error",
       date: "",
       time: "",
     },
@@ -201,37 +201,47 @@ export default function AVForm() {
         <Separator title="Salida / Regreso" />
         <div className="flex flex-row pr-4 pt-3">
           <div className="w-1/2 mr-2">
-            <LabelInput
-              type="search"
-              placeholder="Salida"
-              value={trip.departure.city}
+            <SearchPlaces
+              label="Salida"
               errorField={errors.departure.city}
-              onChange={(e: any) => {
+              onPlaceSelected={
+                (place: any) => {
                 setTrip({
                   ...trip,
                   departure: {
                     ...trip.departure,
-                    city: e.currentTarget.value,
+                    city: place.formatted_address,
+                    googlePlace: {
+                      ...trip.departure.googlePlace,
+                      lat: place.geometry.location.lat(),
+                      lng: place.geometry.location.lng(),
+                    }
                   },
-                });
+                })
               }}
+              
             />
           </div>
           <div className="w-1/2 ml-2">
-            <LabelInput
-              type="search"
-              placeholder="Destino"
-              value={trip.return.city}
-              errorField={errors.return.city}
-              onChange={(e: any) => {
+            <SearchPlaces
+              label="Destino"
+              errorField={errors.departure.city}
+              onPlaceSelected={
+                (place: any) => {
                 setTrip({
                   ...trip,
                   return: {
                     ...trip.return,
-                    city: e.currentTarget.value,
+                    city: place.formatted_address,
+                    googlePlace: {
+                      ...trip.return.googlePlace,
+                      lat: place.geometry.location.lat(),
+                      lng: place.geometry.location.lng(),
+                    }
                   },
-                });
+                })
               }}
+              
             />
           </div>
         </div>

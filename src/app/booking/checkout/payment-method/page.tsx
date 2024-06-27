@@ -5,7 +5,7 @@ import RadioButton from "@/components/radioButton";
 import Image from "next/image";
 import { Ruda, Inter } from "next/font/google";
 import Link from "next/link";
-import  LabelInput  from "@/components/input";
+import LabelInput from "@/components/input";
 
 import card from "@/ui/icons/card.svg";
 import mp from "@/ui/icons/mercadopago.png";
@@ -95,7 +95,11 @@ export default function PaymentMethod() {
                   <Image src={cardxl} alt="cardxl" />
                 </div>
                 <div>
-                  <LabelInput type="text" placeholder="Número de tarjeta" />
+                  <LabelInput
+                    type="text"
+                    label="Número de tarjeta"
+                    placeholder="Número de tarjeta"
+                  />
                 </div>
                 <div>
                   <button
@@ -109,7 +113,7 @@ export default function PaymentMethod() {
                   <Image src={cards} alt="cards" />
                 </div>
               </div>
-             {/* FIN COLUMNA 2 */}
+              {/* FIN COLUMNA 2 */}
             </div>
           </div>
         </div>

@@ -261,6 +261,11 @@ export default function AVForm() {
                   }))
                 } 
               }}
+              // onBlur={(e: any) => {
+              //   if(!trip.departure.city) {
+              //     setErrors()
+              //   }
+              // }}
               onPlaceSelected={
                 (place: any) => {
                 setTrip((trip) => ({

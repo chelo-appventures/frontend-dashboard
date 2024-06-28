@@ -10,10 +10,10 @@ import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
 
 const errorInitialState = {
-  passengers: [],
-  termsCondition: "Tenes que aceptar esto",
+  passengers: [] as any[],
+  termsCondition: "",
   newsletter: "",
-  globals: ["este es un error global", "este es otro error"],
+  globals: [""],
 };
 
 export default function Passengers({
@@ -80,7 +80,7 @@ export default function Passengers({
       },
       age: "",
       contact: {
-        phoneCode:"",
+        phoneCode: "",
         phoneNumber: "",
         email: "",
         address: {
@@ -92,7 +92,6 @@ export default function Passengers({
       },
     }));
 
-    console.log(errorPassengers);
     const initialErrorData = {
       ...errorInitialState,
       passengers: errorPassengers,
@@ -101,13 +100,43 @@ export default function Passengers({
     setError(initialErrorData as any);
   }, []);
 
+  const errorPassengerHandler = (errors: any, passenger: Passenger): any => {
+    let temporalError = { ...errors };
+    if (passenger.firstName === "") {
+      temporalError = {
+        ...temporalError,
+        firstName: "El Nombre no puede estar vacio",
+      };
+    }
+    if (passenger.lastName === "") {
+      temporalError = {
+        ...temporalError,
+        lastName: "El apellido no puede estar vacio",
+      };
+    }
+    return temporalError;
+  };
+
+  const errorHandler = () => {
+    const passengersErrors = errors.passengers.map((oldError, i) => {
+      const passenger: Passenger = passengerData.passengers[i];
+      const newError: any = errorPassengerHandler(oldError, passenger);
+      return newError;
+    });
+
+    setError({
+      ...errors,
+      passengers: passengersErrors,
+    });
+  };
   const submitHandler = (e: any) => {
     e.preventDefault();
     console.log("AVFORM >> SubmitHandler");
     console.log(passengerData);
-    const persistedData = JSON.stringify(passengerData);
-    window.localStorage.setItem("form1", persistedData);
-    redirect("/booking/travel_options");
+    errorHandler();
+    // const persistedData = JSON.stringify(passengerData);
+    // window.localStorage.setItem("form1", persistedData);
+    // redirect("/booking/travel_options");
   };
 
   return (
@@ -120,8 +149,6 @@ export default function Passengers({
 
       {errors.passengers.length > 0 &&
         passengerData.passengers.map((passenger, index: number) => {
-          console.log(errors.passengers, index);
-          console.log(errors.passengers[index]);
           return (
             <FormPassenger
               errors={errors.passengers[index]}

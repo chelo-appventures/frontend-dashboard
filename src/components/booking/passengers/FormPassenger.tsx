@@ -36,6 +36,7 @@ export default function PassengerForm({
           <div className="flex flex-row ">
             <div className="w-1/2 mr-2">
               <LabelInput
+                label=""
                 placeholder="Nombre"
                 value={passenger.firstName}
                 errorField={errors.firstName}
@@ -49,6 +50,7 @@ export default function PassengerForm({
             </div>
             <div className="w-1/2 ml-2">
               <LabelInput
+                label=""
                 placeholder="Apellido"
                 value={passenger.lastName}
                 errorField={errors.lastName}
@@ -96,6 +98,7 @@ export default function PassengerForm({
               <div className="w-3/4">
                 <div className="ml-2 mr-4">
                   <LabelInput
+                    label=""
                     placeholder="Número de documento"
                     value={passenger.identification.number}
                     errorField={errors.identification.number}
@@ -269,6 +272,7 @@ export default function PassengerForm({
                     <div className="w-3/4">
                       <div className="ml-2 mr-4">
                         <LabelInput
+                          label=""
                           placeholder="Número de teléfono"
                           value={passenger.contact.phoneNumber}
                           errorField={errors.contact.phoneNumber}
@@ -287,6 +291,7 @@ export default function PassengerForm({
                   </div>
                   <div className="w-1/2">
                     <LabelInput
+                      label=""
                       type="text"
                       placeholder="Correo Electrónico"
                       value={passenger.contact.email}
@@ -311,6 +316,7 @@ export default function PassengerForm({
                 <div className="flex justify-between">
                   <div className="w-1/2 mx-1">
                     <LabelInput
+                      label=""
                       type="text"
                       placeholder="Ciudad"
                       value={passenger.contact.address.city}
@@ -330,6 +336,7 @@ export default function PassengerForm({
                   </div>
                   <div className="w-1/2 mx-1">
                     <LabelInput
+                      label=""
                       type="text"
                       placeholder="Barrio"
                       value={passenger.contact.address.neighborhood}
@@ -355,6 +362,7 @@ export default function PassengerForm({
             <div className="flex flex-row">
               <div className="w-1/2 mr-2">
                 <LabelInput
+                  label=""
                   placeholder="Calle"
                   type="text"
                   value={passenger.contact.address.street}
@@ -376,6 +384,7 @@ export default function PassengerForm({
               <div className="flex w-1/2 justify-between">
                 <div className="w-1/2 mx-1">
                   <LabelInput
+                    label=""
                     type="text"
                     placeholder="Número"
                     value={passenger.contact.address.number}
@@ -396,6 +405,7 @@ export default function PassengerForm({
                 </div>
                 <div className=" w-1/2 mx-1">
                   <LabelInput
+                    label=""
                     type="text"
                     placeholder="Depto./Timbre/Otro"
                     value={passenger.contact.address.other}

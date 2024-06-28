@@ -15,11 +15,13 @@ export default function LoginComp () {
             <h2 className="text-center text-2xl  mb-6"><span className="font-bold">Iniciar</span> tu sesión</h2>
             <form action="#">
                 <LabelInput 
+                    label=""
                     placeholder="Usuario" 
                     type="text"
                     errorField={errors.user}
                 />
                 <LabelInput 
+                    label=""
                     placeholder="Contraseña" 
                     type="password"
                     errorField={errors.password}

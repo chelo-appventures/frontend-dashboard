@@ -322,6 +322,7 @@ export default function AVForm() {
           <div className="w-1/4 flex flex-col pr-4 pt-1">
             <div>
               <LabelInput
+                label=""
                 type="date"
                 placeholder="Fecha de partida"
                 value={trip.departure.date}
@@ -351,6 +352,7 @@ export default function AVForm() {
             <div>
               <LabelInput
                 type="time"
+                label=""
                 placeholder="Hora de partida"
                 value={trip.departure.time}
                 errorField={errors.departure.time}
@@ -379,6 +381,7 @@ export default function AVForm() {
             <div>
               <LabelInput
                 type="date"
+                label=""
                 placeholder="Fecha de regreso"
                 errorField={errors.return.date}
                 value={trip.return.date}
@@ -407,6 +410,7 @@ export default function AVForm() {
             <div>
               <LabelInput
                 type="time"
+                label=""
                 placeholder="Hora de regreso"
                 value={trip.return.time}
                 errorField={errors.return.time}

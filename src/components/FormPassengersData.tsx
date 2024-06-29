@@ -105,13 +105,103 @@ export default function Passengers({
     if (passenger.firstName === "") {
       temporalError = {
         ...temporalError,
-        firstName: "El Nombre no puede estar vacio",
+        firstName: "Ingresa tu nombre",
       };
     }
     if (passenger.lastName === "") {
       temporalError = {
         ...temporalError,
-        lastName: "El apellido no puede estar vacio",
+        lastName: "Ingresa tu apellido",
+      };
+    }
+    if (passenger.identification.type === "") {
+      temporalError = {
+        ...temporalError,
+        identification: {
+          ...temporalError.identification,
+          type: "Selecciona el tipo de documento"
+        }
+      };
+    }
+    if (passenger.identification.number === "") {
+      temporalError = {
+        ...temporalError,
+        identification: {
+          ...temporalError.identification,
+          number: "Ingresa el número de documento"
+        }
+      };
+    }
+    if (passenger.identification.country === "") {
+      temporalError = {
+        ...temporalError,
+        identification: {
+          ...temporalError.identification,
+          country: "Ingresa el número de documento"
+        }
+      };
+    }
+    if (passenger.contact.email === "") {
+      temporalError = {
+        ...temporalError,
+        contact: {
+          ...temporalError.contact,
+          email: "Ingresa un e-mail"
+        }
+      };
+    }
+    if (passenger.contact.phoneCode === "") {
+      temporalError = {
+        ...temporalError,
+        contact: {
+          ...temporalError.contact,
+          phoneCode: "Completar"
+        }
+      };
+    }
+    if (passenger.contact.phoneNumber === "") {
+      temporalError = {
+        ...temporalError,
+        contact: {
+          ...temporalError.contact,
+          phoneNumber: "Ingresar un número de teléfono"
+        }
+      };
+    }
+    if (passenger.contact.address.city === "") {
+      temporalError = {
+        ...temporalError,
+        contact: {
+          ...temporalError.contact,
+          address: {
+            ...temporalError.contact.address,
+            city: "Selecciona una ciudad"
+          }
+        }
+      };
+    }
+    if (passenger.contact.address.number === "") {
+      temporalError = {
+        ...temporalError,
+        contact: {
+          ...temporalError.contact,
+          address: {
+            ...temporalError.contact.address,
+            number: "Indica un número de calle"
+          }
+        }
+      };
+    }
+    if (passenger.contact.address.street === "") {
+      temporalError = {
+        ...temporalError,
+        contact: {
+          ...temporalError.contact,
+          address: {
+            ...temporalError.contact.address,
+            street: "Ingresa una calle"
+          }
+        }
       };
     }
     return temporalError;

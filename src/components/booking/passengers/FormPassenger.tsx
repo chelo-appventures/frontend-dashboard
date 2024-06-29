@@ -93,6 +93,15 @@ export default function PassengerForm({
                         }`}
                   value={passenger.identification.type}
                   onChange={(e) => {
+                    if (isError(errors.identification.type)) {
+                      setError({
+                        ...errors,
+                        identification: {
+                          ...errors.identification,
+                          type: ""
+                        }
+                      })
+                    }
                     setPassenger({
                       ...passenger,
                       identification: {
@@ -118,6 +127,15 @@ export default function PassengerForm({
                   value={passenger.identification.number}
                   errorField={errors.identification.number}
                   onChange={(e: any) => {
+                    if (isError(errors.identification.number)) {
+                      setError({
+                        ...errors,
+                        identification: {
+                          ...errors.identification,
+                          number: ""
+                        }
+                      })
+                    }
                     setPassenger({
                       ...passenger,
                       identification: {
@@ -137,6 +155,15 @@ export default function PassengerForm({
                 errorField={errors.identification.country}
                 value={passenger.identification.country}
                 onChange={(e) => {
+                  if (isError(errors.identification.country)) {
+                    setError({
+                      ...errors,
+                      identification: {
+                        ...errors.identification,
+                        country: ""
+                      }
+                    })
+                  }
                   setPassenger({
                     ...passenger,
                     identification: {
@@ -168,6 +195,12 @@ export default function PassengerForm({
                       ${isError(errors.age) ? "border-red-500" : ""}`}
                 value={passenger.age}
                 onChange={(e) => {
+                  if (isError(errors.age)) {
+                    setError({
+                      ...errors,
+                      age:""
+                    })
+                  }
                   setPassenger({
                     ...passenger,
                     age: parseInt(e.target.value),
@@ -267,6 +300,15 @@ export default function PassengerForm({
                                           : ""
                                       }`}
                         onChange={(e) => {
+                          if (isError(errors.contact.phoneCode)) {
+                            setError({
+                              ...errors,
+                            contact: {
+                              ...errors.contact,
+                              phoneCode: "",
+                            },
+                            })
+                          }
                           setPassenger({
                             ...passenger,
                             contact: {
@@ -292,6 +334,15 @@ export default function PassengerForm({
                         value={passenger.contact.phoneNumber}
                         errorField={errors.contact.phoneNumber}
                         onChange={(e: any) => {
+                          if (isError(errors.contact.phoneNumber)) {
+                            setError({
+                              ...errors,
+                              contact: {
+                                ...errors.contact,
+                                phoneNumber: "",
+                              },
+                            })
+                          }
                           setPassenger({
                             ...passenger,
                             contact: {
@@ -312,6 +363,15 @@ export default function PassengerForm({
                     value={passenger.contact.email}
                     errorField={errors.contact.email}
                     onChange={(e: any) => {
+                      if (isError(errors.contact.email)) {
+                        setError({
+                          ...errors,
+                          contact: {
+                            ...errors.contact,
+                            email: "",
+                          },
+                        })
+                      }
                       setPassenger({
                         ...passenger,
                         contact: {
@@ -334,8 +394,21 @@ export default function PassengerForm({
                     label=""
                     type="text"
                     placeholder="Ciudad"
+                    errorField={errors.contact.address.city}
                     value={passenger.contact.address.city}
                     onChange={(e: any) => {
+                      if (isError(errors.contact.address.city)) {
+                        setError({
+                          ...errors,
+                          contact: {
+                            ...errors.contact,
+                            address: {
+                              ...errors.contact.address,
+                              city: "",
+                            }
+                          },
+                        })
+                      }
                       setPassenger({
                         ...passenger,
                         contact: {
@@ -357,6 +430,18 @@ export default function PassengerForm({
                     value={passenger.contact.address.neighborhood}
                     errorField={errors.contact.address.neighborhood}
                     onChange={(e: any) => {
+                      if (isError(errors.contact.address.neighborhood)) {
+                        setError({
+                          ...errors,
+                          contact: {
+                            ...errors.contact,
+                            address: {
+                              ...errors.contact.address,
+                              neighborhood: "",
+                            }
+                          },
+                        })
+                      }
                       setPassenger({
                         ...passenger,
                         contact: {
@@ -383,6 +468,18 @@ export default function PassengerForm({
                 value={passenger.contact.address.street}
                 errorField={errors.contact.address.street}
                 onChange={(e: any) => {
+                  if (isError(errors.contact.address.street)) {
+                    setError({
+                      ...errors,
+                      contact: {
+                        ...errors.contact,
+                        address: {
+                          ...errors.contact.address,
+                          street: "",
+                        }
+                      },
+                    })
+                  }
                   setPassenger({
                     ...passenger,
                     contact: {
@@ -405,6 +502,18 @@ export default function PassengerForm({
                   value={passenger.contact.address.number}
                   errorField={errors.contact.address.number}
                   onChange={(e: any) => {
+                    if (isError(errors.contact.address.number)) {
+                      setError({
+                        ...errors,
+                        contact: {
+                          ...errors.contact,
+                          address: {
+                            ...errors.contact.address,
+                            number: "",
+                          }
+                        },
+                      })
+                    }
                     setPassenger({
                       ...passenger,
                       contact: {
@@ -426,6 +535,18 @@ export default function PassengerForm({
                   value={passenger.contact.address.other}
                   errorField={errors.contact.address.other}
                   onChange={(e: any) => {
+                    if (isError(errors.contact.address.other)) {
+                      setError({
+                        ...errors,
+                        contact: {
+                          ...errors.contact,
+                          address: {
+                            ...errors.contact.address,
+                            other: "",
+                          }
+                        },
+                      })
+                    }
                     setPassenger({
                       ...passenger,
                       contact: {

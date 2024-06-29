@@ -16,7 +16,7 @@ export default function LoginComp () {
             <form action="#">
                 <LabelInput 
                     label=""
-                    placeholder="Usuario" 
+                    placeholder="Usuario"
                     type="text"
                     errorField={errors.user}
                 />

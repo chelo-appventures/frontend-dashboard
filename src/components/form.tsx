@@ -120,6 +120,7 @@ export default function AVForm() {
     console.log(errors);
     const persistedData = JSON.stringify(trip);
     window.localStorage.setItem("form0", persistedData);
+    // if (errors.globals.length > 0)
     redirect("/booking/passengers");
   };
 

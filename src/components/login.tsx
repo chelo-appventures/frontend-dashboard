@@ -50,7 +50,6 @@ export default function LoginComp() {
       </h2>
       <form action="#">
         {errors.global !== "" ? <RedAlert>{errors.global}</RedAlert> : null}
-
         <LabelInput
           label=""
           placeholder="Usuario"

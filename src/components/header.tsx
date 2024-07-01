@@ -79,9 +79,7 @@ export function NavBar() {
             <p>|</p>
           </li>
           <li className=" px-3">
-            <button className="px-4 font-semibold">
-              Iniciar sesión
-            </button>
+            <button className="px-4 font-semibold">Iniciar sesión</button>
           </li>
         </ul>
       </nav>
@@ -89,18 +87,28 @@ export function NavBar() {
   );
 }
 
-export function OptionHeader () {
+export function OptionHeader({ departure, destiny, passengers, luggage }) {
   return (
     <>
-      <div 
-          className="booking_header 
+      <div
+        className="booking_header 
           flex flex-row py-4 items-center justify-between bg-white
-          text-[14px] font-bold text-[#10004f] border-t-2 border-gray-300">
-          <div className="px-5 text-center border-r-2 border-gray-300 w-full ">Belgrano - Pinamar</div>
-          <div className="px-5 text-center border-r-2 border-gray-300 w-full ">jue, 15 de Feb - jue, 29 de Feb</div>
-          <div className="px-5 text-center border-r-2 border-gray-300 w-full ">8 Adultos / 1 mascota en asiento</div>
-          <div className="px-5 text-center border-r-2 border-gray-300 w-full ">8 Maletas</div>
+          text-[14px] font-bold text-[#10004f] border-t-2 border-gray-300"
+      >
+        <div className="px-5 text-center border-r-2 border-gray-300 w-full ">
+          {departure.city.split(",")[0]} - {destiny.city.split(",")[0]}
+        </div>
+        <div className="px-5 text-center border-r-2 border-gray-300 w-full ">
+          {departure.date} / {destiny.date}
+        </div>
+        <div className="px-5 text-center border-r-2 border-gray-300 w-full ">
+          {passengers.adult} Adultos / {passengers.baby} Bebes /{" "}
+          {passengers.pets.small + passengers.pets.big} Mascotas
+        </div>
+        <div className="px-5 text-center border-r-2 border-gray-300 w-full ">
+          {luggage.bag23} Maletas
+        </div>
       </div>
     </>
-  )
+  );
 }

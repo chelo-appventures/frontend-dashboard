@@ -98,9 +98,9 @@ export default function PassengerForm({
                         ...errors,
                         identification: {
                           ...errors.identification,
-                          type: ""
-                        }
-                      })
+                          type: "",
+                        },
+                      });
                     }
                     setPassenger({
                       ...passenger,
@@ -132,9 +132,9 @@ export default function PassengerForm({
                         ...errors,
                         identification: {
                           ...errors.identification,
-                          number: ""
-                        }
-                      })
+                          number: "",
+                        },
+                      });
                     }
                     setPassenger({
                       ...passenger,
@@ -160,9 +160,9 @@ export default function PassengerForm({
                       ...errors,
                       identification: {
                         ...errors.identification,
-                        country: ""
-                      }
-                    })
+                        country: "",
+                      },
+                    });
                   }
                   setPassenger({
                     ...passenger,
@@ -198,8 +198,8 @@ export default function PassengerForm({
                   if (isError(errors.age)) {
                     setError({
                       ...errors,
-                      age:""
-                    })
+                      age: "",
+                    });
                   }
                   setPassenger({
                     ...passenger,
@@ -217,47 +217,54 @@ export default function PassengerForm({
             </div>
           </div>
           <div className="flex flex-row items-center w-9/12">
-            <div className="flex items-center">
-              <input
-                className="mx-4 "
-                type="radio"
-                name="gender"
-                checked={passenger.gender === Gender.Male}
-                onChange={() => {
-                  setPassenger({
-                    ...passenger,
-                    gender: Gender.Male,
-                  });
-                }}
-              />
-              <label htmlFor="man">Hombre</label>
+            <div className="flex flex-col">
+              <div className="flex items-center">
+                <input
+                  className="mx-4 "
+                  type="radio"
+                  name={`gender${index}`}
+                  checked={passenger.gender === Gender.Male}
+                  onChange={() => {
+                    setPassenger({
+                      ...passenger,
+                      gender: Gender.Male,
+                    });
+                  }}
+                />
+                <label htmlFor="man">Hombre</label>
 
-              <input
-                className="mx-4"
-                type="radio"
-                name="gender"
-                checked={passenger.gender === Gender.Female}
-                onChange={() => {
-                  setPassenger({
-                    ...passenger,
-                    gender: Gender.Female,
-                  });
-                }}
-              />
-              <label htmlFor="man">Mujer</label>
-              <input
-                className="mx-4"
-                type="radio"
-                name="gender"
-                checked={passenger.gender === Gender.Other}
-                onChange={() => {
-                  setPassenger({
-                    ...passenger,
-                    gender: Gender.Other,
-                  });
-                }}
-              />
-              <label htmlFor="other">Prefiero no decirlo</label>
+                <input
+                  className="mx-4"
+                  type="radio"
+                  name={`gender${index}`}
+                  checked={passenger.gender === Gender.Female}
+                  onChange={() => {
+                    setPassenger({
+                      ...passenger,
+                      gender: Gender.Female,
+                    });
+                  }}
+                />
+                <label htmlFor="man">Mujer</label>
+                <input
+                  className="mx-4"
+                  type="radio"
+                  name={`gender${index}`}
+                  checked={passenger.gender === Gender.Other}
+                  onChange={() => {
+                    setPassenger({
+                      ...passenger,
+                      gender: Gender.Other,
+                    });
+                  }}
+                />
+                <label htmlFor="other">Prefiero no decirlo</label>
+              </div>
+              <div className="mx-3 pt-1">
+                {isError(errors.gender) && (
+                  <ErrorMessage field={errors.gender} />
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -303,11 +310,11 @@ export default function PassengerForm({
                           if (isError(errors.contact.phoneCode)) {
                             setError({
                               ...errors,
-                            contact: {
-                              ...errors.contact,
-                              phoneCode: "",
-                            },
-                            })
+                              contact: {
+                                ...errors.contact,
+                                phoneCode: "",
+                              },
+                            });
                           }
                           setPassenger({
                             ...passenger,
@@ -341,7 +348,7 @@ export default function PassengerForm({
                                 ...errors.contact,
                                 phoneNumber: "",
                               },
-                            })
+                            });
                           }
                           setPassenger({
                             ...passenger,
@@ -370,7 +377,7 @@ export default function PassengerForm({
                             ...errors.contact,
                             email: "",
                           },
-                        })
+                        });
                       }
                       setPassenger({
                         ...passenger,
@@ -405,9 +412,9 @@ export default function PassengerForm({
                             address: {
                               ...errors.contact.address,
                               city: "",
-                            }
+                            },
                           },
-                        })
+                        });
                       }
                       setPassenger({
                         ...passenger,
@@ -438,9 +445,9 @@ export default function PassengerForm({
                             address: {
                               ...errors.contact.address,
                               neighborhood: "",
-                            }
+                            },
                           },
-                        })
+                        });
                       }
                       setPassenger({
                         ...passenger,
@@ -476,9 +483,9 @@ export default function PassengerForm({
                         address: {
                           ...errors.contact.address,
                           street: "",
-                        }
+                        },
                       },
-                    })
+                    });
                   }
                   setPassenger({
                     ...passenger,
@@ -510,9 +517,9 @@ export default function PassengerForm({
                           address: {
                             ...errors.contact.address,
                             number: "",
-                          }
+                          },
                         },
-                      })
+                      });
                     }
                     setPassenger({
                       ...passenger,
@@ -543,9 +550,9 @@ export default function PassengerForm({
                           address: {
                             ...errors.contact.address,
                             other: "",
-                          }
+                          },
                         },
-                      })
+                      });
                     }
                     setPassenger({
                       ...passenger,

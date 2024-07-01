@@ -1,6 +1,6 @@
 "use client";
 import { PortalNavBar } from "@/components/Navbar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LabelInput, { Checkbox } from "@/components/input";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,12 +31,30 @@ function Budget() {
     router.push(path);
   };
 
+  const [data, setData] = useState();
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      redirect("/login");
-    }
+    const fetchData = async () => {
+      const APIBASE =
+        "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000";
+      const result = await fetch(`${APIBASE}/api/products`, {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: "Bearer zxcvbnm",
+        },
+      });
+      const json = await result.json();
+      console.log(json);
+      setData(json.data.filter((x) => x.form0));
+    };
+
+    fetchData().catch(console.log);
   }, []);
+
+  if (!data) {
+    return <div> Loading ... </div>;
+  }
+
+  console.log(data);
   return (
     <>
       <PortalNavBar />
@@ -135,57 +153,76 @@ function Budget() {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">
-                <td rowSpan={2}>
-                  <input
-                    type="checkbox"
-                    className="accent-orange-500 h-5 w-5 m-auto"
-                  />
-                </td>
-                <td className="text-center" rowSpan={2}>
-                  <span className="underline">VE29059</span>
-                  <div className="flex justify-center">
-                    <Image src={roundTrip} alt="round-trip" />
-                  </div>
-                </td>
-                <td rowSpan={2}>Seña 60%</td>
-                <td rowSpan={2}>ME</td>
-                <td rowSpan={2}>56</td>
-                <td>IDA</td>
-                <td>-</td>
-                <td>23/12/24</td>
-                <td className="flex justify-between">
-                  <span className="underline">Belgrano - Mar del Plata</span>
-                  <span className="bg-yellow-200 px-2 rounded">5 par</span>
-                </td>
-                <td rowSpan={2}>Nombre Big 1</td>
-                <td rowSpan={2}>Cta Cte 1</td>
-                <td className="text-gray-400" rowSpan={2}>
-                  $150.000
-                </td>
-                <td rowSpan={2}>$250.000</td>
-                <td rowSpan={2}>
-                  <Image
-                    src={rowSettings}
-                    alt="partial-pay"
-                    className="m-auto"
-                  />
-                </td>
-              </tr>
-              <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">
-                <td>VUELTA</td>
-                <td>-</td>
-                <td>30/12/24</td>
-                <td className="flex justify-between">
-                  <span className="underline">Mar del Plata - Belgrano</span>
-                  <span className="bg-yellow-200 px-2 rounded">5 par</span>
-                </td>
-              </tr>
+              {data.map((sale, index) => {
+                return (
+                  <>
+                    <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">
+                      <td rowSpan={2}>
+                        <input
+                          type="checkbox"
+                          className="accent-orange-500 h-5 w-5 m-auto"
+                        />
+                      </td>
+                      <td className="text-center" rowSpan={2}>
+                        <span className="underline">VE29059</span>
+                        <div className="flex justify-center">
+                          <Image src={roundTrip} alt="round-trip" />
+                        </div>
+                      </td>
+                      <td rowSpan={2}>Seña {sale.form3.percentage}%</td>
+                      <td rowSpan={2}>ME</td>
+                      <td rowSpan={2}>56</td>
+                      <td>IDA</td>
+                      <td>-</td>
+                      <td>{sale.form0.departure.date}</td>
+                      <td className="flex justify-between">
+                        <span className="underline">
+                          {sale.form0.departure.city.split(",")[0]} -{" "}
+                          {sale.form0.return.city.split(",")[0]}
+                        </span>
+                        <span className="bg-yellow-200 px-2 rounded">
+                          5 par
+                        </span>
+                      </td>
+                      <td rowSpan={2}>
+                        {sale.form1.passengers[0].firstName}{" "}
+                        {sale.form1.passengers[0].lastName}
+                      </td>
+                      <td rowSpan={2}>Cta Cte 1</td>
+                      <td className="text-gray-400" rowSpan={2}>
+                        ${sale.form3.amount}
+                      </td>
+                      <td rowSpan={2}>${sale.form3.totalCost}</td>
+                      <td rowSpan={2}>
+                        <Image
+                          src={rowSettings}
+                          alt="partial-pay"
+                          className="m-auto"
+                        />
+                      </td>
+                    </tr>
+                    <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">
+                      <td>VUELTA</td>
+                      <td>-</td>
+                      <td>{sale.form0.return.date}</td>
+                      <td className="flex justify-between">
+                        <span className="underline">
+                          {sale.form0.return.city.split(",")[0]} -{" "}
+                          {sale.form0.departure.city.split(",")[0]}
+                        </span>
+                        <span className="bg-yellow-200 px-2 rounded">
+                          5 par
+                        </span>
+                      </td>
+                    </tr>
+                  </>
+                );
+              })}
             </tbody>
             <tfoot>
               <tr>
                 <td colSpan={14} className="px-2 border border-gray-200">
-                  Actualizado al 17/06/2024
+                  Actualizado al 1 de Julio de 2024 | Sitio en construccion
                 </td>
               </tr>
             </tfoot>

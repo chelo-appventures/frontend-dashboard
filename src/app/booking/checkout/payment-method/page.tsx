@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HeaderAV, { OptionHeader } from "@/components/header";
 import RadioButton from "@/components/radioButton";
@@ -18,10 +19,45 @@ import { IconType } from "@/components/card";
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
 
+const APIBASE = "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000";
+
 export default function PaymentMethod() {
+  const [data, setData] = useState();
+  useEffect(() => {
+    const form0 = JSON.parse(localStorage.getItem("form0") || "");
+    const form1 = JSON.parse(localStorage.getItem("form1") || "");
+    const form2 = JSON.parse(localStorage.getItem("form2") || "");
+    const form3 = JSON.parse(localStorage.getItem("form3") || "");
+    if (form0 && form1 && form2 && form3) {
+      setData({ form0, form1, form2, form3 });
+    }
+  }, []);
   const router = useRouter();
   const redirect = (path: string) => {
     router.push(path);
+  };
+
+  if (!data) {
+    return <div> Loading ... </div>;
+  }
+
+  const handleContinuar = async () => {
+    console.log(data);
+    const result = await fetch(`${APIBASE}/api/products`, {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer zxcvbnm",
+      },
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    const json = await result.json();
+
+    if (json.data) {
+      localStorage.setItem("posId", json.data.insertedId);
+      redirect("/booking/checkout/qr");
+      return;
+    }
   };
 
   return (
@@ -29,7 +65,12 @@ export default function PaymentMethod() {
       <div className="flex min-h-screen flex-col items-center bg-gray-300 max-h-screen">
         <div className=" bg-[#F4F4F7] w-full min-h-full flex flex-col">
           <HeaderAV />
-          <OptionHeader />
+          <OptionHeader
+            departure={data.form0.departure}
+            destiny={data.form0.return}
+            passengers={data.form0.passengers}
+            luggage={data.form0.luggage}
+          />
 
           <div className="flex flex-col items-center justify-center h-full bg-gray-200 pb-10 pt-20">
             <h1 className="w-[814px] h-full text-left text-[36px] text-[#10004f]">
@@ -51,7 +92,7 @@ export default function PaymentMethod() {
                     <p>RUGGERI TURISMO</p>
                   </div>
                   <div className="text-[26px] text-[#10004f] font-bold">
-                    <p>$36.000</p>
+                    <p>${data.form3.amount}</p>
                   </div>
                 </div>
                 <div className="flex flex-row mt-10">
@@ -102,12 +143,7 @@ export default function PaymentMethod() {
                   />
                 </div>
                 <div>
-                  <button
-                    onClick={() => {
-                      redirect("/booking/checkout/qr");
-                    }}
-                    className="w-full "
-                  >
+                  <button onClick={handleContinuar} className="w-full ">
                     Continuar
                   </button>
                   <Image src={cards} alt="cards" />

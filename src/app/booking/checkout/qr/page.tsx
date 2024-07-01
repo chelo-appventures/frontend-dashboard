@@ -14,23 +14,37 @@ const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
 
 export default function QR() {
-  const [result, setResult] = useState({});
+  const [result, setResult] = useState();
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
     const form1 = JSON.parse(localStorage.getItem("form1") || "");
     const form2 = JSON.parse(localStorage.getItem("form2") || "");
     const form3 = JSON.parse(localStorage.getItem("form3") || "");
+    const posId = localStorage.getItem("posId") || "";
 
     if (form0 && form1) {
-      setResult({ form0, form1, form2, form3 });
+      setResult({ form0, form1, form2, form3, posId });
     }
   }, []);
+
+  const handleDownload = () => {};
+  if (!result) {
+    return <div> Loading ...</div>;
+  }
+  const { departure, return: destiny, passengers } = result.form0;
+  const responsable = result.form1.passengers[0];
+
   return (
     <>
       <div className="flex min-h-screen flex-col items-center bg-gray-300 max-h-screen">
         <div className=" bg-[#F4F4F7] w-full min-h-full flex flex-col">
           <HeaderAV />
-          <OptionHeader />
+          <OptionHeader
+            departure={result.form0.departure}
+            destiny={result.form0.return}
+            passengers={result.form0.passengers}
+            luggage={result.form0.luggage}
+          />
 
           <div className="flex flex-col items-center justify-center h-full bg-gray-200 pb-10 pt-20">
             {/* TODO DEBE IR DENTRO DE ESTE CONTAINER */}
@@ -53,14 +67,16 @@ export default function QR() {
                       EN MINIBUS
                     </p>
                   </div>
-                  <AVQRCode text="A viajarrr!!!" />
+                  <AVQRCode text={result.posId} />
                   <div className="my-5">
                     <p
                       className={`${ruda.className} font-bold text-[#5C5C5C] text-[16px]`}
                     >
                       Código:
                     </p>
-                    <p className="font-bold text-[24px]">ARGBUY</p>
+                    <p className="font-bold text-[24px]">
+                      {result.posId.substring(0, 6)}
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-col mt-[60px]">
@@ -70,8 +86,9 @@ export default function QR() {
                     >
                       Origen / Destino:
                     </p>
-                    <p className="text-[48px] font-semibold text-[#10004f]">
-                      Belgrano / Pinamar
+                    <p className="text-[28px] font-semibold text-[#10004f]">
+                      {departure.city.split(",")[0]} /{" "}
+                      {destiny.city.split(",")[0]}
                     </p>
                   </div>
                   <div className="mb-6">
@@ -81,7 +98,7 @@ export default function QR() {
                       Salida:
                     </p>
                     <p className="text-[32px] font-semibold text-[#10004f]">
-                      15 de Feb 2024 / 23:00
+                      {departure.date} / {departure.time}
                     </p>
                   </div>
                   <div className="mb-6">
@@ -90,21 +107,23 @@ export default function QR() {
                     >
                       Desde:
                     </p>
-                    <p className="text-[32px] font-semibold text-[#10004f]">
-                      Av. Cmd. Rivadavia 1450
+                    <p className="text-[22px] font-semibold text-[#10004f]">
+                      {departure.city}
                     </p>
                   </div>
                   <div className="mb-6">
                     <p
                       className={`${ruda.className} font-bold text-[#5C5C5C] text-[16px]`}
                     >
-                      Pasajero:
+                      Pasajero responsable de Viaje:
                     </p>
                     <p className="text-[32px] font-semibold text-[#10004f]">
-                      Gonzalo García Luna
+                      {responsable.firstName} {responsable.lastName}
                     </p>
-                    <p className="text-[20px] font-semibold text-[#8B8B8B]">
-                      1 mascota en falda
+                    <p className="text-[18px] font-semibold text-[#8B8B8B]">
+                      {passengers.adult - 1} acompañante(s) {passengers.baby}{" "}
+                      bebe(s) {passengers.pets.small + passengers.pets.big}{" "}
+                      mascota(s)
                     </p>
                   </div>
                 </div>

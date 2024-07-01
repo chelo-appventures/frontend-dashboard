@@ -29,8 +29,8 @@ export interface Passenger {
   company?: Company;
   firstName: string;
   lastName: string;
-  gender: Gender;
-  age: number;
+  gender?: Gender;
+  age: string;
   identification: Identification;
   contact: Contact;
 }

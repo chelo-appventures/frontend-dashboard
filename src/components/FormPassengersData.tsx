@@ -36,8 +36,7 @@ export default function Passengers({
         ({
           firstName: "",
           lastName: "",
-          gender: Gender.Male,
-          age: 0,
+          age: "",
           identification: {
             type: "",
             number: "",
@@ -119,8 +118,8 @@ export default function Passengers({
         ...temporalError,
         identification: {
           ...temporalError.identification,
-          type: "Selecciona el tipo de documento"
-        }
+          type: "Selecciona el tipo de documento",
+        },
       };
     }
     if (passenger.identification.number === "") {
@@ -128,8 +127,8 @@ export default function Passengers({
         ...temporalError,
         identification: {
           ...temporalError.identification,
-          number: "Ingresa el número de documento"
-        }
+          number: "Ingresa el número de documento",
+        },
       };
     }
     if (passenger.identification.country === "") {
@@ -137,8 +136,8 @@ export default function Passengers({
         ...temporalError,
         identification: {
           ...temporalError.identification,
-          country: "Ingresa el número de documento"
-        }
+          country: "Ingresa el número de documento",
+        },
       };
     }
     if (passenger.contact.email === "") {
@@ -146,8 +145,8 @@ export default function Passengers({
         ...temporalError,
         contact: {
           ...temporalError.contact,
-          email: "Ingresa un e-mail"
-        }
+          email: "Ingresa un e-mail",
+        },
       };
     }
     if (passenger.contact.phoneCode === "") {
@@ -155,8 +154,8 @@ export default function Passengers({
         ...temporalError,
         contact: {
           ...temporalError.contact,
-          phoneCode: "Completar"
-        }
+          phoneCode: "Completar",
+        },
       };
     }
     if (passenger.contact.phoneNumber === "") {
@@ -164,8 +163,8 @@ export default function Passengers({
         ...temporalError,
         contact: {
           ...temporalError.contact,
-          phoneNumber: "Ingresar un número de teléfono"
-        }
+          phoneNumber: "Ingresar un número de teléfono",
+        },
       };
     }
     if (passenger.contact.address.city === "") {
@@ -175,9 +174,9 @@ export default function Passengers({
           ...temporalError.contact,
           address: {
             ...temporalError.contact.address,
-            city: "Selecciona una ciudad"
-          }
-        }
+            city: "Selecciona una ciudad",
+          },
+        },
       };
     }
     if (passenger.contact.address.number === "") {
@@ -187,9 +186,9 @@ export default function Passengers({
           ...temporalError.contact,
           address: {
             ...temporalError.contact.address,
-            number: "Indica un número de calle"
-          }
-        }
+            number: "Indica un número de calle",
+          },
+        },
       };
     }
     if (passenger.contact.address.street === "") {
@@ -199,9 +198,15 @@ export default function Passengers({
           ...temporalError.contact,
           address: {
             ...temporalError.contact.address,
-            street: "Ingresa una calle"
-          }
-        }
+            street: "Ingresa una calle",
+          },
+        },
+      };
+    }
+    if (!passenger.gender) {
+      temporalError = {
+        ...temporalError,
+        gender: "Selecciona un genero",
       };
     }
     return temporalError;
@@ -224,9 +229,9 @@ export default function Passengers({
     console.log("AVFORM >> SubmitHandler");
     console.log(passengerData);
     errorHandler();
-    // const persistedData = JSON.stringify(passengerData);
-    // window.localStorage.setItem("form1", persistedData);
-    // redirect("/booking/travel_options");
+    const persistedData = JSON.stringify(passengerData);
+    window.localStorage.setItem("form1", persistedData);
+    redirect("/booking/travel_options");
   };
 
   return (

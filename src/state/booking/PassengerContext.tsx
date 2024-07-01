@@ -20,8 +20,8 @@ const PassengerDataProvider: React.FC<{ children: ReactNode }> = ({
         firstName: "",
         lastName: "",
         identification: { type: "", number: "", country: "" },
-        age: 0,
-        gender: Gender.Male,
+        age: "",
+        gender: undefined,
         contact: {
           phoneCode: "",
           phoneNumber: "",

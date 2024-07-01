@@ -27,12 +27,13 @@ export default function QR() {
     }
   }, []);
 
-  const handleDownload = () => {};
   if (!result) {
     return <div> Loading ...</div>;
   }
   const { departure, return: destiny, passengers } = result.form0;
   const responsable = result.form1.passengers[0];
+
+  const handleDownload = () => {};
 
   return (
     <>

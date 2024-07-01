@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeaderAV, { OptionHeader } from "@/components/header";
 import RadioButton from "@/components/radioButton";
 import { Ruda, Inter } from "next/font/google";
@@ -23,12 +23,29 @@ export default function PartialPay() {
   });
   const currency = new Intl.NumberFormat();
 
+  const [result, setResult] = useState();
+  useEffect(() => {
+    const form0 = JSON.parse(localStorage.getItem("form0") || "");
+    if (form0) {
+      setResult({ form0 });
+    }
+  }, []);
+
+  if (!result) {
+    return <div> Loading ...</div>;
+  }
+
   return (
     <>
       <div className="flex min-h-screen flex-col items-center bg-gray-300 max-h-screen">
         <div className=" bg-[#F4F4F7] w-full min-h-full flex flex-col">
           <HeaderAV />
-          <OptionHeader />
+          <OptionHeader
+            departure={result.form0.departure}
+            destiny={result.form0.return}
+            passengers={result.form0.passengers}
+            luggage={result.form0.luggage}
+          />
 
           <div className="flex flex-col items-center justify-center h-full bg-gray-200 pb-10 pt-20">
             <h1 className="w-[814px] text-left text-[36px] text-[#10004f]">
@@ -113,7 +130,6 @@ export default function PartialPay() {
                         <option value="75" label="75%" />
                         <option value="100" label="100%" />
                       </Select>
-                      
                     </div>
                   </div>
                   <div className="">

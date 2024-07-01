@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect } from "react";
 import CardOption, { IconType } from "@/components/card";
 import HeaderAV, { OptionHeader } from "@/components/header";
 
@@ -47,13 +49,29 @@ const options = [
 ];
 
 export default function TravelOptions() {
+  const [result, setResult] = useState();
+  useEffect(() => {
+    const form0 = JSON.parse(localStorage.getItem("form0") || "");
+    if (form0) {
+      setResult({ form0 });
+    }
+  }, []);
+
+  if (!result) {
+    return <div> Loading ...</div>;
+  }
+
   return (
     <>
       <div className="flex min-h-screen flex-col items-center bg-gray-300 max-h-screen">
         <div className=" bg-[#F4F4F7] w-[1280px] min-h-full flex flex-col">
           <HeaderAV />
-          <OptionHeader />
-
+          <OptionHeader
+            departure={result.form0.departure}
+            destiny={result.form0.return}
+            passengers={result.form0.passengers}
+            luggage={result.form0.luggage}
+          />
           <div className="flex flex-col items-center justify-center h-full bg-gray-200 pb-10 pt-20">
             <h1 className="w-[814px] text-left text-[36px] text-[#10004f]">
               Tus opciones de <strong>viaje</strong>

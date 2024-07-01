@@ -203,7 +203,7 @@ export default function PassengerForm({
                   }
                   setPassenger({
                     ...passenger,
-                    age: parseInt(e.target.value),
+                    age: e.target.value,
                   });
                 }}
               >

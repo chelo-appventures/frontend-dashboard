@@ -14,7 +14,7 @@ const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
 
 export default function QR() {
-  const [result, setResult] = useState();
+  const [result, setResult] = useState<any>();
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
     const form1 = JSON.parse(localStorage.getItem("form1") || "");

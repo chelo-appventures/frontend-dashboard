@@ -87,7 +87,7 @@ export function NavBar() {
   );
 }
 
-export function OptionHeader({ departure, destiny, passengers, luggage }) {
+export function OptionHeader({ departure, destiny, passengers, luggage }: any) {
   return (
     <>
       <div

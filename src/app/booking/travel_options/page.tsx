@@ -49,7 +49,7 @@ const options = [
 ];
 
 export default function TravelOptions() {
-  const [result, setResult] = useState();
+  const [result, setResult] = useState<any>();
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
     if (form0) {

@@ -31,7 +31,7 @@ function Budget() {
     router.push(path);
   };
 
-  const [data, setData] = useState();
+  const [data, setData] = useState<any>();
   useEffect(() => {
     const fetchData = async () => {
       const APIBASE =
@@ -44,7 +44,7 @@ function Budget() {
       });
       const json = await result.json();
       console.log(json);
-      setData(json.data.filter((x) => x.form0));
+      setData(json.data.filter((x: any) => x.form0));
     };
 
     fetchData().catch(console.log);
@@ -153,7 +153,7 @@ function Budget() {
               </tr>
             </thead>
             <tbody>
-              {data.map((sale, index) => {
+              {data.map((sale: any, index: number) => {
                 return (
                   <>
                     <tr className="bg-inherit text-black text-[16px] font-thin hover:opacity-90 duration-300">

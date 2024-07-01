@@ -22,7 +22,7 @@ const inter = Inter({ subsets: ["latin"] });
 const APIBASE = "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000";
 
 export default function PaymentMethod() {
-  const [data, setData] = useState();
+  const [data, setData] = useState<any>();
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
     const form1 = JSON.parse(localStorage.getItem("form1") || "");

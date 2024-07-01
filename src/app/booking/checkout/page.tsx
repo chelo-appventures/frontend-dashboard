@@ -23,15 +23,15 @@ export default function PartialPay() {
   });
   const currency = new Intl.NumberFormat();
 
-  const [result, setResult] = useState();
+  const [result, setResult] = useState<any>();
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
     if (form0) {
-      setResult({ form0 });
+      setResult({ form0 } as any);
     }
   }, []);
 
-  if (!result) {
+  if (!result || !result.form0) {
     return <div> Loading ...</div>;
   }
 

@@ -102,7 +102,7 @@ export default function CardOption(props: {
   } = props;
   return (
     <>
-      <div className="shadow-lg m-5 opacity-50 hover:opacity-100 duration-300">
+      <div className="shadow-lg my-5 opacity-50 hover:opacity-100 duration-300">
         <div className="bg-white w-[814px] h-[162px] rounded-t-lg px-6">
           <div className="flex justify-between ">
             <div className="flex flex-row">

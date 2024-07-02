@@ -91,6 +91,8 @@ export default function Passengers({
       },
     }));
 
+
+
     const initialErrorData = {
       ...errorInitialState,
       passengers: errorPassengers,
@@ -206,7 +208,7 @@ export default function Passengers({
     if (!passenger.gender) {
       temporalError = {
         ...temporalError,
-        gender: "Selecciona un genero",
+        gender: "Selecciona un género",
       };
     }
     return temporalError;
@@ -230,8 +232,8 @@ export default function Passengers({
     console.log(passengerData);
     errorHandler();
     const persistedData = JSON.stringify(passengerData);
-    window.localStorage.setItem("form1", persistedData);
-    redirect("/booking/travel_options");
+    // window.localStorage.setItem("form1", persistedData);
+    // redirect("/booking/travel_options");
   };
 
   return (

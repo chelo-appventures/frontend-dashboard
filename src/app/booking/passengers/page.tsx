@@ -18,7 +18,6 @@ export default function Passengers() {
     const form0Data = JSON.parse(localStorage.getItem("form0") || "");
     if (form0Data) {
       const ps = form0Data.passengers.adult + form0Data.passengers.kid;
-      console.log("suma", ps);
       setPassengers(ps);
     }
   }, []);
@@ -35,14 +34,14 @@ export default function Passengers() {
 
   return (
     <>
-      <div className="flex min-h-screen flex-col items-center bg-gray-300 max-h-screen">
-        <div className=" bg-[#F4F4F7] w-[1280px] min-h-full flex flex-col">
+      <div className="flex flex-col items-center bg-gray-300 h-full">
+        <div className=" bg-[#F4F4F7] w-[1280px] flex flex-col h-full">
           <HeaderAV />
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center h-full">
             <Hero />
             <div
               className="bg-white rounded-md shadow-lg flex flex-col items-center 
-                            -m-20 border border-solid w-3/4"
+              -mt-20 mb-10 border border-solid w-3/4"
             >
               <h3 className="font-bold text-[#10004F] text-[32px] my-6 w-10/12">
                 Datos de los pasajeros

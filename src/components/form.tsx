@@ -126,8 +126,8 @@ export default function AVForm() {
 
   return (
     <div
-      className="bg-white rounded-md shadow-lg flex flex-col items-center 
-          -m-20 border border-solid w-[1052px]"
+      className="bg-white rounded-md shadow-lg flex flex-col items-center h-full
+          -mt-20 mb-10 border border-solid w-[1052px]"
     >
       <h3 className="font-bold text-[#10004F] text-[32px] my-6 w-10/12">
         Cotiza tu viaje ahora

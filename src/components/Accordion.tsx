@@ -11,18 +11,10 @@ interface AccordionProps {
 
 const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(true);
-    const [height, setHeight] = useState('0px');
-    const contentRef = useRef<HTMLDivElement>(null);
 
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
     };
-
-    useEffect(() => {
-        if (contentRef.current) {
-            setHeight(isOpen ? `${contentRef.current.scrollHeight}px` : '0px');
-        }
-    }, [isOpen]);
 
     return (
         <div className="w-full mt-10">
@@ -40,15 +32,9 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
                     <ChevronDownIcon className={`size-6 ${isOpen ? 'rotate-180 duration-300 text-orange-500' : 'duration-300'}`} />
                 </span>
             </div>
-            <div
-                ref={contentRef}
-                className="  rounded-b-lg overflow-hidden transition-all duration-300 ease-in-out"
-                style={{ maxHeight: height }}
-            >
-                <div className="py-5">
-                    {children}
-                </div>
-            </div>
+            {
+                isOpen && <div className="py-5">{children}</div>
+            }
         </div>
     );
 };

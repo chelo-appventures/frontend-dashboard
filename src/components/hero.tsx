@@ -6,7 +6,6 @@ export default function Hero() {
         <div className="bg-cover h-[400px] w-full" style={{
             backgroundImage: `url(${hero.src})`
         }} >
-            {/* <Image src={hero} alt="bg" /> */}
             <div className="m-[24px] mt-12 text-white">
                 <h2 className="text-[54px] font-extrabold">Viajes Exclusivos</h2>
                 <p className="text-[22px]">

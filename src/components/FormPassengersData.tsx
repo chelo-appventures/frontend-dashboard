@@ -250,12 +250,8 @@ export default function Passengers({
     errorHandler();
     const persistedData = JSON.stringify(passengerData);
     window.localStorage.setItem("form1", persistedData);
-    if ( hasEmptyString(errorHandler()) ) {
-      redirect("/booking/travel_options");
-    } 
-    else {
-      
-    }
+    redirect("/booking/travel_options");
+    
     
     
   };

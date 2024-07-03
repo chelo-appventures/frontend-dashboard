@@ -11,8 +11,9 @@ const options = [
     origin: "Belgrano",
     final_time: "7:30",
     destiny: "Pinamar",
-    cant_carry: "1",
-    cant_bag: "1",
+    cant_handBag: "19",
+    cant_bag: "12",
+    cant_littleBag:"15",
     car: "Mercedes Benz Sprinter",
     seats: "19",
     cant_car: "1",
@@ -25,8 +26,9 @@ const options = [
     origin: "Belgrano",
     final_time: "7:30",
     destiny: "Pinamar",
-    cant_carry: "1",
-    cant_bag: "1",
+    cant_handBag: "12",
+    cant_bag: "3",
+    cant_littleBag:"6",
     car: "Volkswagen Sharan",
     seats: "12",
     cant_car: "2",
@@ -39,8 +41,9 @@ const options = [
     origin: "Belgrano",
     final_time: "7:30",
     destiny: "Pinamar",
-    cant_carry: "1",
-    cant_bag: "1",
+    cant_handBag: "9",
+    cant_bag: "2",
+    cant_littleBag:"3",
     car: "Fiat Cronos",
     seats: "9",
     cant_car: "3",
@@ -88,8 +91,9 @@ export default function TravelOptions() {
                     origin={option.origin}
                     final_time={option.final_time}
                     destiny={option.destiny}
-                    cant_carry={option.cant_carry}
+                    cant_handBag={option.cant_handBag}
                     cant_bag={option.cant_bag}
+                    cant_littleBag={option.cant_littleBag}
                     car={option.car}
                     seats={option.seats}
                     cant_car={option.cant_car}

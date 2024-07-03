@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import carry from "@/ui/icons/carry_1.svg";
-import bag from "@/ui/icons/bag_1.svg";
+import handBag from "@/ui/icons/handBag.svg";
+import bag from "@/ui/icons/bigBag.svg";
 import police from "@/ui/icons/police.svg";
 import flame from "@/ui/icons/flame.svg";
 import snow_tv from "@/ui/icons/snow-tv.svg";
@@ -76,8 +76,9 @@ export default function CardOption(props: {
   car: string;
   car_img: IconType;
   seats: string;
-  cant_carry: string;
+  cant_handBag: string;
   cant_bag: string;
+  cant_littleBag: string;
   price: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -85,6 +86,14 @@ export default function CardOption(props: {
     e.preventDefault();
     setOpen(!open);
   };
+
+  const [value, setValue] = useState(0)
+  const increment = () => value + 1 > 0 ? setValue(value + 1) : setValue(0);
+  const decrement = () => value - 1 > 0 ? setValue(value - 1) : setValue(0);
+
+  const handleValue = (value:number) => {
+
+  }
 
   const {
     id,
@@ -96,24 +105,30 @@ export default function CardOption(props: {
     car,
     car_img,
     seats,
-    cant_carry,
+    cant_handBag,
     cant_bag,
+    cant_littleBag,
     price,
   } = props;
   return (
     <>
-      <div className="shadow-lg m-5 opacity-50 hover:opacity-100 duration-300">
-        <div className="bg-white w-[814px] h-[162px] rounded-t-lg px-6">
+      <div className="shadow-lg my-5 hover:ring-2 hover:ring-orange-500 duration-300">
+        <div className="bg-white w-[814px]  rounded-t-lg px-6 pb-3">
           <div className="flex justify-between ">
             <div className="flex flex-row">
               <Icon icon={car_img} />
               <div className="mt-5 ">
                 <h4 className="font-bold text-[20px]">
-                  {cant_car} x {car}
+                  {/* {cant_car} x  */}
+                  {car} 
                 </h4>
                 <h4 className={`${ruda.className} font-semibold text-[16px]`}>
-                  {seats} asientos
+                  {seats} asientos útiles + 1 chofer calificado*
                 </h4>
+                <div>
+
+                <Luggage cant_handBag={cant_handBag} cant_bag={cant_bag} cant_littleBag={cant_littleBag} />
+                </div>
               </div>
             </div>
             <div className="mt-5">
@@ -122,51 +137,54 @@ export default function CardOption(props: {
                 className="font-semibold text-orange-500"
                 onClick={openAccordion}
               >
-                Detalle
+                {open ? <>Cerrar</> : <>Detalle</>}
               </a>
             </div>
           </div>
-          <div className="flex flex-row text-[26px] text-[#10004F] justify-between">
-            <div>
-              <p>
-                <strong>{init_time}</strong> {origin}
-                <strong> - {final_time}</strong> {destiny}
-              </p>
-            </div>
-            <div>
-              <h4>
-                <strong>${price}</strong>
-              </h4>
-            </div>
+          
+        </div>
+        {open && <Accordion {...props} />}
+        <div className="flex flex-row items-center font-bold border-t-2 border-gray-300 rounded-b-lg w-[814px] bg-white">
+          <div className="flex items-center mx-10 my-1 text-gray-500">
+            <p>Seleccionar cantidad</p>
+            <button 
+              className="flex items-center p-2 m-2 w-7 h-7 rounded-full hover:opacity-80 duration-300"
+              onClick={decrement}
+            >-</button>
+            <p className="text-xl">{value}</p>
+            <button 
+              className="flex items-center p-2 m-2 w-7 h-7 rounded-full hover:opacity-80 duration-300"
+              onClick={increment}
+            >+</button>
           </div>
         </div>
-        {!open && <Luggage cant_carry={cant_carry} cant_bag={cant_bag} />}
-        {open && <Accordion {...props} />}
       </div>
     </>
   );
 }
 
 function Luggage({
-  cant_carry,
+  cant_handBag,
   cant_bag,
+  cant_littleBag
 }: {
-  cant_carry: string;
+  cant_handBag: string;
   cant_bag: string;
+  cant_littleBag: string;
 }) {
   return (
     <>
-      <div className="bg-white w-[814px] h-[76px] rounded-b-lg border-t border-gray-200 flex items-center px-6">
+      <div className="bg-white w-full   flex items-center mt-5">
         <div className="flex flex-row items-center">
-          <Image src={carry} alt="carry" />
+          <Image src={handBag} alt="handBag" />
           <p className="text-[14px] text-[#10004f] font-bold px-3">
-            {cant_carry} Bolso de mano o mochila
+            {cant_handBag === "1" ? `${cant_handBag} Bolso de mano` : `${cant_handBag} Bolsos de mano` }
           </p>
         </div>
         <div className="flex flex-row items-center ml-3">
           <Image src={bag} alt="carry" />
           <p className="text-[14px] text-[#10004f] font-bold px-3">
-            {cant_bag} Valija mediana (70x40)
+            {cant_bag === "1" ? `${cant_bag} Valija grande o ${cant_littleBag} pequeñas` : `${cant_bag} Valijas grandes o ${cant_littleBag} pequeñas` }
           </p>
         </div>
       </div>
@@ -254,14 +272,14 @@ function Accordion(props: any) {
             <Image src={light} alt="light" className="mx-1" />
           </div>
         </div>
-        <button
+        {/* <button
           className="bg-orange-500 w-[814px] h-[54px] rounded-b-lg
                     text-white text-[18px] font-bold 
                     flex justify-center items-center"
           onClick={handleSubmit}
         >
           Seleccionar
-        </button>
+        </button> */}
       </div>
     </>
   );

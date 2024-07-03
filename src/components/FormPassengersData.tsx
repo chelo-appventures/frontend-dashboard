@@ -16,6 +16,21 @@ const errorInitialState = {
   globals: [""],
 };
 
+function hasEmptyString(obj: any): boolean {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+      if (typeof value === "object" && value !== null) {
+        if (hasEmptyString(value)) {
+          return true;
+        }
+      } else if (value === "") {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 export default function Passengers({
   passengers: amountPassegengers,
 }: {
@@ -23,6 +38,7 @@ export default function Passengers({
 }) {
   const { passengerData, setPassengerData } = usePassengerData();
   const [errors, setError] = useState(errorInitialState);
+  const [isDisabled, setIsDisabled] = useState(true)
 
   const router = useRouter();
   const redirect = (path: string) => {
@@ -61,7 +77,6 @@ export default function Passengers({
     try {
       const form1Data = window.localStorage.getItem("form1");
       initialData = form1Data ? JSON.parse(form1Data) : initialData;
-      console.log(initialData);
     } catch (error) {
       console.log(error);
     }
@@ -90,6 +105,8 @@ export default function Passengers({
         },
       },
     }));
+
+
 
     const initialErrorData = {
       ...errorInitialState,
@@ -206,23 +223,25 @@ export default function Passengers({
     if (!passenger.gender) {
       temporalError = {
         ...temporalError,
-        gender: "Selecciona un genero",
+        gender: "Selecciona un género",
       };
     }
     return temporalError;
   };
 
+
   const errorHandler = () => {
+    
     const passengersErrors = errors.passengers.map((oldError, i) => {
       const passenger: Passenger = passengerData.passengers[i];
       const newError: any = errorPassengerHandler(oldError, passenger);
       return newError;
     });
-
     setError({
       ...errors,
       passengers: passengersErrors,
     });
+
   };
   const submitHandler = (e: any) => {
     e.preventDefault();
@@ -232,6 +251,9 @@ export default function Passengers({
     const persistedData = JSON.stringify(passengerData);
     window.localStorage.setItem("form1", persistedData);
     redirect("/booking/travel_options");
+    
+    
+    
   };
 
   return (
@@ -278,14 +300,16 @@ export default function Passengers({
           className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
                     focus:outline-none duration-500 hover:shadow-md "
           checked={passengerData.agreements.termsCondition}
-          onChange={() =>
-            setPassengerData({
-              ...passengerData,
-              agreements: {
-                ...passengerData.agreements,
-                termsCondition: !passengerData.agreements.termsCondition,
-              },
-            })
+          onChange={() => {
+              setPassengerData({
+                ...passengerData,
+                agreements: {
+                  ...passengerData.agreements,
+                  termsCondition: !passengerData.agreements.termsCondition,
+                },
+              })
+              setIsDisabled(passengerData.agreements.termsCondition) 
+            }
           }
         />
         <label className="text-black p-2">
@@ -305,7 +329,7 @@ export default function Passengers({
           className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
                     focus:outline-none duration-500 hover:shadow-md "
           checked={passengerData.agreements.newsletter}
-          onChange={() =>
+          onChange={() => 
             setPassengerData({
               ...passengerData,
               agreements: {
@@ -324,8 +348,10 @@ export default function Passengers({
         <button
           type="button"
           className="bg-orange-500 text-white text-[18px] px-7 py-4 rounded-md
-                                        duration-500 hover:shadow-md"
+                    duration-500 hover:shadow-md"
+          disabled={isDisabled}
           onClick={submitHandler}
+          
         >
           Continuar
         </button>

@@ -260,12 +260,15 @@ export default function PassengerForm({
                 />
                 <label htmlFor="other">Prefiero no decirlo</label>
               </div>
-              <div className="mx-3 pt-1">
-                {isError(errors.gender) && (
-                  <ErrorMessage field={errors.gender} />
-                )}
-              </div>
             </div>
+          </div>
+        </div>
+        <div className="flex flex-row">
+          <div className="w-3/12"></div>
+          <div className="w-9/12 px-4">
+            {isError(errors.gender) && (
+              <ErrorMessage field={errors.gender} />
+            )}
           </div>
         </div>
       </>

@@ -1,63 +1,12 @@
 function pricing(
-    {
-        agencyToPOD,         //distancia en KM desde la agencia al punto de "departure"
-        porToAgency,         //distancia en KM desde el punto de "return" hasta la agencia.
-        journeyKM,           //distancia ida y vuelta en KM
-        driverQuantity,      //cantidad de choferes
-        driverFee,           //tarifa por chofer
-        waitingKm,           //Km equivalentes por espera en paradas
-        waitingTime,         //tiempo de espera en Horas.
-        vehicleTypePrice,    //precio de km por tipo de vehiculo
-        vehicleCode,         //código asignado a un vehìculo. Ej: "sprinter24"
-        vehicleQuantity,     //cantidad de vehículos
-        availabilityCoef,    //coeficiente de disponibilidad
-        closenessCoef = 0.5,   //coeficiente de cercania
-        trafficCoef,          //coeficiente de trafico
-        travelExpenses       // viaticos (calculados en otra funcion)
-    }: {
-        agencyToPOD: number,
-        porToAgency: number,
-        journeyKM: number,
-        driverQuantity: number,
-        driverFee: number,
-        waitingKm: number,
-        waitingTime: number,
-        vehicleTypePrice: number,
-        vehicleCode: string,
         vehicleQuantity: number,
-        availabilityCoef: number,
-        closenessCoef: number,
-        trafficCoef: number,
+        driverPrice: number,
+        journeyPrice: number,
         travelExpenses: number
-    }
-) {
+    
+): number {
+    return (journeyPrice + driverPrice) * vehicleQuantity + travelExpenses
 
-    const vehicle_distance_coef = (vehicle: string, journey_km: number) => {
-        const vehicle1 = ["sharan", "sprinter19"]
-        const vehicle2 = ["sprinter24", "bus45", "bus60"]
-
-        if (vehicle1.includes(vehicle) && journey_km <= 600)
-            return 1
-        if (vehicle1.includes(vehicle) && journey_km > 600)
-            return 2
-        if (vehicle2.includes(vehicle) && journey_km <= 100)
-            return 1
-        if (vehicle2.includes(vehicle) && journey_km > 100)
-            return 2
-        return 0
-    }
-
-    const journey = (vehicleTypePrice * availabilityCoef * agencyToPOD * closenessCoef)
-        + (vehicleTypePrice * availabilityCoef) * ((journeyKM * trafficCoef) + waitingKm)
-        + (vehicleTypePrice * availabilityCoef) * porToAgency * closenessCoef
-
-    const driver = driverFee * vehicle_distance_coef(vehicleCode, journeyKM) * driverQuantity
-
-    const wait_stay = driverFee * waitingTime
-
-    const total_fee = (journey + driver + wait_stay) * vehicleQuantity + travelExpenses
-
-    return total_fee
 }
 
 function travelExpenses(
@@ -96,3 +45,38 @@ function travelExpenses(
     // Sumar los costos
     return costoTotalComidas + costoTotalHospedaje;
 }
+
+function journeyPrice(
+        vehicleTypePrice: number,
+        journeyKM: number
+): number {
+    return ( vehicleTypePrice * journeyKM )
+}
+
+function driverPrice(
+        driverFee: number,
+        vehicleCode: string,
+        journeyKm: number,
+        driverQuantity: number
+): number {
+    const vehicle_distance_coef = (vehicle: string, journey_km: number) => {
+        const vehicle1 = ["sharan", "sprinter19"]
+        const vehicle2 = ["sprinter24", "bus45", "bus60"]
+
+        if (vehicle1.includes(vehicle) && journey_km <= 600)
+            return 1
+        if (vehicle1.includes(vehicle) && journey_km > 600)
+            return 2
+        if (vehicle2.includes(vehicle) && journey_km <= 100)
+            return 1
+        if (vehicle2.includes(vehicle) && journey_km > 100)
+            return 2
+        return 0
+    }
+    const price = driverFee * vehicle_distance_coef(vehicleCode, journeyKm) * driverQuantity
+
+    return price
+}
+
+
+export { travelExpenses, journeyPrice, driverPrice, pricing }

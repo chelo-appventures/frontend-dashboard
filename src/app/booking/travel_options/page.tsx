@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import CardOption, { IconType } from "@/components/card";
 import HeaderAV, { OptionHeader } from "@/components/header";
 import Separator from "@/components/separator";
+import LabelInput from "@/components/input";
 
 const options = [
   {
@@ -103,6 +104,9 @@ export default function TravelOptions() {
                 );
               })}
             </div>
+
+            
+
             <div className="ml-10 w-[345px]">
                 <h1 className="text-[36px] text-black">A pagar</h1>
               <div className="flex flex-col bg-white justify-end rounded-md my-5 px-5 pb-5 shadow-lg">
@@ -199,6 +203,7 @@ export default function TravelOptions() {
 
             </div>
           </div>
+
         </div>
       </div>
     </>

@@ -66,20 +66,21 @@ function IconLogos({
   );
 }
 
+interface Vehicle {
+  id: string
+  name: string
+  car_img: IconType
+  seats: number
+  cant_handBag: number
+  cant_bag: number
+  cant_littleBag: number
+  quantity: number
+  price: number
+}
+
 export default function CardOption(props: {
-  id: string;
-  origin: string;
-  destiny: string;
-  init_time: string;
-  final_time: string;
-  cant_car: string;
-  car: string;
-  car_img: IconType;
-  seats: string;
-  cant_handBag: string;
-  cant_bag: string;
-  cant_littleBag: string;
-  price: string;
+  setVehicle: Function;
+  vehicle: Vehicle;
 }) {
   const [open, setOpen] = useState(false);
   const openAccordion = (e: any) => {
@@ -87,29 +88,22 @@ export default function CardOption(props: {
     setOpen(!open);
   };
 
-  const [value, setValue] = useState(0)
-  const increment = () => value + 1 > 0 ? setValue(value + 1) : setValue(0);
-  const decrement = () => value - 1 > 0 ? setValue(value - 1) : setValue(0);
-
-  const handleValue = (value:number) => {
-
-  }
+  const {
+    
+    setVehicle,
+    vehicle,
+  } = props;
 
   const {
     id,
-    origin,
-    destiny,
-    init_time,
-    final_time,
-    cant_car,
-    car,
+    name,
     car_img,
     seats,
     cant_handBag,
     cant_bag,
     cant_littleBag,
     price,
-  } = props;
+  } = vehicle
   return (
     <>
       <div className="shadow-lg my-5 hover:ring-2 hover:ring-orange-500 duration-300">
@@ -120,7 +114,7 @@ export default function CardOption(props: {
               <div className="mt-5 ">
                 <h4 className="font-bold text-[20px]">
                   {/* {cant_car} x  */}
-                  {car} 
+                  {name} 
                 </h4>
                 <h4 className={`${ruda.className} font-semibold text-[16px]`}>
                   {seats} asientos útiles + 1 chofer calificado*
@@ -149,12 +143,24 @@ export default function CardOption(props: {
             <p>Seleccionar cantidad</p>
             <button 
               className="flex items-center p-2 m-2 w-7 h-7 rounded-full hover:opacity-80 duration-300"
-              onClick={decrement}
+              onClick={(e)=> {
+                e.preventDefault()
+                setVehicle({
+                  ...vehicle,
+                  quantity: vehicle.quantity > 0 ? vehicle.quantity - 1 : vehicle.quantity
+                })
+              }}
             >-</button>
-            <p className="text-xl">{value}</p>
+            <p className="text-xl">{vehicle.quantity}</p>
             <button 
               className="flex items-center p-2 m-2 w-7 h-7 rounded-full hover:opacity-80 duration-300"
-              onClick={increment}
+              onClick={(e)=> {
+                e.preventDefault()
+                setVehicle({
+                  ...vehicle,
+                  quantity: vehicle.quantity + 1
+                })
+              }}
             >+</button>
           </div>
         </div>
@@ -168,9 +174,9 @@ function Luggage({
   cant_bag,
   cant_littleBag
 }: {
-  cant_handBag: string;
-  cant_bag: string;
-  cant_littleBag: string;
+  cant_handBag: number;
+  cant_bag: number;
+  cant_littleBag: number;
 }) {
   return (
     <>
@@ -178,13 +184,13 @@ function Luggage({
         <div className="flex flex-row items-center">
           <Image src={handBag} alt="handBag" />
           <p className="text-[14px] text-[#10004f] font-bold px-3">
-            {cant_handBag === "1" ? `${cant_handBag} Bolso de mano` : `${cant_handBag} Bolsos de mano` }
+            {cant_handBag === 1 ? `${cant_handBag} Bolso de mano` : `${cant_handBag} Bolsos de mano` }
           </p>
         </div>
         <div className="flex flex-row items-center ml-3">
           <Image src={bag} alt="carry" />
           <p className="text-[14px] text-[#10004f] font-bold px-3">
-            {cant_bag === "1" ? `${cant_bag} Valija grande o ${cant_littleBag} pequeñas` : `${cant_bag} Valijas grandes o ${cant_littleBag} pequeñas` }
+            {cant_bag === 1 ? `${cant_bag} Valija grande o ${cant_littleBag} pequeñas` : `${cant_bag} Valijas grandes o ${cant_littleBag} pequeñas` }
           </p>
         </div>
       </div>
@@ -272,14 +278,6 @@ function Accordion(props: any) {
             <Image src={light} alt="light" className="mx-1" />
           </div>
         </div>
-        {/* <button
-          className="bg-orange-500 w-[814px] h-[54px] rounded-b-lg
-                    text-white text-[18px] font-bold 
-                    flex justify-center items-center"
-          onClick={handleSubmit}
-        >
-          Seleccionar
-        </button> */}
       </div>
     </>
   );

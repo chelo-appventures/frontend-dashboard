@@ -114,7 +114,7 @@ export default function TravelOptions() {
                 placeholder="Distancia de ida"
                 value={distanciaIda}
                 onChange={(e: any) => {
-                  setDistanciaIda(e.currentTarget.value);
+                  setDistanciaIda(parseInt(e.currentTarget.value));
                 }}
               />
             </div>
@@ -125,7 +125,7 @@ export default function TravelOptions() {
                 placeholder="Distancia de vuelta"
                 value={distanciaVuelta}
                 onChange={(e: any) => {
-                  setDistanciaVuelta(e.currentTarget.value);
+                  setDistanciaVuelta(parseInt(e.currentTarget.value));
                 }}
               />
             </div>

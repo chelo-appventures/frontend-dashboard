@@ -6,7 +6,6 @@ function pricing(
     
 ): number {
     return (journeyPrice + driverPrice) * vehicleQuantity + travelExpenses
-
 }
 
 function travelExpenses(
@@ -54,7 +53,7 @@ function journeyPrice(
 }
 
 const driverQuantitys = (vehicle: string, journey_km: number) => {
-    const vehicle1 = ["sharan7", "sprinter19"]
+    const vehicle1 = ["sharan7", "sprinter19", "cronos4"]
     const vehicle2 = ["sprinter24", "bus45", "bus60"]
 
     if (vehicle1.includes(vehicle) && journey_km <= 600)
@@ -123,9 +122,11 @@ function pricingAll (
 
     // COSTO CHOFERES================================================================
     const driverQuantityPerCar = (vehicle: string, journey_km: number) => {
-        const vehicle1 = ["sharan", "sprinter19"]
+
+        const vehicle1 = ["sharan7", "sprinter19", "cronos4"]
         const vehicle2 = ["sprinter24", "bus45", "bus60"]
 
+        console.log(vehicle1.includes(vehicle), vehicle)
         if (vehicle1.includes(vehicle) && journey_km <= 600)
             return 1
         if (vehicle1.includes(vehicle) && journey_km > 600)

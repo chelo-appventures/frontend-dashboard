@@ -81,6 +81,8 @@ interface Vehicle {
 export default function CardOption(props: {
   setVehicle: Function;
   vehicle: Vehicle;
+  seatsNeeded: number;
+  setSeatsNeeded: Function;
 }) {
   const [open, setOpen] = useState(false);
   const openAccordion = (e: any) => {
@@ -92,6 +94,8 @@ export default function CardOption(props: {
     
     setVehicle,
     vehicle,
+    seatsNeeded,
+    setSeatsNeeded
   } = props;
 
   const {
@@ -149,7 +153,9 @@ export default function CardOption(props: {
                   ...vehicle,
                   quantity: vehicle.quantity > 0 ? vehicle.quantity - 1 : vehicle.quantity
                 })
+                setSeatsNeeded(seatsNeeded + vehicle.seats)
               }}
+              disabled={vehicle.quantity === 0}
             >-</button>
             <p className="text-xl">{vehicle.quantity}</p>
             <button 
@@ -160,7 +166,9 @@ export default function CardOption(props: {
                   ...vehicle,
                   quantity: vehicle.quantity + 1
                 })
+                setSeatsNeeded(seatsNeeded - vehicle.seats)
               }}
+              disabled={seatsNeeded <= 0}
             >+</button>
           </div>
         </div>

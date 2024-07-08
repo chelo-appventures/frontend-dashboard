@@ -17,17 +17,23 @@ export default function PartialPay() {
 
   const [checkout, setCheckout] = useState({
     invoiceType: "A",
-    totalCost: 36000,
+    totalCost: 0,
     percentage: "25",
-    amount: 18000,
+    amount: 0,
   });
   const currency = new Intl.NumberFormat();
 
   const [result, setResult] = useState<any>();
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
-    if (form0) {
-      setResult({ form0 } as any);
+    const form2 = JSON.parse(localStorage.getItem("form2") || "");
+    if (form0 && form2) {
+      setResult({ form0, form2 } as any);
+      setCheckout({
+        ...checkout,
+        totalCost: form2.totalCost,
+        amount: form2.totalCost * (parseInt(checkout.percentage) / 100),
+      });
     }
   }, []);
 

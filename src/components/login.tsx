@@ -5,7 +5,7 @@ import { useState } from "react";
 import LabelInput from "./input";
 import { RedAlert } from "./alert";
 
-const APIBASE = "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000";
+const APIBASE = "/externalapi";
 
 export default function LoginComp() {
   const router = useRouter();

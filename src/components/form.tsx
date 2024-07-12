@@ -14,6 +14,7 @@ import LabelInput, { SearchPlaces } from "./input";
 import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
 import TextArea from "./textArea";
+import { isValid } from "@/utils/basics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,11 +29,15 @@ export default function AVForm() {
     fullTime: "",
     departure: {
       city: "",
+      street:"",
+      number:"",
       date: "",
       time: "",
     },
     return: {
       city: "",
+      street:"",
+      number:"",
       date: "",
       time: "",
     },
@@ -57,6 +62,8 @@ export default function AVForm() {
 
   const [errors, setErrors] = useState(errorsInitialState);
 
+  
+
   function errorChecker(resObj: any) {
     const INCOMPLETE_FORM = "Hay datos incompletos en el formulario";
     const NO_ADULTS = "Debe haber al menos 1 pasajero adulto";
@@ -67,6 +74,12 @@ export default function AVForm() {
 
     if (resObj?.departure?.city === "")
       newErrors.departure.city = "Selecciona una ciudad";
+    
+    if (resObj?.departure?.street === "")
+      newErrors.departure.street = "Selecciona una calle";
+    
+    if (resObj?.departure?.number === "")
+      newErrors.departure.number = "Indica una numeración";
 
     if (resObj?.departure?.date === "")
       newErrors.departure.date = "Selecciona una fecha de salida";
@@ -76,6 +89,12 @@ export default function AVForm() {
 
     if (resObj?.return?.city === "")
       newErrors.return.city = "Selecciona una ciudad";
+
+    if (resObj?.return?.street === "")
+      newErrors.return.street = "Selecciona una calle";
+    
+    if (resObj?.return?.number === "")
+      newErrors.return.number = "Indica una numeración";
 
     if (resObj?.return?.date === "")
       newErrors.return.date = "Selecciona una fecha de regreso";
@@ -102,26 +121,23 @@ export default function AVForm() {
 
   let initialData = trip;
   useEffect(() => {
-    try {
-      const form0Data = window.localStorage.getItem("form0");
-      initialData = form0Data ? JSON.parse(form0Data) : trip;
-      console.log(initialData);
-    } catch (error) {
-      console.log(error);
-    }
-    setTrip(initialData);
+      try {
+        const form0Data = window.localStorage.getItem("form0");
+        initialData = form0Data ? JSON.parse(form0Data) : trip;
+        console.log(initialData);
+      } catch (error) {
+        console.log(error);
+      }
+      setTrip(initialData);
+    
   }, []);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
-    console.log("AVFORM >> SubmitHandler");
-    console.log(trip);
     errorChecker(trip);
-    console.log(errors);
     const persistedData = JSON.stringify(trip);
     window.localStorage.setItem("form0", persistedData);
-    // if (errors.globals.length > 0)
-    redirect("/booking/passengers");
+    isValid(errors, errorsInitialState) ? redirect("/booking/passengers") : null
   };
 
   return (
@@ -135,8 +151,8 @@ export default function AVForm() {
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
         {errors.globals.length > 0
           ? errors.globals.map((err: string, index: number) => (
-              <RedAlert key={index}>{err}</RedAlert>
-            ))
+            <RedAlert key={index}>{err}</RedAlert>
+          ))
           : null}
         <Separator title="Tipo de viaje" />
         <div className="flex items-center">
@@ -244,11 +260,11 @@ export default function AVForm() {
           </>
         )}
 
-        <Separator title="Salida / Regreso" />
-        <div className="flex flex-row pr-4 pt-3">
+        <Separator title="Salida" />
+        <div className="flex flex-row">
           <div className="w-1/2 mr-2">
             <SearchPlaces
-              label="Salida"
+              label="Ciudad"
               errorField={errors.departure.city}
               onChange={(e: any) => {
                 if (isError(errors.departure.city)) {
@@ -261,11 +277,6 @@ export default function AVForm() {
                   }));
                 }
               }}
-              // onBlur={(e: any) => {
-              //   if(!trip.departure.city) {
-              //     setErrors()
-              //   }
-              // }}
               onPlaceSelected={(place: any) => {
                 setTrip((trip) => ({
                   ...trip,
@@ -284,7 +295,149 @@ export default function AVForm() {
           </div>
           <div className="w-1/2 ml-2">
             <SearchPlaces
-              label="Destino"
+              label="Calle"
+              errorField={errors.departure.street}
+              onChange={(e: any) => {
+                if (isError(errors.departure.street)) {
+                  setErrors((errors: any) => ({
+                    ...errors,
+                    departure: {
+                      ...errors.departure,
+                      street: "",
+                    },
+                  }));
+                }
+              }}
+              onPlaceSelected={(place: any) => {
+                setTrip((trip) => ({
+                  ...trip,
+                  departure: {
+                    ...trip.departure,
+                    street: place?.formatted_address,
+                    googlePlace: {
+                      ...trip.departure.googlePlace,
+                      lat: place?.geometry.location.lat(),
+                      lng: place?.geometry.location.lng(),
+                    },
+                  },
+                }));
+              }}
+            />
+          </div>
+        </div>
+        <div className="flex flex-row">
+          <div className="w-1/4 mr-2">
+            <LabelInput
+              type="text"
+              placeholder="Número"
+              label=""
+              errorField={errors.departure.number}
+              onChange={(e: any) => {
+                if (isError(errors.departure.number)) {
+                  setErrors((errors: any) => ({
+                    ...errors,
+                    departure: {
+                      ...errors.departure,
+                      number: "",
+                    },
+                  }));
+                }
+                setTrip({
+                  ...trip,
+                  departure: {
+                    ...trip.departure,
+                    number: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/4 mx-2">
+            <LabelInput
+              type="text"
+              placeholder="Depto / Timbre / Otro"
+              label=""
+              errorField={errors.departure.other}
+              onChange={(e: any) => {
+                if (isError(errors.departure.other)) {
+                  setErrors((errors: any) => ({
+                    ...errors,
+                    departure: {
+                      ...errors.departure,
+                      other: "",
+                    },
+                  }));
+                }
+                setTrip({
+                  ...trip,
+                  departure: {
+                    ...trip.departure,
+                    other: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/4 mx-2">
+            <LabelInput
+              label=""
+              type="date"
+              placeholder="Fecha de partida"
+              value={trip.departure.date}
+              errorField={errors.departure.date}
+              onChange={(e: any) => {
+                if (isError(errors.departure.date)) {
+                  setErrors({
+                    ...errors,
+                    departure: {
+                      ...errors.departure,
+                      date: "",
+                    },
+                  });
+                }
+                setTrip({
+                  ...trip,
+                  departure: {
+                    ...trip.departure,
+                    date: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/4 ml-2">
+            <LabelInput
+              type="time"
+              label=""
+              placeholder="Hora de partida"
+              value={trip.departure.time}
+              errorField={errors.departure.time}
+              onChange={(e: any) => {
+                if (isError(errors.departure.time)) {
+                  setErrors({
+                    ...errors,
+                    departure: {
+                      ...errors.departure,
+                      time: "",
+                    },
+                  });
+                }
+                setTrip({
+                  ...trip,
+                  departure: {
+                    ...trip.departure,
+                    time: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+          </div>
+        </div>
+        <Separator title="Destino y Regreso" />
+        <div className="flex flex-row">
+          <div className="w-1/2 mr-2">
+            <SearchPlaces
+              label="Ciudad"
               errorField={errors.return.city}
               onChange={(e: any) => {
                 if (isError(errors.return.city)) {
@@ -313,229 +466,259 @@ export default function AVForm() {
               }}
             />
           </div>
-        </div>
-        <div className="flex">
-          <div className="w-1/4 flex flex-col pr-4 pt-1">
-            <div>
-              <LabelInput
-                label=""
-                type="date"
-                placeholder="Fecha de partida"
-                value={trip.departure.date}
-                errorField={errors.departure.date}
-                onChange={(e: any) => {
-                  if (isError(errors.departure.date)) {
-                    setErrors({
-                      ...errors,
-                      departure: {
-                        ...errors.departure,
-                        date: "",
-                      },
-                    });
-                  }
-                  setTrip({
-                    ...trip,
-                    departure: {
-                      ...trip.departure,
-                      date: e.currentTarget.value,
-                    },
-                  });
-                }}
-              />
-            </div>
-          </div>
-          <div className="w-1/4 flex flex-col pr-4 pt-1">
-            <div>
-              <LabelInput
-                type="time"
-                label=""
-                placeholder="Hora de partida"
-                value={trip.departure.time}
-                errorField={errors.departure.time}
-                onChange={(e: any) => {
-                  if (isError(errors.departure.time)) {
-                    setErrors({
-                      ...errors,
-                      departure: {
-                        ...errors.departure,
-                        time: "",
-                      },
-                    });
-                  }
-                  setTrip({
-                    ...trip,
-                    departure: {
-                      ...trip.departure,
-                      time: e.currentTarget.value,
-                    },
-                  });
-                }}
-              />
-            </div>
-          </div>
-          <div className="w-1/4 flex flex-col pr-4 pt-1">
-            <div>
-              <LabelInput
-                type="date"
-                label=""
-                placeholder="Fecha de regreso"
-                errorField={errors.return.date}
-                value={trip.return.date}
-                onChange={(e: any) => {
-                  if (isError(errors.return.date)) {
-                    setErrors({
-                      ...errors,
-                      return: {
-                        ...errors.return,
-                        date: "",
-                      },
-                    });
-                  }
-                  setTrip({
-                    ...trip,
+          <div className="w-1/2 ml-2">
+            <SearchPlaces
+              label="Calle"
+              errorField={errors.return.street}
+              onChange={(e: any) => {
+                if (isError(errors.return.street)) {
+                  setErrors((errors: any) => ({
+                    ...errors,
                     return: {
-                      ...trip.return,
-                      date: e.currentTarget.value,
+                      ...errors.return,
+                      street: "",
                     },
-                  });
-                }}
-              />
-            </div>
-          </div>
-          <div className="w-1/4 flex flex-col pr-4 pt-1">
-            <div>
-              <LabelInput
-                type="time"
-                label=""
-                placeholder="Hora de regreso"
-                value={trip.return.time}
-                errorField={errors.return.time}
-                onChange={(e: any) => {
-                  if (isError(errors.return.time)) {
-                    setErrors({
-                      ...errors,
-                      return: {
-                        ...errors.return,
-                        time: "",
-                      },
-                    });
-                  }
-                  setTrip({
-                    ...trip,
-                    return: {
-                      ...trip.return,
-                      time: e.currentTarget.value,
+                  }));
+                }
+              }}
+              onPlaceSelected={(place: any) => {
+                setTrip((trip) => ({
+                  ...trip,
+                  return: {
+                    ...trip.return,
+                    street: place?.formatted_address,
+                    googlePlace: {
+                      ...trip.return.googlePlace,
+                      lat: place?.geometry.location.lat(),
+                      lng: place?.geometry.location.lng(),
                     },
-                  });
-                }}
-              />
-            </div>
+                  },
+                }));
+              }}
+            />
           </div>
         </div>
-
-        <Separator title="Pasajeros" />
-        <div className="flex flex-column justify-left">
-          <AVCounter
-            icon={"adult" as IconType}
-            title="Adulto"
-            subtitle="18 o más años"
-            value={trip.passengers.adult}
-            errorField={errors.passengers.adult}
-            handleValue={(adult: number) => {
-              if (isError(errors.passengers.adult)) {
-                setErrors({
-                  ...errors,
-                  passengers: {
-                    ...errors.passengers,
-                    adult: "",
+        <div className="flex flex-row">
+          <div className="w-1/4 mr-2">
+            <LabelInput
+              type="text"
+              placeholder="Número"
+              label=""
+              onChange={(e: any) => {
+                if (isError(errors.return.number)) {
+                  setErrors((errors: any) => ({
+                    ...errors,
+                    return: {
+                      ...errors.return,
+                      number: "",
+                    },
+                  }));
+                }
+                setTrip({
+                  ...trip,
+                  return: {
+                    ...trip.return,
+                    number: e.currentTarget.value,
                   },
                 });
-              }
-              setTrip({
-                ...trip,
-                passengers: {
-                  ...trip.passengers,
-                  adult,
-                },
-              });
-            }}
-          />
-          <AVCounter
-            icon={"child" as IconType}
-            title="Niño"
-            subtitle="De 3 a 17 años"
-            value={trip.passengers.kid}
-            errorField={errors.passengers.kid}
-            handleValue={(kid: number) => {
-              setTrip({
-                ...trip,
-                passengers: {
-                  ...trip.passengers,
-                  kid,
-                },
-              });
-            }}
-          />
-          <AVCounter
-            icon={"baby" as IconType}
-            title="Bebé"
-            subtitle="Hasta 3 años"
-            value={trip.passengers.baby}
-            errorField={errors.passengers.baby}
-            handleValue={(baby: number) => {
-              setTrip({
-                ...trip,
-                passengers: {
-                  ...trip.passengers,
-                  baby,
-                },
-              });
-            }}
-          />
+              }}
+            />
+          </div>
+          <div className="w-1/4 mx-2">
+            <LabelInput
+              type="text"
+              placeholder="Depto / Timbre / Otro"
+              label=""
+              onChange={(e: any) => {
+                if (isError(errors.return.other)) {
+                  setErrors((errors: any) => ({
+                    ...errors,
+                    return: {
+                      ...errors.return,
+                      other: "",
+                    },
+                  }));
+                }
+                setTrip({
+                  ...trip,
+                  return: {
+                    ...trip.return,
+                    other: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/4 mx-2">
+            <LabelInput
+              type="date"
+              label=""
+              placeholder="Fecha de regreso"
+              errorField={errors.return.date}
+              value={trip.return.date}
+              onChange={(e: any) => {
+                if (isError(errors.return.date)) {
+                  setErrors({
+                    ...errors,
+                    return: {
+                      ...errors.return,
+                      date: "",
+                    },
+                  });
+                }
+                setTrip({
+                  ...trip,
+                  return: {
+                    ...trip.return,
+                    date: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/4 ml-2">
+            <LabelInput
+              type="time"
+              label=""
+              placeholder="Hora de regreso"
+              value={trip.return.time}
+              errorField={errors.return.time}
+              onChange={(e: any) => {
+                if (isError(errors.return.time)) {
+                  setErrors({
+                    ...errors,
+                    return: {
+                      ...errors.return,
+                      time: "",
+                    },
+                  });
+                }
+                setTrip({
+                  ...trip,
+                  return: {
+                    ...trip.return,
+                    time: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+          </div>
         </div>
-        <div className="flex flex-column justify-left my-4">
-          <AVCounter
-            icon={"puppySmall" as IconType}
-            title="Hasta 8kg"
-            subtitle="Mascota en falda"
-            value={trip.passengers.pets.small}
-            errorField={errors.passengers.pets.small}
-            handleValue={(small: number) => {
-              setTrip({
-                ...trip,
-                passengers: {
-                  ...trip.passengers,
-                  pets: {
-                    ...trip.passengers.pets,
-                    small,
+        <Separator title="Pasajeros" />
+        <div className="flex flex-row justify-left mt-4">
+          <div className="w-1/3 mr-2">
+            <AVCounter
+              icon={"adult" as IconType}
+              title="Adulto"
+              subtitle="18 o más años"
+              value={trip.passengers.adult}
+              errorField={errors.passengers.adult}
+              handleValue={(adult: number) => {
+                if (isError(errors.passengers.adult)) {
+                  setErrors({
+                    ...errors,
+                    passengers: {
+                      ...errors.passengers,
+                      adult: "",
+                    },
+                  });
+                }
+                setTrip({
+                  ...trip,
+                  passengers: {
+                    ...trip.passengers,
+                    adult,
                   },
-                },
-              });
-            }}
-          />
-          <AVCounter
-            icon={"puppyBig" as IconType}
-            title="Mas de 8kg"
-            subtitle="Mascota en asiento"
-            value={trip.passengers.pets.big}
-            errorField={errors.passengers.pets.big}
-            handleValue={(big: number) => {
-              setTrip({
-                ...trip,
-                passengers: {
-                  ...trip.passengers,
-                  pets: {
-                    ...trip.passengers.pets,
-                    big,
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/3 mx-2">
+            <AVCounter
+              icon={"child" as IconType}
+              title="Niño"
+              subtitle="De 3 a 17 años"
+              value={trip.passengers.kid}
+              errorField={errors.passengers.kid}
+              handleValue={(kid: number) => {
+                setTrip({
+                  ...trip,
+                  passengers: {
+                    ...trip.passengers,
+                    kid,
                   },
-                },
-              });
-            }}
-          />
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/3 ml-2">
+            <AVCounter
+              icon={"baby" as IconType}
+              title="Bebé"
+              subtitle="Hasta 3 años"
+              value={trip.passengers.baby}
+              errorField={errors.passengers.baby}
+              handleValue={(baby: number) => {
+                setTrip({
+                  ...trip,
+                  passengers: {
+                    ...trip.passengers,
+                    baby,
+                  },
+                });
+              }}
+            />
+          </div>
+        </div>
+        <div className="flex flex-row justify-left mt-4">
+          <div className="w-1/3 mr-2">
+            <AVCounter
+              icon={"puppySmall" as IconType}
+              title="Hasta 8kg"
+              subtitle="Mascota en falda"
+              value={trip.passengers.pets.small}
+              errorField={errors.passengers.pets.small}
+              handleValue={(small: number) => {
+                setTrip({
+                  ...trip,
+                  passengers: {
+                    ...trip.passengers,
+                    pets: {
+                      ...trip.passengers.pets,
+                      small,
+                    },
+                  },
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/3 mx-2">
+            <AVCounter
+              icon={"puppyBig" as IconType}
+              title="Mas de 8kg"
+              subtitle="Mascota en asiento"
+              value={trip.passengers.pets.big}
+              errorField={errors.passengers.pets.big}
+              handleValue={(big: number) => {
+                setTrip({
+                  ...trip,
+                  passengers: {
+                    ...trip.passengers,
+                    pets: {
+                      ...trip.passengers.pets,
+                      big,
+                    },
+                  },
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/3 ml-2"></div>
         </div>
 
         <Separator title="Equipaje" />
-        <div className="flex flex-column justify-left">
+        <div className="flex flex-row justify-between mt-4">
+          <div className="w-1/3 mr-1">
           <AVCounter
             icon={"carry_1" as IconType}
             title="Carry-on 15kg"
@@ -553,6 +736,8 @@ export default function AVForm() {
               });
             }}
           />
+          </div>
+          <div className="w-1/3 mx-2">
           <AVCounter
             icon={"bag_1" as IconType}
             title="Maleta 23kg"
@@ -570,6 +755,8 @@ export default function AVForm() {
               });
             }}
           />
+          </div>
+          <div className="w-1/3 ml-1">
           <AVCounter
             icon={"special" as IconType}
             title="Equipaje especial"
@@ -590,6 +777,7 @@ export default function AVForm() {
               });
             }}
           />
+          </div>
         </div>
         <div>
           {trip.luggage.special.quantity > 0 && (
@@ -626,7 +814,6 @@ export default function AVForm() {
             </>
           )}
         </div>
-
         <div className="flex justify-end py-4">
           <button className="py-3 px-6" onClick={submitHandler}>
             Cotizar

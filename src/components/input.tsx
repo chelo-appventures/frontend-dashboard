@@ -75,7 +75,6 @@ interface Props extends ReactGoogleAutocompleteProps {
 const SearchPlaces = (props: Props) => {
   const { label, errorField, onPlaceSelected, ...searchProps } = props;
   const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
-  console.log(API_KEY)
   return (
     <>
       <div className="relative">

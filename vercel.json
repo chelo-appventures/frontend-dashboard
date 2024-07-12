@@ -1,8 +1,8 @@
 {
-  "rewrites": [
-    {
-      "source": "/externalapi/auth/login",
-      "destination": "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000/auth/login"
-    }
-  ]
+    "rewrites": [
+        {
+            "source": "/externalapi(.*)",
+            "destination": "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000$1"
+        }
+    ]
 }

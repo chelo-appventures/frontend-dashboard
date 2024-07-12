@@ -34,8 +34,7 @@ function Budget() {
   const [data, setData] = useState<any>();
   useEffect(() => {
     const fetchData = async () => {
-      const APIBASE =
-        "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000";
+      const APIBASE = "/externalapi";
       const result = await fetch(`${APIBASE}/api/products`, {
         headers: {
           "Content-type": "application/json",

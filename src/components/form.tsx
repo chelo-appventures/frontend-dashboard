@@ -14,12 +14,21 @@ import LabelInput, { SearchPlaces } from "./input";
 import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
 import TextArea from "./textArea";
-import { isValid } from "@/utils/basics";
+import { getLongNames, isValid } from "@/utils/basics";
+import { loadGoogleMaps } from "@/utils/loadGoogleMaps";
+import SearchAddresses from "./PlacesAutocomplete";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
+  const [departureSelectedCity, setDepartureSelectedCity] = useState<string>('');
+  const [returnSelectedCity, setReturnSelectedCity] = useState<string>('');
+  const [returnCityBounds, setReturnCityBounds] = useState<google.maps.LatLngBounds | null>(null);
+  const [departureCityBounds, setDepartureCityBounds] = useState<google.maps.LatLngBounds | null>(null);
+  const [mapsLoaded, setMapsLoaded] = useState<boolean>(false);
+  const [enableDepartureSearchAddresses, setEnableDepartureSearchAddresses] = useState<boolean>(false)
+  const [enableReturnSearchAddresses, setEnableReturnSearchAddresses] = useState<boolean>(false)
   const errorsInitialState: any = {
     globals: [],
     tripType: {
@@ -29,15 +38,15 @@ export default function AVForm() {
     fullTime: "",
     departure: {
       city: "",
-      street:"",
-      number:"",
+      street: "",
+      number: "",
       date: "",
       time: "",
     },
     return: {
       city: "",
-      street:"",
-      number:"",
+      street: "",
+      number: "",
       date: "",
       time: "",
     },
@@ -62,7 +71,7 @@ export default function AVForm() {
 
   const [errors, setErrors] = useState(errorsInitialState);
 
-  
+
 
   function errorChecker(resObj: any) {
     const INCOMPLETE_FORM = "Hay datos incompletos en el formulario";
@@ -74,10 +83,10 @@ export default function AVForm() {
 
     if (resObj?.departure?.city === "")
       newErrors.departure.city = "Selecciona una ciudad";
-    
+
     if (resObj?.departure?.street === "")
       newErrors.departure.street = "Selecciona una calle";
-    
+
     if (resObj?.departure?.number === "")
       newErrors.departure.number = "Indica una numeración";
 
@@ -92,7 +101,7 @@ export default function AVForm() {
 
     if (resObj?.return?.street === "")
       newErrors.return.street = "Selecciona una calle";
-    
+
     if (resObj?.return?.number === "")
       newErrors.return.number = "Indica una numeración";
 
@@ -121,16 +130,125 @@ export default function AVForm() {
 
   let initialData = trip;
   useEffect(() => {
-      try {
-        const form0Data = window.localStorage.getItem("form0");
-        initialData = form0Data ? JSON.parse(form0Data) : trip;
-        console.log(initialData);
-      } catch (error) {
-        console.log(error);
-      }
-      setTrip(initialData);
-    
+    loadGoogleMaps(() => {
+      setMapsLoaded(true);
+    })
+    try {
+      const form0Data = window.localStorage.getItem("form0");
+      initialData = form0Data ? JSON.parse(form0Data) : trip;
+      console.log(initialData);
+    } catch (error) {
+      console.log(error);
+    }
+    setTrip(initialData);
+
   }, []);
+
+  const handleReturnCitySelected = (place: google.maps.places.PlaceResult): void => {
+    const city = place.address_components?.find((component: any) => component.types.includes('locality'));
+
+    setReturnSelectedCity(city ? city.long_name : '')
+
+    // Verificar si la geometría está disponible directamente
+    console.log('place', place)
+    const div:any = document.createElement('div')
+    div.className = 'hidden'
+    if (place.geometry && place.geometry.viewport) {
+      setReturnCityBounds(place.geometry.viewport);
+    } 
+    else {
+      // Obtener más detalles sobre el lugar utilizando PlacesService
+      const service = new google.maps.places.PlacesService(div);
+
+      service.getDetails({ placeId: place.place_id }, (result: any, status: any) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && result.geometry && result.geometry.viewport) {
+          console.log('Result:',result)
+          setReturnCityBounds(result.geometry.viewport);
+        }
+      });
+    }
+    setTrip((trip) => ({
+      ...trip,
+      return: {
+        ...trip.return,
+        city: place?.formatted_address,
+        googlePlace: {
+          ...trip.return.googlePlace,
+          lat: place?.geometry.location.lat(),
+          lng: place?.geometry.location.lng(),
+        },
+      },
+    }))
+    setEnableReturnSearchAddresses(true)
+  };
+  const handleDepartureCitySelected = (place: google.maps.places.PlaceResult): void => {
+    const city = place.address_components?.find((component: any) => component.types.includes('locality'));
+
+    setDepartureSelectedCity(city ? city.long_name : '')
+
+    // Verificar si la geometría está disponible directamente
+    if (place.geometry && place.geometry.viewport) {
+      setDepartureCityBounds(place.geometry.viewport);
+    } else {
+      // Obtener más detalles sobre el lugar utilizando PlacesService
+      const service = new google.maps.places.PlacesService(document.createElement('div'));
+      service.getDetails({ placeId: place.place_id }, (result: any, status: any) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && result.geometry && result.geometry.viewport) {
+          setDepartureCityBounds(result.geometry.viewport);
+        }
+      });
+    }
+    setTrip((trip) => ({
+      ...trip,
+      departure: {
+        ...trip.departure,
+        city: place?.formatted_address,
+        googlePlace: {
+          ...trip.departure.googlePlace,
+          lat: place?.geometry.location.lat(),
+          lng: place?.geometry.location.lng(),
+        },
+      },
+    }))
+    setEnableDepartureSearchAddresses(true)
+  };
+
+  const handleDepartureAddressSelected = (place: google.maps.places.PlaceResult): void => {
+    
+    setTrip((trip) => ({
+      ...trip,
+      departure: {
+        ...trip.departure,
+        street: getLongNames(place).route,
+        number: getLongNames(place).streetNumber,
+        googlePlace: {
+          ...trip.departure.googlePlace,
+          lat: place?.geometry.location.lat(),
+          lng: place?.geometry.location.lng(),
+        },
+      },
+    }));
+  };
+  const handleReturnAddressSelected = (place: google.maps.places.PlaceResult): void => {
+    setTrip((trip) => ({
+      ...trip,
+      return: {
+        ...trip.return,
+        street: getLongNames(place).route,
+        number: getLongNames(place).streetNumber,
+        googlePlace: {
+          ...trip.return.googlePlace,
+          lat: place?.geometry.location.lat(),
+          lng: place?.geometry.location.lng(),
+        },
+      },
+    }));
+  };
+
+  if (!mapsLoaded) {
+    return <div>Loading...</div>;
+  }
+
 
   const submitHandler = (e: any) => {
     e.preventDefault();
@@ -266,6 +384,7 @@ export default function AVForm() {
             <SearchPlaces
               label="Ciudad"
               errorField={errors.departure.city}
+              onPlaceSelected={handleDepartureCitySelected}
               onChange={(e: any) => {
                 if (isError(errors.departure.city)) {
                   setErrors((errors: any) => ({
@@ -277,26 +396,16 @@ export default function AVForm() {
                   }));
                 }
               }}
-              onPlaceSelected={(place: any) => {
-                setTrip((trip) => ({
-                  ...trip,
-                  departure: {
-                    ...trip.departure,
-                    city: place?.formatted_address,
-                    googlePlace: {
-                      ...trip.departure.googlePlace,
-                      lat: place?.geometry.location.lat(),
-                      lng: place?.geometry.location.lng(),
-                    },
-                  },
-                }));
-              }}
             />
+            
           </div>
           <div className="w-1/2 ml-2">
-            <SearchPlaces
-              label="Calle"
+            <SearchAddresses
+              label="Dirección"
+              bounds={departureCityBounds}
               errorField={errors.departure.street}
+              onPlaceSelected={handleDepartureAddressSelected}
+              disabled={!enableDepartureSearchAddresses}
               onChange={(e: any) => {
                 if (isError(errors.departure.street)) {
                   setErrors((errors: any) => ({
@@ -308,75 +417,15 @@ export default function AVForm() {
                   }));
                 }
               }}
-              onPlaceSelected={(place: any) => {
-                setTrip((trip) => ({
-                  ...trip,
-                  departure: {
-                    ...trip.departure,
-                    street: place?.formatted_address,
-                    googlePlace: {
-                      ...trip.departure.googlePlace,
-                      lat: place?.geometry.location.lat(),
-                      lng: place?.geometry.location.lng(),
-                    },
-                  },
-                }));
-              }}
-            />
+              />
+          
           </div>
         </div>
         <div className="flex flex-row">
           <div className="w-1/4 mr-2">
-            <LabelInput
-              type="text"
-              placeholder="Número"
-              label=""
-              errorField={errors.departure.number}
-              onChange={(e: any) => {
-                if (isError(errors.departure.number)) {
-                  setErrors((errors: any) => ({
-                    ...errors,
-                    departure: {
-                      ...errors.departure,
-                      number: "",
-                    },
-                  }));
-                }
-                setTrip({
-                  ...trip,
-                  departure: {
-                    ...trip.departure,
-                    number: e.currentTarget.value,
-                  },
-                });
-              }}
-            />
+            
           </div>
           <div className="w-1/4 mx-2">
-            <LabelInput
-              type="text"
-              placeholder="Depto / Timbre / Otro"
-              label=""
-              errorField={errors.departure.other}
-              onChange={(e: any) => {
-                if (isError(errors.departure.other)) {
-                  setErrors((errors: any) => ({
-                    ...errors,
-                    departure: {
-                      ...errors.departure,
-                      other: "",
-                    },
-                  }));
-                }
-                setTrip({
-                  ...trip,
-                  departure: {
-                    ...trip.departure,
-                    other: e.currentTarget.value,
-                  },
-                });
-              }}
-            />
           </div>
           <div className="w-1/4 mx-2">
             <LabelInput
@@ -439,6 +488,7 @@ export default function AVForm() {
             <SearchPlaces
               label="Ciudad"
               errorField={errors.return.city}
+              onPlaceSelected={handleReturnCitySelected}
               onChange={(e: any) => {
                 if (isError(errors.return.city)) {
                   setErrors((errors: any) => ({
@@ -450,26 +500,16 @@ export default function AVForm() {
                   }));
                 }
               }}
-              onPlaceSelected={(place: any) => {
-                setTrip((trip) => ({
-                  ...trip,
-                  return: {
-                    ...trip.return,
-                    city: place?.formatted_address,
-                    googlePlace: {
-                      ...trip.return.googlePlace,
-                      lat: place?.geometry.location.lat(),
-                      lng: place?.geometry.location.lng(),
-                    },
-                  },
-                }));
-              }}
             />
+            
           </div>
           <div className="w-1/2 ml-2">
-            <SearchPlaces
-              label="Calle"
+          <SearchAddresses
+              label="Dirección"
+              bounds={returnCityBounds}
               errorField={errors.return.street}
+              onPlaceSelected={handleReturnAddressSelected}
+              disabled={!enableReturnSearchAddresses}
               onChange={(e: any) => {
                 if (isError(errors.return.street)) {
                   setErrors((errors: any) => ({
@@ -481,73 +521,16 @@ export default function AVForm() {
                   }));
                 }
               }}
-              onPlaceSelected={(place: any) => {
-                setTrip((trip) => ({
-                  ...trip,
-                  return: {
-                    ...trip.return,
-                    street: place?.formatted_address,
-                    googlePlace: {
-                      ...trip.return.googlePlace,
-                      lat: place?.geometry.location.lat(),
-                      lng: place?.geometry.location.lng(),
-                    },
-                  },
-                }));
-              }}
-            />
+              />
+            
           </div>
         </div>
         <div className="flex flex-row">
           <div className="w-1/4 mr-2">
-            <LabelInput
-              type="text"
-              placeholder="Número"
-              label=""
-              onChange={(e: any) => {
-                if (isError(errors.return.number)) {
-                  setErrors((errors: any) => ({
-                    ...errors,
-                    return: {
-                      ...errors.return,
-                      number: "",
-                    },
-                  }));
-                }
-                setTrip({
-                  ...trip,
-                  return: {
-                    ...trip.return,
-                    number: e.currentTarget.value,
-                  },
-                });
-              }}
-            />
+            
           </div>
           <div className="w-1/4 mx-2">
-            <LabelInput
-              type="text"
-              placeholder="Depto / Timbre / Otro"
-              label=""
-              onChange={(e: any) => {
-                if (isError(errors.return.other)) {
-                  setErrors((errors: any) => ({
-                    ...errors,
-                    return: {
-                      ...errors.return,
-                      other: "",
-                    },
-                  }));
-                }
-                setTrip({
-                  ...trip,
-                  return: {
-                    ...trip.return,
-                    other: e.currentTarget.value,
-                  },
-                });
-              }}
-            />
+            
           </div>
           <div className="w-1/4 mx-2">
             <LabelInput
@@ -719,64 +702,64 @@ export default function AVForm() {
         <Separator title="Equipaje" />
         <div className="flex flex-row justify-between mt-4">
           <div className="w-1/3 mr-1">
-          <AVCounter
-            icon={"carry_1" as IconType}
-            title="Carry-on 15kg"
-            alert
-            subtitle="El número de maletas definen el tipo de vehículo"
-            value={trip.luggage.carryOn}
-            errorField={errors.luggage.carryOn}
-            handleValue={(carryOn: number) => {
-              setTrip({
-                ...trip,
-                luggage: {
-                  ...trip.luggage,
-                  carryOn,
-                },
-              });
-            }}
-          />
+            <AVCounter
+              icon={"carry_1" as IconType}
+              title="Carry-on 15kg"
+              alert
+              subtitle="El número de maletas definen el tipo de vehículo"
+              value={trip.luggage.carryOn}
+              errorField={errors.luggage.carryOn}
+              handleValue={(carryOn: number) => {
+                setTrip({
+                  ...trip,
+                  luggage: {
+                    ...trip.luggage,
+                    carryOn,
+                  },
+                });
+              }}
+            />
           </div>
           <div className="w-1/3 mx-2">
-          <AVCounter
-            icon={"bag_1" as IconType}
-            title="Maleta 23kg"
-            alert
-            subtitle="El número de maletas definen el tipo de vehículo"
-            value={trip.luggage.bag23}
-            errorField={errors.luggage.bag23}
-            handleValue={(bag23: number) => {
-              setTrip({
-                ...trip,
-                luggage: {
-                  ...trip.luggage,
-                  bag23,
-                },
-              });
-            }}
-          />
+            <AVCounter
+              icon={"bag_1" as IconType}
+              title="Maleta 23kg"
+              alert
+              subtitle="El número de maletas definen el tipo de vehículo"
+              value={trip.luggage.bag23}
+              errorField={errors.luggage.bag23}
+              handleValue={(bag23: number) => {
+                setTrip({
+                  ...trip,
+                  luggage: {
+                    ...trip.luggage,
+                    bag23,
+                  },
+                });
+              }}
+            />
           </div>
           <div className="w-1/3 ml-1">
-          <AVCounter
-            icon={"special" as IconType}
-            title="Equipaje especial"
-            alert
-            subtitle="Importante detallarlos, condicionan el tipo de vehículo"
-            value={trip.luggage.special.quantity}
-            errorField={errors.luggage.special.quantity}
-            handleValue={(quantity: number) => {
-              setTrip({
-                ...trip,
-                luggage: {
-                  ...trip.luggage,
-                  special: {
-                    ...trip.luggage.special,
-                    quantity,
+            <AVCounter
+              icon={"special" as IconType}
+              title="Equipaje especial"
+              alert
+              subtitle="Importante detallarlos, condicionan el tipo de vehículo"
+              value={trip.luggage.special.quantity}
+              errorField={errors.luggage.special.quantity}
+              handleValue={(quantity: number) => {
+                setTrip({
+                  ...trip,
+                  luggage: {
+                    ...trip.luggage,
+                    special: {
+                      ...trip.luggage.special,
+                      quantity,
+                    },
                   },
-                },
-              });
-            }}
-          />
+                });
+              }}
+            />
           </div>
         </div>
         <div>

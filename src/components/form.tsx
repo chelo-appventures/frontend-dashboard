@@ -147,26 +147,41 @@ export default function AVForm() {
   const handleReturnCitySelected = (place: google.maps.places.PlaceResult): void => {
     const city = place.address_components?.find((component: any) => component.types.includes('locality'));
 
-    setReturnSelectedCity(city ? city.long_name : '')
+
 
     // Verificar si la geometría está disponible directamente
     console.log('place', place)
-    const div:any = document.createElement('div')
-    div.className = 'hidden'
     if (place.geometry && place.geometry.viewport) {
       setReturnCityBounds(place.geometry.viewport);
-    } 
-    else {
-      // Obtener más detalles sobre el lugar utilizando PlacesService
-      const service = new google.maps.places.PlacesService(div);
+    } else {
+      const location = place.geometry.location;
+      const lat = location.lat();
+      const lng = location.lng();
 
-      service.getDetails({ placeId: place.place_id }, (result: any, status: any) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && result.geometry && result.geometry.viewport) {
-          console.log('Result:',result)
-          setReturnCityBounds(result.geometry.viewport);
+      // Crear bounds basados en un radio alrededor de la ubicación central
+      const radius = 50000; // 50km de radio (puedes ajustar esto según tus necesidades)
+      const bounds = new window.google.maps.LatLngBounds(
+        new window.google.maps.LatLng(lat - radius / 111.32, lng - radius / 111.32),
+        new window.google.maps.LatLng(lat + radius / 111.32, lng + radius / 111.32)
+      );
+      setReturnCityBounds((oldBounds: any) => {
+        if (!oldBounds) {
+          return bounds
         }
-      });
+      })
     }
+    setReturnSelectedCity(city ? city.long_name : '')
+    // else {
+    //   // Obtener más detalles sobre el lugar utilizando PlacesService
+    //   const service = new google.maps.places.PlacesService(div);
+
+    //   service.getDetails({ placeId: place.place_id }, (result: any, status: any) => {
+    //     if (status === google.maps.places.PlacesServiceStatus.OK && result.geometry && result.geometry.viewport) {
+    //       console.log('Result:',result)
+    //       setReturnCityBounds(result.geometry.viewport);
+    //     }
+    //   });
+    // }
     setTrip((trip) => ({
       ...trip,
       return: {
@@ -194,6 +209,7 @@ export default function AVForm() {
       const service = new google.maps.places.PlacesService(document.createElement('div'));
       service.getDetails({ placeId: place.place_id }, (result: any, status: any) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && result.geometry && result.geometry.viewport) {
+          console.log(result.geometry.viewport)
           setDepartureCityBounds(result.geometry.viewport);
         }
       });
@@ -214,7 +230,7 @@ export default function AVForm() {
   };
 
   const handleDepartureAddressSelected = (place: google.maps.places.PlaceResult): void => {
-    
+
     setTrip((trip) => ({
       ...trip,
       departure: {
@@ -397,7 +413,7 @@ export default function AVForm() {
                 }
               }}
             />
-            
+
           </div>
           <div className="w-1/2 ml-2">
             <SearchAddresses
@@ -417,13 +433,13 @@ export default function AVForm() {
                   }));
                 }
               }}
-              />
-          
+            />
+
           </div>
         </div>
         <div className="flex flex-row">
           <div className="w-1/4 mr-2">
-            
+
           </div>
           <div className="w-1/4 mx-2">
           </div>
@@ -501,10 +517,10 @@ export default function AVForm() {
                 }
               }}
             />
-            
+
           </div>
           <div className="w-1/2 ml-2">
-          <SearchAddresses
+            <SearchAddresses
               label="Dirección"
               bounds={returnCityBounds}
               errorField={errors.return.street}
@@ -521,16 +537,16 @@ export default function AVForm() {
                   }));
                 }
               }}
-              />
-            
+            />
+
           </div>
         </div>
         <div className="flex flex-row">
           <div className="w-1/4 mr-2">
-            
+
           </div>
           <div className="w-1/4 mx-2">
-            
+
           </div>
           <div className="w-1/4 mx-2">
             <LabelInput

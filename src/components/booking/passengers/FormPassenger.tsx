@@ -9,6 +9,7 @@ import { ErrorMessage, isError } from "@/components/ErrorMessage";
 import Select from "@/components/select";
 import { stringify } from "querystring";
 import Accordion from "@/components/Accordion";
+import CountryPhoneSelect from "@/components/CountryCode";
 
 export default function PassengerForm({
   errors,
@@ -86,11 +87,10 @@ export default function PassengerForm({
                   label="Documento"
                   errorField={errors.identification.type}
                   className={`
-                        ${
-                          isError(errors.identification.type)
-                            ? "border-red-500"
-                            : ""
-                        }`}
+                        ${isError(errors.identification.type)
+                      ? "border-red-500"
+                      : ""
+                    }`}
                   value={passenger.identification.type}
                   onChange={(e) => {
                     if (isError(errors.identification.type)) {
@@ -207,9 +207,7 @@ export default function PassengerForm({
                   });
                 }}
               >
-                <option disabled defaultValue="">
-                  --
-                </option>
+                <option disabled defaultValue=""></option>
                 <option value="adult">Adulto</option>
                 <option value="child">Niño</option>
                 <option value="baby">Bebé</option>
@@ -300,15 +298,40 @@ export default function PassengerForm({
                 <div className="w-1/2 flex flex-row">
                   <div className="w-1/3">
                     <div>
+                      {/* <CountryPhoneSelect
+                      selectLabel="Código de Área"
+                      errorField={errors.contact.phoneCode}
+                      className={`
+                                    ${isError(errors.contact.phoneCode)
+                          ? "border-red-500 "
+                          : ""}`}
+                      onChange={(e) => {
+                        if (isError(errors.contact.phoneCode)) {
+                          setError({
+                            ...errors,
+                            contact: {
+                              ...errors.contact,
+                              phoneCode: "",
+                            },
+                          });
+                        }
+                        setPassenger({
+                          ...passenger,
+                          contact: {
+                            ...passenger.contact,
+                            phoneCode: e.target.value,
+                          },
+                        });
+                      } }                      
+                      /> */}
                       <Select
                         label="Código de Área"
                         errorField={errors.contact.phoneCode}
                         className={`
-                                      ${
-                                        isError(errors.contact.phoneCode)
-                                          ? "border-red-500 "
-                                          : ""
-                                      }`}
+                                      ${isError(errors.contact.phoneCode)
+                            ? "border-red-500 "
+                            : ""
+                          }`}
                         onChange={(e) => {
                           if (isError(errors.contact.phoneCode)) {
                             setError({
@@ -328,11 +351,14 @@ export default function PassengerForm({
                           });
                         }}
                       >
-                        <option defaultValue="" disabled></option>
-                        <option value="54">+54</option>
-                        <option value="55">+55</option>
-                        <option value="56">+56</option>
-                        <option value="57">+57</option>
+                        <option disabled defaultValue=""></option>
+                        <option value="arg">+54</option>
+                        <option value="bra">+55</option>
+                        <option value="chi">+56</option>
+                        <option value="uru">+598</option>
+                        <option value="bol">+591</option>
+                        <option value="col">+57</option>
+                        <option value="ven">+58</option>
                       </Select>
                     </div>
                   </div>

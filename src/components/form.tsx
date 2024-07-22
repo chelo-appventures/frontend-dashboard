@@ -14,7 +14,7 @@ import LabelInput, { SearchPlaces } from "./input";
 import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
 import TextArea from "./textArea";
-import { getLongNames, isValid } from "@/utils/basics";
+import { isValid } from "@/utils/basics";
 import { loadGoogleMaps } from "@/utils/loadGoogleMaps";
 import SearchAddresses from "./PlacesAutocomplete";
 
@@ -22,13 +22,18 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
-  const [departureSelectedCity, setDepartureSelectedCity] = useState<string>('');
-  const [returnSelectedCity, setReturnSelectedCity] = useState<string>('');
-  const [returnCityBounds, setReturnCityBounds] = useState<google.maps.LatLngBounds | null>(null);
-  const [departureCityBounds, setDepartureCityBounds] = useState<google.maps.LatLngBounds | null>(null);
+  const [departureSelectedCity, setDepartureSelectedCity] =
+    useState<string>("");
+  const [returnSelectedCity, setReturnSelectedCity] = useState<string>("");
+  const [returnCityBounds, setReturnCityBounds] =
+    useState<google.maps.LatLngBounds | null>(null);
+  const [departureCityBounds, setDepartureCityBounds] =
+    useState<google.maps.LatLngBounds | null>(null);
   const [mapsLoaded, setMapsLoaded] = useState<boolean>(false);
-  const [enableDepartureSearchAddresses, setEnableDepartureSearchAddresses] = useState<boolean>(false)
-  const [enableReturnSearchAddresses, setEnableReturnSearchAddresses] = useState<boolean>(false)
+  const [enableDepartureSearchAddresses, setEnableDepartureSearchAddresses] =
+    useState<boolean>(false);
+  const [enableReturnSearchAddresses, setEnableReturnSearchAddresses] =
+    useState<boolean>(false);
   const errorsInitialState: any = {
     globals: [],
     tripType: {
@@ -37,16 +42,12 @@ export default function AVForm() {
     },
     fullTime: "",
     departure: {
-      city: "",
-      street: "",
-      number: "",
+      address: "",
       date: "",
       time: "",
     },
     return: {
-      city: "",
-      street: "",
-      number: "",
+      address: "",
       date: "",
       time: "",
     },
@@ -71,8 +72,6 @@ export default function AVForm() {
 
   const [errors, setErrors] = useState(errorsInitialState);
 
-
-
   function errorChecker(resObj: any) {
     const INCOMPLETE_FORM = "Hay datos incompletos en el formulario";
     const NO_ADULTS = "Debe haber al menos 1 pasajero adulto";
@@ -81,14 +80,8 @@ export default function AVForm() {
     if (resObj?.tripType?.transferType === "")
       newErrors.tripType.transferType = "Selecciona un tipo de traslado";
 
-    if (resObj?.departure?.city === "")
-      newErrors.departure.city = "Selecciona una ciudad";
-
-    if (resObj?.departure?.street === "")
-      newErrors.departure.street = "Selecciona una calle";
-
-    if (resObj?.departure?.number === "")
-      newErrors.departure.number = "Indica una numeración";
+    if (resObj?.departure?.address === "")
+      newErrors.departure.address = "Selecciona un origen";
 
     if (resObj?.departure?.date === "")
       newErrors.departure.date = "Selecciona una fecha de salida";
@@ -96,14 +89,8 @@ export default function AVForm() {
     if (resObj?.departure?.time === "")
       newErrors.departure.time = "Selecciona una hora de salida";
 
-    if (resObj?.return?.city === "")
-      newErrors.return.city = "Selecciona una ciudad";
-
-    if (resObj?.return?.street === "")
-      newErrors.return.street = "Selecciona una calle";
-
-    if (resObj?.return?.number === "")
-      newErrors.return.number = "Indica una numeración";
+    if (resObj?.return?.address === "")
+      newErrors.return.address = "Selecciona un destino";
 
     if (resObj?.return?.date === "")
       newErrors.return.date = "Selecciona una fecha de regreso";
@@ -132,7 +119,7 @@ export default function AVForm() {
   useEffect(() => {
     loadGoogleMaps(() => {
       setMapsLoaded(true);
-    })
+    });
     try {
       const form0Data = window.localStorage.getItem("form0");
       initialData = form0Data ? JSON.parse(form0Data) : trip;
@@ -141,102 +128,16 @@ export default function AVForm() {
       console.log(error);
     }
     setTrip(initialData);
-
   }, []);
 
-  const handleReturnCitySelected = (place: google.maps.places.PlaceResult): void => {
-    const city = place.address_components?.find((component: any) => component.types.includes('locality'));
-
-
-
-    // Verificar si la geometría está disponible directamente
-    console.log('place', place)
-    if (place.geometry && place.geometry.viewport) {
-      setReturnCityBounds(place.geometry.viewport);
-    } else {
-      const location = place.geometry.location;
-      const lat = location.lat();
-      const lng = location.lng();
-
-      // Crear bounds basados en un radio alrededor de la ubicación central
-      const radius = 50000; // 50km de radio (puedes ajustar esto según tus necesidades)
-      const bounds = new window.google.maps.LatLngBounds(
-        new window.google.maps.LatLng(lat - radius / 111.32, lng - radius / 111.32),
-        new window.google.maps.LatLng(lat + radius / 111.32, lng + radius / 111.32)
-      );
-      setReturnCityBounds((oldBounds: any) => {
-        if (!oldBounds) {
-          return bounds
-        }
-      })
-    }
-    setReturnSelectedCity(city ? city.long_name : '')
-    // else {
-    //   // Obtener más detalles sobre el lugar utilizando PlacesService
-    //   const service = new google.maps.places.PlacesService(div);
-
-    //   service.getDetails({ placeId: place.place_id }, (result: any, status: any) => {
-    //     if (status === google.maps.places.PlacesServiceStatus.OK && result.geometry && result.geometry.viewport) {
-    //       console.log('Result:',result)
-    //       setReturnCityBounds(result.geometry.viewport);
-    //     }
-    //   });
-    // }
-    setTrip((trip) => ({
-      ...trip,
-      return: {
-        ...trip.return,
-        city: place?.formatted_address,
-        googlePlace: {
-          ...trip.return.googlePlace,
-          lat: place?.geometry.location.lat(),
-          lng: place?.geometry.location.lng(),
-        },
-      },
-    }))
-    setEnableReturnSearchAddresses(true)
-  };
-  const handleDepartureCitySelected = (place: google.maps.places.PlaceResult): void => {
-    const city = place.address_components?.find((component: any) => component.types.includes('locality'));
-
-    setDepartureSelectedCity(city ? city.long_name : '')
-
-    // Verificar si la geometría está disponible directamente
-    if (place.geometry && place.geometry.viewport) {
-      setDepartureCityBounds(place.geometry.viewport);
-    } else {
-      // Obtener más detalles sobre el lugar utilizando PlacesService
-      const service = new google.maps.places.PlacesService(document.createElement('div'));
-      service.getDetails({ placeId: place.place_id }, (result: any, status: any) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && result.geometry && result.geometry.viewport) {
-          console.log(result.geometry.viewport)
-          setDepartureCityBounds(result.geometry.viewport);
-        }
-      });
-    }
+  const handleDepartureAddressSelected = (
+    place: google.maps.places.PlaceResult,
+  ): void => {
     setTrip((trip) => ({
       ...trip,
       departure: {
         ...trip.departure,
-        city: place?.formatted_address,
-        googlePlace: {
-          ...trip.departure.googlePlace,
-          lat: place?.geometry.location.lat(),
-          lng: place?.geometry.location.lng(),
-        },
-      },
-    }))
-    setEnableDepartureSearchAddresses(true)
-  };
-
-  const handleDepartureAddressSelected = (place: google.maps.places.PlaceResult): void => {
-
-    setTrip((trip) => ({
-      ...trip,
-      departure: {
-        ...trip.departure,
-        street: getLongNames(place).route,
-        number: getLongNames(place).streetNumber,
+        address: place?.formatted_address,
         googlePlace: {
           ...trip.departure.googlePlace,
           lat: place?.geometry.location.lat(),
@@ -245,13 +146,14 @@ export default function AVForm() {
       },
     }));
   };
-  const handleReturnAddressSelected = (place: google.maps.places.PlaceResult): void => {
+  const handleReturnAddressSelected = (
+    place: google.maps.places.PlaceResult,
+  ): void => {
     setTrip((trip) => ({
       ...trip,
       return: {
         ...trip.return,
-        street: getLongNames(place).route,
-        number: getLongNames(place).streetNumber,
+        address: place?.formatted_address,
         googlePlace: {
           ...trip.return.googlePlace,
           lat: place?.geometry.location.lat(),
@@ -265,13 +167,15 @@ export default function AVForm() {
     return <div>Loading...</div>;
   }
 
-
   const submitHandler = (e: any) => {
     e.preventDefault();
     errorChecker(trip);
     const persistedData = JSON.stringify(trip);
     window.localStorage.setItem("form0", persistedData);
-    isValid(errors, errorsInitialState) ? redirect("/booking/passengers") : null
+    isValid(errors, errorsInitialState)
+      ? redirect("/booking/passengers")
+      : null;
+    console.log(isValid(errors, errorsInitialState));
   };
 
   return (
@@ -285,8 +189,8 @@ export default function AVForm() {
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
         {errors.globals.length > 0
           ? errors.globals.map((err: string, index: number) => (
-            <RedAlert key={index}>{err}</RedAlert>
-          ))
+              <RedAlert key={index}>{err}</RedAlert>
+            ))
           : null}
         <Separator title="Tipo de viaje" />
         <div className="flex items-center">
@@ -396,52 +300,24 @@ export default function AVForm() {
 
         <Separator title="Salida" />
         <div className="flex flex-row">
-          <div className="w-1/2 mr-2">
-            <SearchPlaces
-              label="Ciudad"
-              errorField={errors.departure.city}
-              onPlaceSelected={handleDepartureCitySelected}
-              onChange={(e: any) => {
-                if (isError(errors.departure.city)) {
-                  setErrors((errors: any) => ({
-                    ...errors,
-                    departure: {
-                      ...errors.departure,
-                      city: "",
-                    },
-                  }));
-                }
-              }}
-            />
-
-          </div>
           <div className="w-1/2 ml-2">
             <SearchAddresses
               label="Dirección"
               bounds={departureCityBounds}
-              errorField={errors.departure.street}
+              errorField={errors.departure.address}
               onPlaceSelected={handleDepartureAddressSelected}
-              disabled={!enableDepartureSearchAddresses}
               onChange={(e: any) => {
-                if (isError(errors.departure.street)) {
+                if (isError(errors.departure.address)) {
                   setErrors((errors: any) => ({
                     ...errors,
                     departure: {
                       ...errors.departure,
-                      street: "",
+                      address: "",
                     },
                   }));
                 }
               }}
             />
-
-          </div>
-        </div>
-        <div className="flex flex-row">
-          <div className="w-1/4 mr-2">
-
-          </div>
-          <div className="w-1/4 mx-2">
           </div>
           <div className="w-1/4 mx-2">
             <LabelInput
@@ -500,53 +376,23 @@ export default function AVForm() {
         </div>
         <Separator title="Destino y Regreso" />
         <div className="flex flex-row">
-          <div className="w-1/2 mr-2">
-            <SearchPlaces
-              label="Ciudad"
-              errorField={errors.return.city}
-              onPlaceSelected={handleReturnCitySelected}
-              onChange={(e: any) => {
-                if (isError(errors.return.city)) {
-                  setErrors((errors: any) => ({
-                    ...errors,
-                    return: {
-                      ...errors.return,
-                      city: "",
-                    },
-                  }));
-                }
-              }}
-            />
-
-          </div>
           <div className="w-1/2 ml-2">
             <SearchAddresses
               label="Dirección"
-              bounds={returnCityBounds}
-              errorField={errors.return.street}
+              errorField={errors.return.address}
               onPlaceSelected={handleReturnAddressSelected}
-              disabled={!enableReturnSearchAddresses}
               onChange={(e: any) => {
-                if (isError(errors.return.street)) {
+                if (isError(errors.return.address)) {
                   setErrors((errors: any) => ({
                     ...errors,
                     return: {
                       ...errors.return,
-                      street: "",
+                      address: "",
                     },
                   }));
                 }
               }}
             />
-
-          </div>
-        </div>
-        <div className="flex flex-row">
-          <div className="w-1/4 mr-2">
-
-          </div>
-          <div className="w-1/4 mx-2">
-
           </div>
           <div className="w-1/4 mx-2">
             <LabelInput

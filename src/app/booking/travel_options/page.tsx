@@ -72,6 +72,7 @@ export default function TravelOptions() {
       );
     }
 
+    console.log(form0.departure.address, form0.return.address);
     const fetchDistance = async () => {
       const result = await fetch(`${APIBASE}/gmaps/distance`, {
         headers: {
@@ -79,7 +80,7 @@ export default function TravelOptions() {
         },
         method: "POST",
         body: JSON.stringify({
-          places: [form0.departure.city, form0.return.city],
+          places: [form0.departure.address, form0.return.address],
         }),
       });
       const json = await result.json();
@@ -271,8 +272,8 @@ export default function TravelOptions() {
                   </div>
                   <div className="mt-1 mb-5">
                     <p className=" ">
-                      {result.form0.departure.city.split(",")[0]} -{" "}
-                      {result.form0.return.city.split(",")[0]}
+                      {result.form0.departure.address.split(",")[0]} -{" "}
+                      {result.form0.return.address.split(",")[0]}
                     </p>
                   </div>
                   <div className=" ">

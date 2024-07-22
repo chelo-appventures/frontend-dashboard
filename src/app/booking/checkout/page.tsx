@@ -18,7 +18,7 @@ export default function PartialPay() {
   const [checkout, setCheckout] = useState({
     invoiceType: "A",
     totalCost: 0,
-    percentage: "25",
+    percentage: "50",
     amount: 0,
   });
   const currency = new Intl.NumberFormat();
@@ -130,9 +130,7 @@ export default function PartialPay() {
                           });
                         }}
                       >
-                        <option defaultValue=""></option>
-                        <option value="25" label="25%" />
-                        <option value="50" label="50%" />
+                        <option defaultValue="50" label="50%" />
                         <option value="75" label="75%" />
                         <option value="100" label="100%" />
                       </Select>

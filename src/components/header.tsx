@@ -96,7 +96,7 @@ export function OptionHeader({ departure, destiny, passengers, luggage }: any) {
           text-[14px] font-bold text-[#10004f] border-t-2 border-gray-300"
       >
         <div className="px-5 text-center border-r-2 border-gray-300 w-full ">
-          {departure.city.split(",")[0]} - {destiny.city.split(",")[0]}
+          {departure.address.split(",")[0]} - {destiny.address.split(",")[0]}
         </div>
         <div className="px-5 text-center border-r-2 border-gray-300 w-full ">
           {departure.date} / {destiny.date}

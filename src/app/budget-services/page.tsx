@@ -25,6 +25,8 @@ import { Ruda } from "next/font/google";
 
 const ruda = Ruda({ subsets: ["latin"] });
 
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
+
 function Budget() {
   const router = useRouter();
   const redirect = (path: string) => {
@@ -34,8 +36,7 @@ function Budget() {
   const [data, setData] = useState<any>();
   useEffect(() => {
     const fetchData = async () => {
-      const APIBASE =
-        "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000";
+      console.log(APIBASE);
       const result = await fetch(`${APIBASE}/api/products`, {
         headers: {
           "Content-type": "application/json",

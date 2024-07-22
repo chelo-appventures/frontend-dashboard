@@ -45,8 +45,7 @@ const options = [
   },
 ];
 
-const distanciaIda = 350;
-const distanciaVuelta = 350;
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 
 export default function TravelOptions() {
   const router = useRouter();
@@ -72,6 +71,30 @@ export default function TravelOptions() {
           form0.passengers.pets.big,
       );
     }
+
+    const fetchDistance = async () => {
+      const result = await fetch(`${APIBASE}/gmaps/distance`, {
+        headers: {
+          "Content-type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          places: [form0.departure.city, form0.return.city],
+        }),
+      });
+      const json = await result.json();
+      const { data } = json;
+      const dis = data
+        .map(({ distance }: any) => distance.value)
+        .reduce((a: number, b: number) => a + b);
+      const dur = data
+        .map(({ duration }: any) => duration.value)
+        .reduce((a: number, b: number) => a + b);
+      console.log({ json }, dis, dur);
+      setDistanciaIda(dis / 1000);
+      setDistanciaVuelta(dis / 1000);
+    };
+    fetchDistance().catch(console.log);
   }, []);
 
   if (!result) {
@@ -313,7 +336,7 @@ export default function TravelOptions() {
                   </div>
                   <div className="flex flex-row justify-between items-baseline font-bold text-[#10004f] border-t-[1px] border-gray-300 mt-3 py-2">
                     <p>Total</p>
-                    <p className="text-xl">${totalCost}</p>
+                    <p className="text-xl">${Math.round(totalCost)}</p>
                   </div>
                 </div>
                 <div className="mt-[120px]">

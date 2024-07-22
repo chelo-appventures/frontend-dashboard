@@ -2,21 +2,21 @@
 import { useState, useEffect } from "react";
 import CardOption, { IconType } from "@/components/card";
 import HeaderAV, { OptionHeader } from "@/components/header";
-import { driverPrice, driverQuantitys } from "@/utils/pricing";
+import { driverPrice, driverQuantitys, foodExpenses, lodgingExpenses } from "@/utils/pricing";
 import { useRouter } from "next/navigation";
 import LabelInput from "@/components/input";
 
 const options = [
   {
-    id: "sprinter19",
-    cant_handBag: 19,
-    cant_bag: 12,
-    cant_littleBag: 15,
-    name: "Mercedes Benz Sprinter",
-    seats: 19,
-    car_img: "sprinter" as IconType,
-    price: 500,
-    driverFee: 20,
+    id: "cronos4",
+    cant_handBag: 4,
+    cant_bag: 2,
+    cant_littleBag: 3,
+    name: "Fiat Cronos",
+    seats: 3,
+    car_img: "cronos" as IconType,
+    price: 340,
+    driverFee: 10,
     quantity: 0,
   },
   {
@@ -25,28 +25,63 @@ const options = [
     cant_bag: 3,
     cant_littleBag: 6,
     name: "Volkswagen Sharan",
-    seats: 7,
+    seats: 6,
     car_img: "sharan" as IconType,
     price: 360,
     driverFee: 12,
     quantity: 0,
   },
   {
-    id: "cronos4",
-    cant_handBag: 4,
-    cant_bag: 2,
+    id: "sprinter19",
+    cant_handBag: 19,
+    cant_bag: 3,
     cant_littleBag: 3,
-    name: "Fiat Cronos",
-    seats: 4,
-    car_img: "cronos" as IconType,
-    price: 340,
-    driverFee: 10,
+    name: "Mercedes Benz Sprinter",
+    seats: 19,
+    car_img: "sprinter" as IconType,
+    price: 500,
+    driverFee: 20,
+    quantity: 0,
+  },
+  {
+    id: "Iveco24",
+    cant_handBag: 24,
+    cant_bag: 15,
+    cant_littleBag: 24,
+    name: "Iveco",
+    seats: 24,
+    car_img: "iveco24" as IconType,
+    price: 520,
+    driverFee: 22,
+    quantity: 0,
+  },
+  {
+    id: "bus45",
+    cant_handBag: 45,
+    cant_bag: 45,
+    cant_littleBag: 90,
+    name: "Bus 45",
+    seats: 45,
+    car_img: "bus45" as IconType,
+    price: 620,
+    driverFee: 30,
+    quantity: 0,
+  },
+  {
+    id: "bus60",
+    cant_handBag: 60,
+    cant_bag: 60,
+    cant_littleBag: 120,
+    name: "Bus 60",
+    seats: 60,
+    car_img: "bus60" as IconType,
+    price: 680,
+    driverFee: 35,
     quantity: 0,
   },
 ];
 
-const distanciaIda = 350;
-const distanciaVuelta = 350;
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 
 export default function TravelOptions() {
   const router = useRouter();
@@ -60,6 +95,13 @@ export default function TravelOptions() {
   const [distanciaVuelta, setDistanciaVuelta] = useState(0);
 
   const [seatsNeeded, setSeatsNeeded] = useState(0);
+  const [fulltime, setFulltime] = useState(false);
+  const [initDate, setInitDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+
+  const FOOD_PRICE = 10000
+  const LODGING_PRICE = 30000
+
 
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
@@ -67,11 +109,38 @@ export default function TravelOptions() {
       setResult({ form0 });
       setSeatsNeeded(
         form0.passengers.adult +
-          form0.passengers.kid +
-          form0.passengers.baby +
-          form0.passengers.pets.big,
+        form0.passengers.kid +
+        form0.passengers.baby +
+        form0.passengers.pets.big,
       );
+      setFulltime(form0.fullTime)
+      setInitDate(new Date((form0.departure.date, "T", form0.departure.time)))
+      setEndDate(new Date((form0.return.date, "T", form0.return.time)))
     }
+
+    const fetchDistance = async () => {
+      const result = await fetch(`${APIBASE}/gmaps/distance`, {
+        headers: {
+          "Content-type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          places: [form0.departure.address, form0.return.address],
+        }),
+      });
+      const json = await result.json();
+      const { data } = json;
+      const dis = data
+        .map(({ distance }: any) => distance.value)
+        .reduce((a: number, b: number) => a + b);
+      const dur = data
+        .map(({ duration }: any) => duration.value)
+        .reduce((a: number, b: number) => a + b);
+      console.log({ json }, dis, dur);
+      setDistanciaIda(dis / 1000);
+      setDistanciaVuelta(dis / 1000);
+    };
+    fetchDistance().catch(console.log);
   }, []);
 
   if (!result) {
@@ -94,6 +163,14 @@ export default function TravelOptions() {
       ),
   );
   const totalCost = vehiclesCost.concat(driversCost).reduce((a, b) => a + b);
+
+  const travelExpenses = (foodPrice: number, lodgingPrice: number): number => {
+    // si fulttime = true; 1 comida cada 12 hs por chofer; 1 hospedaje por dia por chofer;
+    if (fulltime)
+      lodgingExpenses(initDate!, endDate!, lodgingPrice) + foodExpenses(initDate!, endDate!, foodPrice)
+    return 0
+  }
+  const viaticos: number = travelExpenses(FOOD_PRICE, LODGING_PRICE)
 
   return (
     <>
@@ -175,20 +252,20 @@ export default function TravelOptions() {
                     <p>Asientos restantes: {seatsNeeded}</p>
                     <div className="mt-5">
                       {result.form0.passengers.adult &&
-                      result.form0.passengers.adult === 1 ? (
+                        result.form0.passengers.adult === 1 ? (
                         <p>{result.form0.passengers.adult} adulto</p>
                       ) : (
                         <p>{result.form0.passengers.adult} adultos</p>
                       )}
 
                       {result.form0.passengers.kid &&
-                      result.form0.passengers.kid === 1 ? (
+                        result.form0.passengers.kid === 1 ? (
                         <p>{result.form0.passengers.kid} niño</p>
                       ) : (
                         <p>{result.form0.passengers.kid} niños</p>
                       )}
                       {result.form0.passengers.baby &&
-                      result.form0.passengers.baby === 1 ? (
+                        result.form0.passengers.baby === 1 ? (
                         <p>{result.form0.passengers.baby} bebé</p>
                       ) : (
                         <p>{result.form0.passengers.baby} bebés</p>
@@ -204,17 +281,17 @@ export default function TravelOptions() {
                     {result.form0.luggage.bag23 +
                       result.form0.luggage.carryOn +
                       result.form0.luggage.special.quantity ===
-                    0 ? (
+                      0 ? (
                       <p className="">Sin equipaje</p>
                     ) : null}
                     {result.form0.luggage.bag23 &&
-                    result.form0.luggage.bag23 === 1 ? (
+                      result.form0.luggage.bag23 === 1 ? (
                       <p>{result.form0.luggage.bag23} Valija grande 23 Kg</p>
                     ) : (
                       <p>{result.form0.luggage.bag23} Valijas grandes 23 Kg</p>
                     )}
                     {result.form0.luggage.carryOn &&
-                    result.form0.luggage.carryOn === 1 ? (
+                      result.form0.luggage.carryOn === 1 ? (
                       <p>{result.form0.luggage.carryOn} Valija mediana 15 Kg</p>
                     ) : (
                       <p>
@@ -222,7 +299,7 @@ export default function TravelOptions() {
                       </p>
                     )}
                     {result.form0.luggage.special.quantity &&
-                    result.form0.luggage.special.quantity === 1 ? (
+                      result.form0.luggage.special.quantity === 1 ? (
                       <p>
                         {result.form0.luggage.special.quantity} Equipaje
                         especial
@@ -248,8 +325,8 @@ export default function TravelOptions() {
                   </div>
                   <div className="mt-1 mb-5">
                     <p className=" ">
-                      {result.form0.departure.city.split(",")[0]} -{" "}
-                      {result.form0.return.city.split(",")[0]}
+                      {result.form0.departure.address.split(",")[0]} -{" "}
+                      {result.form0.return.address.split(",")[0]}
                     </p>
                   </div>
                   <div className=" ">
@@ -275,13 +352,14 @@ export default function TravelOptions() {
                             Km
                           </p>
                           <span className="font-semibold">
-                            {vehiclesCost[index]}
+                            {vehiclesCost[index].toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}
                           </span>
                         </div>
                       ) : null,
                     )}
                   </div>
                 </div>
+
                 <div>
                   <div className="border-b-[1px] border-gray-300  mt-4 text-[#10004f] flex justify-between">
                     <h1 className="font-bold">Choferes</h1>
@@ -295,27 +373,46 @@ export default function TravelOptions() {
                     <div className="flex flex-col justify-between ">
                       {vehicles.map((vehicle, index) =>
                         vehicle.quantity ? (
-                          <div
-                            className="flex flex-row justify-between"
-                            key={index}
-                          >
-                            <p>
-                              {driverQuantitys(vehicle.id, distanciaTotal)}{" "}
-                              Choferes calificados
-                            </p>
-                            <span className="font-semibold">
-                              {driversCost[index]}
-                            </span>
-                          </div>
+                          <>
+                            <div
+                              className="flex flex-row justify-between"
+                              key={index}
+                            >
+                              <p>
+                                {driverQuantitys(vehicle.id, distanciaTotal)}{" "}
+                                Choferes calificados
+                              </p>
+                              <span className="font-semibold">
+                                {driversCost[index].toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}
+                              </span>
+                            </div>
+                            {viaticos > 0 &&
+                              <div
+                                className="flex flex-row justify-between"
+                                key={index}
+                              >
+                                <p>
+                                  {"  "}
+                                  Viáticos
+                                </p>
+                                <span className="font-semibold">
+                                  {(viaticos * driverQuantitys(vehicle.id, distanciaTotal)).toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}
+                                </span>
+                              </div>
+                            }
+                          </>
                         ) : null,
                       )}
                     </div>
                   </div>
                   <div className="flex flex-row justify-between items-baseline font-bold text-[#10004f] border-t-[1px] border-gray-300 mt-3 py-2">
                     <p>Total</p>
-                    <p className="text-xl">${totalCost}</p>
+                    <p className="text-xl">{totalCost.toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}</p>
+                    {/* <p className="text-xl">${Math.round(totalCost)}</p> */}
                   </div>
                 </div>
+
+
                 <div className="mt-[120px]">
                   <button
                     className="w-full"
@@ -327,6 +424,7 @@ export default function TravelOptions() {
                           totalCost,
                           vehiclesCost,
                           driversCost,
+                          viaticos
                         }),
                       );
                       redirect("/booking/checkout");

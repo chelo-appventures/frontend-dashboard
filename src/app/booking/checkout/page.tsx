@@ -18,7 +18,7 @@ export default function PartialPay() {
   const [checkout, setCheckout] = useState({
     invoiceType: "A",
     totalCost: 0,
-    percentage: "25",
+    percentage: "50",
     amount: 0,
   });
   const currency = new Intl.NumberFormat();
@@ -101,9 +101,7 @@ export default function PartialPay() {
                   <p className={`${ruda.className} font-bold text-[16px]`}>
                     Costo total del servicio
                   </p>
-                  <p className="font-bold text-[26px]">{`$${currency.format(
-                    checkout.totalCost,
-                  )}`}</p>
+                  <p className="font-bold text-[26px]">{(checkout.totalCost).toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}</p>
                 </div>
                 <div className="line mt-6 bg-gray-300 w-full h-[1px] x-6"></div>
                 <div className="partialPay my-6 flex justify-between">
@@ -130,9 +128,7 @@ export default function PartialPay() {
                           });
                         }}
                       >
-                        <option defaultValue=""></option>
-                        <option value="25" label="25%" />
-                        <option value="50" label="50%" />
+                        <option defaultValue="50" label="50%" />
                         <option value="75" label="75%" />
                         <option value="100" label="100%" />
                       </Select>
@@ -145,7 +141,7 @@ export default function PartialPay() {
                       Monto a pagar como reserva
                     </p>
                     <p className="font-bold text-[26px] text-right my-6 text-gray-500">
-                      {`$${currency.format(checkout.amount)}`}
+                      {(checkout.amount).toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}
                     </p>
                   </div>
                 </div>

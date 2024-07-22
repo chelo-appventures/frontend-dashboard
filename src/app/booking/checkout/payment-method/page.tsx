@@ -92,7 +92,7 @@ export default function PaymentMethod() {
                     <p>RUGGERI TURISMO</p>
                   </div>
                   <div className="text-[26px] text-[#10004f] font-bold">
-                    <p>${data.form3.amount}</p>
+                    <p>{data.form3.amount.toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}</p>
                   </div>
                 </div>
                 <div className="flex flex-row mt-10">

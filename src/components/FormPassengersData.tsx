@@ -5,32 +5,19 @@ import Separator from "@/components/separator";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePassengerData } from "@/state/booking/PassengerContext";
-import { Gender, Passenger } from "@/state/Passenger.type";
+import {  Passenger } from "@/state/Passenger.type";
 import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
+import { isValid } from "@/utils/basics";
 
-const errorInitialState = {
+let errorInitialState = {
   passengers: [] as any[],
   termsCondition: "",
   newsletter: "",
   globals: [""],
 };
 
-function hasEmptyString(obj: any): boolean {
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      const value = obj[key];
-      if (typeof value === "object" && value !== null) {
-        if (hasEmptyString(value)) {
-          return true;
-        }
-      } else if (value === "") {
-        return true;
-      }
-    }
-  }
-  return false;
-}
+
 export default function Passengers({
   passengers: amountPassegengers,
 }: {
@@ -73,6 +60,37 @@ export default function Passengers({
         }) as Passenger,
     );
     let initialData = { ...passengerData, passengers };
+
+    const passengersInitialErrorState = Array.from(
+      { length: amountPassegengers },
+      (_) =>
+        ({
+          firstName: "",
+          lastName: "",
+          gender: "",
+          age: "",
+          identification: {
+            type: "",
+            number: "",
+            country: "",
+          },
+          contact: {
+            phoneCode: "",
+            phoneNumber: "",
+            email: "",
+            address: {
+              street: "",
+              number: "",
+              city: "",
+              neighborhood: "",
+            },
+          },
+        }) ,
+    );
+    errorInitialState = {
+      ...errorInitialState,
+      passengers: passengersInitialErrorState
+    }
 
     try {
       const form1Data = window.localStorage.getItem("form1");
@@ -245,15 +263,10 @@ export default function Passengers({
   };
   const submitHandler = (e: any) => {
     e.preventDefault();
-    console.log("AVFORM >> SubmitHandler");
-    console.log(passengerData);
     errorHandler();
     const persistedData = JSON.stringify(passengerData);
     window.localStorage.setItem("form1", persistedData);
-    redirect("/booking/travel_options");
-    
-    
-    
+    isValid(errors, errorInitialState) ? redirect("/booking/travel_options"): null;
   };
 
   return (

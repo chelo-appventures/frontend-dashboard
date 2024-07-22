@@ -1,13 +1,10 @@
 "use client";
 import { PortalNavBar } from "@/components/Navbar";
 import { useEffect, useState } from "react";
-import LabelInput, { Checkbox } from "@/components/input";
 import Link from "next/link";
 import Image from "next/image";
 import Select from "@/components/select";
 import {
-  ArrowPathIcon,
-  CheckCircleIcon,
   MagnifyingGlassIcon,
   PlusIcon,
 } from "@heroicons/react/16/solid";
@@ -25,6 +22,8 @@ import { Ruda } from "next/font/google";
 
 const ruda = Ruda({ subsets: ["latin"] });
 
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
+
 function Budget() {
   const router = useRouter();
   const redirect = (path: string) => {
@@ -34,7 +33,7 @@ function Budget() {
   const [data, setData] = useState<any>();
   useEffect(() => {
     const fetchData = async () => {
-      const APIBASE = "/externalapi";
+      console.log(APIBASE);
       const result = await fetch(`${APIBASE}/api/products`, {
         headers: {
           "Content-type": "application/json",

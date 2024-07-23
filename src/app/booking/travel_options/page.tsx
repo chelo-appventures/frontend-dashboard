@@ -114,8 +114,8 @@ export default function TravelOptions() {
         form0.passengers.pets.big,
       );
       setFulltime(form0.fullTime)
-      setInitDate(new Date((form0.departure.date, "T", form0.departure.time)))
-      setEndDate(new Date((form0.return.date, "T", form0.return.time)))
+      setInitDate(new Date((form0.departure.date + "T"+ form0.departure.time + ":00")))
+      setEndDate(new Date((form0.return.date + "T" + form0.return.time + ":00")))
     }
 
     const fetchDistance = async () => {
@@ -167,7 +167,7 @@ export default function TravelOptions() {
   const travelExpenses = (foodPrice: number, lodgingPrice: number): number => {
     // si fulttime = true; 1 comida cada 12 hs por chofer; 1 hospedaje por dia por chofer;
     if (fulltime)
-      lodgingExpenses(initDate!, endDate!, lodgingPrice) + foodExpenses(initDate!, endDate!, foodPrice)
+      return lodgingExpenses(initDate!, endDate!, lodgingPrice) + foodExpenses(initDate!, endDate!, foodPrice)
     return 0
   }
   const viaticos: number = travelExpenses(FOOD_PRICE, LODGING_PRICE)
@@ -249,27 +249,38 @@ export default function TravelOptions() {
                         result.form0.passengers.pets.big}{" "}
                       asientos
                     </h1>
-                    <p>Asientos restantes: {seatsNeeded}</p>
+                    
+                    {/* <p>Asientos restantes: {seatsNeeded}</p> */}
                     <div className="mt-5">
-                      {result.form0.passengers.adult &&
-                        result.form0.passengers.adult === 1 ? (
-                        <p>{result.form0.passengers.adult} adulto</p>
-                      ) : (
-                        <p>{result.form0.passengers.adult} adultos</p>
-                      )}
+                      {
+                        result.form0.passengers.adult > 1 
+                        ? <p>{result.form0.passengers.adult} Adultos</p> 
+                        : result.form0.passengers.adult === 1 
+                          ? <p>{result.form0.passengers.adult} Adulto</p> 
+                          : null
+                      }
 
-                      {result.form0.passengers.kid &&
-                        result.form0.passengers.kid === 1 ? (
-                        <p>{result.form0.passengers.kid} niño</p>
-                      ) : (
-                        <p>{result.form0.passengers.kid} niños</p>
-                      )}
-                      {result.form0.passengers.baby &&
+{
+                        result.form0.passengers.kid > 1 
+                        ? <p>{result.form0.passengers.kid} Niños</p> 
+                        : result.form0.passengers.kid === 1 
+                          ? <p>{result.form0.passengers.kid} Niño</p> 
+                          : null
+                      }
+                      {
+                        result.form0.passengers.baby > 1 
+                        ? <p>{result.form0.passengers.baby} Bebés</p> 
+                        : result.form0.passengers.baby === 1 
+                          ? <p>{result.form0.passengers.baby} Bebé</p> 
+                          : null
+                      }
+
+                      {/* {result.form0.passengers.baby &&
                         result.form0.passengers.baby === 1 ? (
                         <p>{result.form0.passengers.baby} bebé</p>
                       ) : (
                         <p>{result.form0.passengers.baby} bebés</p>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </div>
@@ -284,32 +295,28 @@ export default function TravelOptions() {
                       0 ? (
                       <p className="">Sin equipaje</p>
                     ) : null}
-                    {result.form0.luggage.bag23 &&
-                      result.form0.luggage.bag23 === 1 ? (
-                      <p>{result.form0.luggage.bag23} Valija grande 23 Kg</p>
-                    ) : (
-                      <p>{result.form0.luggage.bag23} Valijas grandes 23 Kg</p>
-                    )}
-                    {result.form0.luggage.carryOn &&
-                      result.form0.luggage.carryOn === 1 ? (
-                      <p>{result.form0.luggage.carryOn} Valija mediana 15 Kg</p>
-                    ) : (
-                      <p>
-                        {result.form0.luggage.carryOn} Valijas medianas 15 Kg
-                      </p>
-                    )}
-                    {result.form0.luggage.special.quantity &&
-                      result.form0.luggage.special.quantity === 1 ? (
-                      <p>
-                        {result.form0.luggage.special.quantity} Equipaje
-                        especial
-                      </p>
-                    ) : (
-                      <p>
-                        {result.form0.luggage.special.quantity} Equipajes
-                        especiales
-                      </p>
-                    )}
+                    {
+                      result.form0.luggage.bag23 > 1
+                      ? <p>{result.form0.luggage.bag23} Valijas grandes 23 Kg</p>
+                      : result.form0.luggage.bag23 === 1 
+                        ?<p>{result.form0.luggage.bag23} Valija grande 23 Kg</p>
+                        : null
+                    }
+
+                    {
+                      result.form0.luggage.carryOn > 1
+                      ? <p>{result.form0.luggage.carryOn} Valijas medianas 15 Kg</p>
+                      :  result.form0.luggage.carryOn === 1 
+                        ? <p>{result.form0.luggage.carryOn} Valija mediana 15 Kg</p>
+                        : null
+                    }
+                    {
+                    result.form0.luggage.special.quantity >1
+                    ? <p>{result.form0.luggage.special.quantity} Equipajes especiales</p>
+                    : result.form0.luggage.special.quantity === 1
+                      ? <p>{result.form0.luggage.special.quantity} Equipaje especial</p>
+                      : null
+                    }
                   </div>
                 </div>
                 <div>
@@ -386,13 +393,12 @@ export default function TravelOptions() {
                                 {driversCost[index].toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}
                               </span>
                             </div>
-                            {viaticos > 0 &&
+                            {viaticos  &&
                               <div
                                 className="flex flex-row justify-between"
                                 key={index}
                               >
                                 <p>
-                                  {"  "}
                                   Viáticos
                                 </p>
                                 <span className="font-semibold">
@@ -408,7 +414,6 @@ export default function TravelOptions() {
                   <div className="flex flex-row justify-between items-baseline font-bold text-[#10004f] border-t-[1px] border-gray-300 mt-3 py-2">
                     <p>Total</p>
                     <p className="text-xl">{totalCost.toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}</p>
-                    {/* <p className="text-xl">${Math.round(totalCost)}</p> */}
                   </div>
                 </div>
 

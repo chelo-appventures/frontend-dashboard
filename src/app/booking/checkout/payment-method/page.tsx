@@ -19,7 +19,7 @@ import { IconType } from "@/components/card";
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
 
-const APIBASE = "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000";
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 
 export default function PaymentMethod() {
   const [data, setData] = useState<any>();

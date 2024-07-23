@@ -22,9 +22,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
-    useState<google.maps.LatLngBounds | null>(null);
-  const [departureCityBounds, setDepartureCityBounds] =
-    useState<google.maps.LatLngBounds | null>(null);
+    // useState<google.maps.LatLngBounds | null>(null);
   const [mapsLoaded, setMapsLoaded] = useState<boolean>(false);
   const errorsInitialState: any = {
     globals: [],
@@ -123,7 +121,8 @@ export default function AVForm() {
   }, []);
 
   const handleDepartureAddressSelected = (
-    place: google.maps.places.PlaceResult,
+    place: any,
+    // place: google.maps.places.PlaceResult,
   ): void => {
     setTrip((trip) => ({
       ...trip,
@@ -139,7 +138,8 @@ export default function AVForm() {
     }));
   };
   const handleReturnAddressSelected = (
-    place: google.maps.places.PlaceResult,
+    place: any,
+    // place: google.maps.places.PlaceResult,
   ): void => {
     setTrip((trip) => ({
       ...trip,

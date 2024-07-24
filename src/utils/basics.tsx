@@ -29,38 +29,38 @@ function isValid(resultJson: any, originJson: any): boolean {
   return compareStructureAndValues(resultJson, originJson);
 }
 
-interface AddressComponent {
-  long_name: string;
-  short_name: string;
-  types: string[];
-}
+// interface AddressComponent {
+//   long_name: string;
+//   short_name: string;
+//   types: string[];
+// }
 
-interface AddressJSON {
-  address_components: AddressComponent[];
-  formatted_address: string;
-  geometry: { location: any };
-  place_id: string;
-  html_attributions: any[];
-  utc_offset: number | undefined;
-}
+// interface AddressJSON {
+//   address_components: AddressComponent[];
+//   formatted_address: string;
+//   geometry: { location: any };
+//   place_id: string;
+//   html_attributions: any[];
+//   utc_offset: number | undefined;
+// }
 
-interface LongNames {
-  streetNumber: string;
-  route: string;
-}
+// interface LongNames {
+//   streetNumber: string;
+//   route: string;
+// }
 
-function getLongNames(json: AddressJSON): LongNames {
-  let streetNumber = "";
-  let route = "";
+// function getLongNames(json: AddressJSON): LongNames {
+//   let streetNumber = "";
+//   let route = "";
 
-  json.address_components.forEach((component) => {
-    if (component.types.includes("street_number")) {
-      streetNumber = component.long_name;
-    } else if (component.types.includes("route")) {
-      route = component.long_name;
-    }
-  });
+//   json.address_components.forEach((component) => {
+//     if (component.types.includes("street_number")) {
+//       streetNumber = component.long_name;
+//     } else if (component.types.includes("route")) {
+//       route = component.long_name;
+//     }
+//   });
 
-  return { streetNumber, route };
-}
-export { isValid, getLongNames };
+//   return { streetNumber, route };
+// }
+export { isValid };

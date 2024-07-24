@@ -5,7 +5,7 @@ import Separator from "@/components/separator";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePassengerData } from "@/state/booking/PassengerContext";
-import { Gender, Passenger } from "@/state/Passenger.type";
+import {  Passenger } from "@/state/Passenger.type";
 import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
 import { isValid } from "@/utils/basics";
@@ -266,9 +266,6 @@ export default function Passengers({
     errorHandler();
     const persistedData = JSON.stringify(passengerData);
     window.localStorage.setItem("form1", persistedData);
-    console.log(errors)
-    console.log(errorInitialState)
-    console.log(isValid(errors, errorInitialState))
     isValid(errors, errorInitialState) ? redirect("/booking/travel_options"): null;
   };
 

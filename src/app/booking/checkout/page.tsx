@@ -101,9 +101,7 @@ export default function PartialPay() {
                   <p className={`${ruda.className} font-bold text-[16px]`}>
                     Costo total del servicio
                   </p>
-                  <p className="font-bold text-[26px]">{`$${currency.format(
-                    checkout.totalCost,
-                  )}`}</p>
+                  <p className="font-bold text-[26px]">{(checkout.totalCost).toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}</p>
                 </div>
                 <div className="line mt-6 bg-gray-300 w-full h-[1px] x-6"></div>
                 <div className="partialPay my-6 flex justify-between">
@@ -143,7 +141,7 @@ export default function PartialPay() {
                       Monto a pagar como reserva
                     </p>
                     <p className="font-bold text-[26px] text-right my-6 text-gray-500">
-                      {`$${currency.format(checkout.amount)}`}
+                      {(checkout.amount).toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}
                     </p>
                   </div>
                 </div>

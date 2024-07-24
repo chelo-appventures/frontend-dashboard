@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { Inter } from "next/font/google";
 import exclamation from "@/ui/icons/exclamation.svg";
 import { useTrip } from "@/state/booking/TripContext";
-import LabelInput, { SearchPlaces } from "./input";
+import LabelInput from "./input";
 import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
 import TextArea from "./textArea";
@@ -22,18 +22,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
-  const [departureSelectedCity, setDepartureSelectedCity] =
-    useState<string>("");
-  const [returnSelectedCity, setReturnSelectedCity] = useState<string>("");
-  const [returnCityBounds, setReturnCityBounds] =
-    useState<google.maps.LatLngBounds | null>(null);
-  const [departureCityBounds, setDepartureCityBounds] =
-    useState<google.maps.LatLngBounds | null>(null);
+    // useState<google.maps.LatLngBounds | null>(null);
   const [mapsLoaded, setMapsLoaded] = useState<boolean>(false);
-  const [enableDepartureSearchAddresses, setEnableDepartureSearchAddresses] =
-    useState<boolean>(false);
-  const [enableReturnSearchAddresses, setEnableReturnSearchAddresses] =
-    useState<boolean>(false);
   const errorsInitialState: any = {
     globals: [],
     tripType: {
@@ -131,7 +121,8 @@ export default function AVForm() {
   }, []);
 
   const handleDepartureAddressSelected = (
-    place: google.maps.places.PlaceResult,
+    place: any,
+    // place: google.maps.places.PlaceResult,
   ): void => {
     setTrip((trip) => ({
       ...trip,
@@ -147,7 +138,8 @@ export default function AVForm() {
     }));
   };
   const handleReturnAddressSelected = (
-    place: google.maps.places.PlaceResult,
+    place: any,
+    // place: google.maps.places.PlaceResult,
   ): void => {
     setTrip((trip) => ({
       ...trip,
@@ -303,7 +295,6 @@ export default function AVForm() {
           <div className="w-1/2 ml-2">
             <SearchAddresses
               label="Dirección"
-              bounds={departureCityBounds}
               errorField={errors.departure.address}
               onPlaceSelected={handleDepartureAddressSelected}
               onChange={(e: any) => {

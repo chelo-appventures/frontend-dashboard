@@ -19,7 +19,7 @@ import { IconType } from "@/components/card";
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
 
-const APIBASE = "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000";
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 
 export default function PaymentMethod() {
   const [data, setData] = useState<any>();
@@ -92,7 +92,7 @@ export default function PaymentMethod() {
                     <p>RUGGERI TURISMO</p>
                   </div>
                   <div className="text-[26px] text-[#10004f] font-bold">
-                    <p>${data.form3.amount}</p>
+                    <p>{data.form3.amount.toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}</p>
                   </div>
                 </div>
                 <div className="flex flex-row mt-10">

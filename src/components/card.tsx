@@ -22,6 +22,9 @@ enum ImgIconType {
   Sharan = "sharan",
   Cronos = "cronos",
   Sprinter = "sprinter",
+  Bus45 = "bus45",
+  Bus60 = "bus60",
+  Iveco = "iveco24"
 }
 
 enum LogoIconType {

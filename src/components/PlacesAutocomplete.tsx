@@ -48,14 +48,12 @@ const SearchPlaces = (props: Props) => {
 interface SearchAddressesProps extends ReactGoogleAutocompleteProps {
     label: string;
     errorField?: string;
-    bounds: google.maps.LatLngBounds | null;
 }
 
 interface SearchAddressesProps extends React.InputHTMLAttributes<HTMLInputElement> { }
 
-const SearchAddresses: React.FC<SearchAddressesProps> = ({ label, errorField, bounds, onPlaceSelected, ...searchProps }) => {
+const SearchAddresses: React.FC<SearchAddressesProps> = ({ label, errorField, onPlaceSelected, ...searchProps }) => {
     const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
-    console.log(bounds)
     return (
         <div className="relative">
             <label className="relative font-semibold block">
@@ -65,8 +63,6 @@ const SearchAddresses: React.FC<SearchAddressesProps> = ({ label, errorField, bo
                     className={`peer placeholder-transparent ${isError(errorField) ? "border-red-500" : ""}`}
                     options={{
                         types: ['address'],
-                        bounds: bounds ?? undefined,
-                        // strictBounds: true,
                     }}
                     {...searchProps}
                 />

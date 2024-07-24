@@ -11,7 +11,7 @@ export default function Test () {
             <p>Cantidad de adultos: {cantAdultos}</p>
             <div>
                 {adultsArray.map( (adult, index: number) => {
-                    return <AdultIcon OK={true} />
+                    return <AdultIcon OK={true} key={index}/>
                 } )}
                 
             </div>

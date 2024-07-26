@@ -88,8 +88,8 @@ export default function QR() {
                       Origen / Destino:
                     </p>
                     <p className="text-[28px] font-semibold text-[#10004f]">
-                      {departure.city.split(",")[0]} /{" "}
-                      {destiny.city.split(",")[0]}
+                      {departure.address.split(",")[0]} /{" "}
+                      {destiny.address.split(",")[0]}
                     </p>
                   </div>
                   <div className="mb-6">
@@ -109,7 +109,7 @@ export default function QR() {
                       Desde:
                     </p>
                     <p className="text-[22px] font-semibold text-[#10004f]">
-                      {departure.city}
+                      {departure.address}
                     </p>
                   </div>
                   <div className="mb-6">

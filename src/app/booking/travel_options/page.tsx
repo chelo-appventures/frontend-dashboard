@@ -44,7 +44,7 @@ const options = [
     quantity: 0,
   },
   {
-    id: "Iveco24",
+    id: "iveco24",
     cant_handBag: 24,
     cant_bag: 15,
     cant_littleBag: 24,
@@ -99,6 +99,7 @@ export default function TravelOptions() {
   const [initDate, setInitDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
 
+
   const FOOD_PRICE = 10000
   const LODGING_PRICE = 30000
 
@@ -143,6 +144,7 @@ export default function TravelOptions() {
     fetchDistance().catch(console.log);
   }, []);
 
+  
   if (!result) {
     return <div> Loading ...</div>;
   }
@@ -152,18 +154,8 @@ export default function TravelOptions() {
   const vehiclesCost = vehicles.map(
     ({ price, quantity }) => price * distanciaTotal * quantity,
   );
-  const driversCost = vehicles.map(
-    ({ quantity, id, driverFee }) =>
-      quantity *
-      driverPrice(
-        driverFee,
-        id,
-        distanciaTotal,
-        driverQuantitys(id, distanciaTotal),
-      ),
-  );
-  const totalCost = vehiclesCost.concat(driversCost).reduce((a, b) => a + b);
-
+  
+  
   const travelExpenses = (foodPrice: number, lodgingPrice: number): number => {
     // si fulttime = true; 1 comida cada 12 hs por chofer; 1 hospedaje por dia por chofer;
     if (fulltime)
@@ -171,6 +163,24 @@ export default function TravelOptions() {
     return 0
   }
   const viaticos: number = travelExpenses(FOOD_PRICE, LODGING_PRICE)
+
+  const driversCost = vehicles.map(
+    ({ quantity, id, driverFee }) =>
+      quantity *
+      driverPrice(
+        driverFee,
+        id,
+        distanciaTotal,
+        driverQuantitys(id, distanciaIda),
+      ),
+  );
+
+
+  
+
+  
+  
+  const totalCost =  vehiclesCost.concat(driversCost).reduce((a, b) => a + b);
 
   return (
     <>
@@ -378,7 +388,7 @@ export default function TravelOptions() {
                   </div>
                   <div className="mt-5  ">
                     <div className="flex flex-col justify-between ">
-                      {vehicles.map((vehicle, index) =>
+                      {vehicles.map((vehicle, index) => 
                         vehicle.quantity ? (
                           <>
                             <div
@@ -407,7 +417,7 @@ export default function TravelOptions() {
                               </div>
                             }
                           </>
-                        ) : null,
+                        ) : null
                       )}
                     </div>
                   </div>

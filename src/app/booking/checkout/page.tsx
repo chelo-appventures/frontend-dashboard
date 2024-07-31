@@ -5,9 +5,10 @@ import HeaderAV, { OptionHeader } from "@/components/header";
 import { Ruda, Inter } from "next/font/google";
 import Select from "@/components/select";
 
-import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import axios from "axios";
 
+const MP_SERVER = process.env.NEXT_PUBLIC_MP_SERVER;
 
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -28,7 +29,7 @@ export default function PartialPay() {
 
   const [result, setResult] = useState<any>();
   const [preferenceId, setPreferenceId] = useState(null);
-  const [enableButton, setEnableButton] = useState(false)
+  const [enableButton, setEnableButton] = useState(false);
 
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
@@ -47,11 +48,11 @@ export default function PartialPay() {
     return <div> Loading ...</div>;
   }
 
-  initMercadoPago(process.env.NEXT_PUBLIC_MP_KEY!, { locale: 'es-AR' });
+  initMercadoPago(process.env.NEXT_PUBLIC_MP_KEY!, { locale: "es-AR" });
 
   const createPreference = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/create_preference", {
+      const response = await axios.post(`${MP_SERVER}/create_preference`, {
         title: "Viaje",
         quantity: 1,
         price: checkout.amount,
@@ -62,15 +63,15 @@ export default function PartialPay() {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleBuy = async () => {
     const id = await createPreference();
 
     if (id) {
       setPreferenceId(id);
-    };
-  }
+    }
+  };
 
   return (
     <>
@@ -132,7 +133,12 @@ export default function PartialPay() {
                   <p className={`${ruda.className} font-bold text-[16px]`}>
                     Costo total del servicio
                   </p>
-                  <p className="font-bold text-[26px]">{(checkout.totalCost).toLocaleString('es-AR', { style: 'currency', currency: "ARS" })}</p>
+                  <p className="font-bold text-[26px]">
+                    {checkout.totalCost.toLocaleString("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    })}
+                  </p>
                 </div>
                 <div className="line mt-6 bg-gray-300 w-full h-[1px] x-6"></div>
                 <div className="my-6 flex justify-between">
@@ -172,26 +178,33 @@ export default function PartialPay() {
                       Monto a pagar como reserva
                     </p>
                     <p className="font-bold text-[26px] text-right my-6 text-gray-500">
-                      {(checkout.amount).toLocaleString('es-AR', { style: 'currency', currency: "ARS" })}
+                      {checkout.amount.toLocaleString("es-AR", {
+                        style: "currency",
+                        currency: "ARS",
+                      })}
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-row text-right mt-20">
-
                   <button
                     className="outline-none bg-orange-500 text-[18px] font-bold text-white w-1/2 my-4 mr-2 h-12 disabled:bg-gray-300 disabled:text-gray-500"
                     onClick={handleBuy}
-                  // {() => {
-                  //   localStorage.setItem("form3", JSON.stringify(checkout));
-                  //   redirect("/booking/checkout/payment-method");
-                  // }}
+                    // {() => {
+                    //   localStorage.setItem("form3", JSON.stringify(checkout));
+                    //   redirect("/booking/checkout/payment-method");
+                    // }}
                   >
                     Continuar
                   </button>
-                    {
-                      preferenceId &&
-                      <div className="w-1/2 ml-2"> <Wallet initialization={{ preferenceId: preferenceId! }} /> </div>
-                    }
+                  {preferenceId && (
+                    <div className="w-1/2 ml-2">
+                      {" "}
+                      <Wallet
+                        onClick={() => console.log("hola")}
+                        initialization={{ preferenceId: preferenceId! }}
+                      />{" "}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

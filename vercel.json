@@ -3,6 +3,11 @@
         {
             "source": "/externalapi/:path*",
             "destination": "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:3000/:path*"
+        },
+        {
+            "source": "/mpapi/:path*",
+            "destination": "http://ec2-18-188-86-213.us-east-2.compute.amazonaws.com:8080/:path*"
         }
     ]
+    
 }

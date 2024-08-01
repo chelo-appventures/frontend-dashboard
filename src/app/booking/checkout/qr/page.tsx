@@ -32,7 +32,7 @@ export default function QR() {
       const form0 = safeJsonParse(localStorage.getItem("form0"));
       const form1 = safeJsonParse(localStorage.getItem("form1"));
       const form2 = safeJsonParse(localStorage.getItem("form2"));
-      const posId = safeJsonParse(localStorage.getItem("posId"));
+      const posId = localStorage.getItem("posId");
 
       if (posId) {
         console.log(posId);

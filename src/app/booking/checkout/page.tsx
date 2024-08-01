@@ -51,6 +51,7 @@ export default function PartialPay() {
   initMercadoPago(process.env.NEXT_PUBLIC_MP_KEY!, { locale: "es-AR" });
 
   const createPreference = async () => {
+    console.log(MP_SERVER)
     try {
       const response = await axios.post(`${MP_SERVER}/create_preference`, {
         title: "Viaje",
@@ -200,7 +201,7 @@ export default function PartialPay() {
                     <div className="w-1/2 ml-2">
                       {" "}
                       <Wallet
-                        onClick={() => console.log("hola")}
+                        // onClick={() => console.log("hola")}
                         initialization={{ preferenceId: preferenceId! }}
                       />{" "}
                     </div>

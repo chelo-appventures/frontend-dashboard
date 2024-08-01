@@ -13,17 +13,35 @@ import Link from "next/link";
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
 
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
+
 export default function QR() {
   const [result, setResult] = useState<any>();
   useEffect(() => {
-    const form0 = JSON.parse(localStorage.getItem("form0") || "");
-    const form1 = JSON.parse(localStorage.getItem("form1") || "");
-    const form2 = JSON.parse(localStorage.getItem("form2") || "");
-    const posId = localStorage.getItem("posId") || "";
+    const fetchInitialData = async () => {
+      const form0 = JSON.parse(localStorage.getItem("form0") || "");
+      const form1 = JSON.parse(localStorage.getItem("form1") || "");
+      const form2 = JSON.parse(localStorage.getItem("form2") || "");
+      const data = { form0, form1, form2 }
 
-    if (form0 && form1) {
-      setResult({ form0, form1, form2, posId });
+      if (form0 && form1) {
+        const result = await fetch(`${APIBASE}/api/products`, {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: "Bearer zxcvbnm",
+          },
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+        const json = await result.json();
+
+        if (json.data) {
+          // localStorage.setItem("posId", json.data.insertedId);
+          setResult({ ...data, posId: json.data.insertedId });
+        }
+      }
     }
+    fetchInitialData().catch(error => console.log(error))
   }, []);
 
   if (!result) {
@@ -32,7 +50,7 @@ export default function QR() {
   const { departure, return: destiny, passengers } = result.form0;
   const responsable = result.form1.passengers[0];
 
-  const handleDownload = () => {};
+  const handleDownload = () => { };
 
   return (
     <>

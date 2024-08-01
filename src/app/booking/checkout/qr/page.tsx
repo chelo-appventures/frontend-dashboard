@@ -15,16 +15,30 @@ const inter = Inter({ subsets: ["latin"] });
 
 const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 
+
+function safeJsonParse(str: string | null): any | null {
+  if (!str) return null;
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return null;
+  }
+}
+
 export default function QR() {
   const [result, setResult] = useState<any>();
   useEffect(() => {
     const fetchInitialData = async () => {
-      const form0 = JSON.parse(localStorage.getItem("form0") || "");
-      const form1 = JSON.parse(localStorage.getItem("form1") || "");
-      const form2 = JSON.parse(localStorage.getItem("form2") || "");
-      const data = { form0, form1, form2 }
+      const form0 = safeJsonParse(localStorage.getItem("form0"));
+      const form1 = safeJsonParse(localStorage.getItem("form1"));
+      const form2 = safeJsonParse(localStorage.getItem("form2"));
+      const posId = safeJsonParse(localStorage.getItem("posId"));
 
-      if (form0 && form1) {
+      if (posId) {
+        console.log(posId);
+        return;
+      } else if (form0 && form1) {
+        const data = { form0, form1, form2 }
         const result = await fetch(`${APIBASE}/api/products`, {
           headers: {
             "Content-type": "application/json",
@@ -36,7 +50,7 @@ export default function QR() {
         const json = await result.json();
 
         if (json.data) {
-          // localStorage.setItem("posId", json.data.insertedId);
+          localStorage.setItem("posId", json.data.insertedId);
           setResult({ ...data, posId: json.data.insertedId });
         }
       }

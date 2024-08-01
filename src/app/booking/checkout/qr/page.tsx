@@ -19,11 +19,10 @@ export default function QR() {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
     const form1 = JSON.parse(localStorage.getItem("form1") || "");
     const form2 = JSON.parse(localStorage.getItem("form2") || "");
-    const form3 = JSON.parse(localStorage.getItem("form3") || "");
     const posId = localStorage.getItem("posId") || "";
 
     if (form0 && form1) {
-      setResult({ form0, form1, form2, form3, posId });
+      setResult({ form0, form1, form2, posId });
     }
   }, []);
 

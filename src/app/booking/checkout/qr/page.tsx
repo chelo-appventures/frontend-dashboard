@@ -9,6 +9,7 @@ import download from "@/ui/icons/download.svg";
 import share from "@/ui/icons/share.svg";
 import { Ruda, Inter } from "next/font/google";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -174,7 +175,13 @@ export default function QR() {
 
             {/* FIN DEL CONTAINER */}
             <div className="font-bold text-orange-500 text-[18px]">
-              <Link href="#">Continuar en el sitio</Link>
+              <Link href="/booking/passengers" onClick={() => {
+                  console.log("clean");
+                  localStorage.removeItem("form0");
+                  localStorage.removeItem("form1");
+                  localStorage.removeItem("form2");
+                  redirect("/booking/passengers")
+                }}>Continuar en el sitio</Link>
             </div>
 
             <div className="">

@@ -162,7 +162,7 @@ function Budget() {
                         />
                       </td>
                       <td className="text-center" rowSpan={2}>
-                        <Link href={{pathname:`/budget-services/details`, query: {id: sale._id} }}>{sale._id.substring(0,6)}</Link>
+                        <Link href={{pathname:`/budget-services/details`, query: {id: sale._id} }}>{`VE${sale._id.substring(0,6)}`}</Link>
                         <div className="flex justify-center">
                           <Image src={roundTrip} alt="round-trip" />
                         </div>

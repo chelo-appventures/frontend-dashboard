@@ -10,7 +10,7 @@ import doubleCheck from "@/ui/icons/doubleCheck.svg"
 import adultIcon from "@/ui/icons/adult.svg"
 import kidIcon from "@/ui/icons/child.svg"
 import babyIcon from "@/ui/icons/baby.svg"
-import { formatDate } from "@/utils/basics";
+import { ageDetail, formatDate, idTypeDetail } from "@/utils/basics";
 import { TripDataForm1 } from "@/state/Trip.type";
 import { useState } from "react";
 
@@ -21,9 +21,11 @@ const ruda = Ruda({ subsets: ["latin"] });
 
 function TravelCard ( 
     {
+        id,
         tripData,
         departure,
     }:{
+        id: string,
         tripData:TripDataForm1,
         departure: boolean
     }) 
@@ -65,7 +67,7 @@ function TravelCard (
                         </div>
                         <div className="flex flex-row border-t-2 border-gray-300 mt-5 items-center justify-between">
                             <div className={`${ruda.className} flex flex-row my-2 font-semibold`}>
-                                <p>ID: {"VE29079"}</p>
+                                <p>ID: {id}</p>
                                 <Image src={minibus} alt="" className="text-black mx-4 h-6 w-8"/>
                                 <div className="flex">
                                     <p className="mx-2">
@@ -148,29 +150,16 @@ function TravelCard (
 
 
 function PassengerCard ( {passenger, index}:{passenger: any, index:number}) {
-    const ageDetail = ( age:string ):string => {
-        if (age.includes("adult")) return "Adulto"
-        if (age.includes("child")) return "Niño"
-        if (age.includes("baby")) return "Bebé"
-        return "null"
-    }
-
-    const idTypeDetail = ( idType: string) => {
-        if (idType.includes("dni")) return "DNI"
-        if (idType.includes("passport")) return "Pasaporte"
-        if (idType.includes("ci")) return "CI"
-        if (idType.includes("rut")) return "RUT"
-        return null
-    }
 
     return (
-        <div className="flex flex-row border-t w-full border-gray-300 py-4 justify-between">
+        <div className="flex flex-row border-t w-full border-gray-300 py-4 justify-between opacity-80 hover:opacity-100 bg-gray-100 hover:bg-white duration-200">
             <div className="flex gap-5 text-[#10004F]">
                 <div className="flex flex-col w-[150px]">
                     <div className="flex font-bold">
                         { 
-                            passenger.age.includes("adult") 
-                            ? <Image src={adultIcon} alt="" />
+                            passenger.age?.includes("adult") 
+                            ? 
+                            <Image src={adultIcon} alt="" />
                             : passenger.age.includes("child") 
                                 ? <Image src={kidIcon} alt="" />
                                 : <Image src={babyIcon} alt="" />
@@ -182,7 +171,7 @@ function PassengerCard ( {passenger, index}:{passenger: any, index:number}) {
                 </div>
                 <div className="flex flex-col">
                     <p className="font-bold">{`${passenger.firstName} ${passenger.lastName}`}</p>
-                    <p>{`${idTypeDetail(passenger.identification.type)}: ${passenger.identification.number} | ${passenger.contact.phoneCode} ${passenger.contact.phoneNumber} | `}<span className="font-bold">{passenger.contact.email}</span></p>
+                    <p>{`${idTypeDetail(passenger.identification.type)}: ${Number(passenger.identification.number).toLocaleString('es-AR')} | ${passenger.contact.phoneCode} ${passenger.contact.phoneNumber} | `}<span className="font-bold">{passenger.contact.email}</span></p>
                     <p>{`Dirección: ${passenger.contact.address.street} ${passenger.contact.address.number}, ${passenger.contact.address.city}`}</p>
                 </div>
             </div>

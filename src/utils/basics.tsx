@@ -51,4 +51,21 @@ const formatDateDDMMYYY = (originalDate: Date) => {
   let formattedDate: string = `${dayStr}/${monthStr}/${year}`;
   return formattedDate
 }
-export { isValid, formatDate, formatDateDDMMYYY };
+
+const ageDetail = ( age:string | undefined):string => {
+  if (age === undefined) return "null";
+  if (age.includes("adult")) return "Adulto"
+  if (age.includes("child")) return "Niño"
+  if (age.includes("baby")) return "Bebé"
+  return "null"
+}
+
+const idTypeDetail = ( idType: string) => {
+  if (idType.includes("dni")) return "DNI"
+  if (idType.includes("passport")) return "Pasaporte"
+  if (idType.includes("ci")) return "CI"
+  if (idType.includes("rut")) return "RUT"
+  return null
+
+}
+export { isValid, formatDate, formatDateDDMMYYY, ageDetail, idTypeDetail };

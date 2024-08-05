@@ -175,11 +175,6 @@ export default function TravelOptions() {
       ),
   );
 
-
-  
-
-  
-  
   const totalCost =  vehiclesCost.concat(driversCost).reduce((a, b) => a + b);
 
   return (

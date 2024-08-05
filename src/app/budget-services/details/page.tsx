@@ -7,155 +7,17 @@ import Image from "next/image";
 import adultIcon from "@/ui/icons/adult.svg"
 import { TravelCard, PassengerCard } from "@/components/budget-services/Cards";
 import { TripDataForm1 } from "@/state/Trip.type";
-import { formatDateDDMMYYY } from "@/utils/basics";
+import { formatDateDDMMYYY, idTypeDetail } from "@/utils/basics";
 import { MapIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from "react";
 
-const tripData: TripDataForm1 = {
-    "tripType": {
-        "transferType": "particular",
-        "roundTrip": false
-    },
-    "fullTime": false,
-    "departure": {
-        "city": "",
-        "street": "",
-        "number": "",
-        "other": "",
-        "date": "2024-08-04",
-        "time": "10:00",
-        "address": "Suipacha 876, Villa Mercedes, San Luis, Argentina",
-        "googlePlace": {
-            "lat": -33.6781588,
-            "lng": -65.4585822
-        }
-    },
-    "return": {
-        "city": "",
-        "street": "",
-        "number": "",
-        "other": "",
-        "date": "2024-08-07",
-        "time": "22:00",
-        "address": "Italia 442, Victoria, Entre Ríos, Argentina",
-        "googlePlace": {
-            "lat": -32.6224354,
-            "lng": -60.15681480000001
-        }
-    },
-    "passengers": {
-        "adult": 2,
-        "kid": 1,
-        "baby": 1,
-        "pets": {
-            "small": 0,
-            "big": 0
-        }
-    },
-    "luggage": {
-        "carryOn": 2,
-        "bag23": 1,
-        "special": {
-            "quantity": 1,
-            "detail": "Bici"
-        }
-    }
-}
 
-const passengersData = [
-        {
-            "firstName": "Jose",
-            "lastName": "Perez",
-            "age": "adult",
-            "identification": {
-                "type": "dni",
-                "number": "11222333",
-                "country": "arg"
-            },
-            "contact": {
-                "phoneCode": "",
-                "phoneNumber": "02657660312",
-                "email": "fedealaniz@gmail.com",
-                "address": {
-                    "street": "Suipacha ",
-                    "number": "876",
-                    "city": "San Luis",
-                    "neighborhood": "",
-                    "other": ""
-                }
-            },
-            "gender": "Male"
-        },
-        {
-            "firstName": "Gisela",
-            "lastName": "Rodriguez",
-            "age": "adult",
-            "identification": {
-                "type": "dni",
-                "number": "22444555",
-                "country": "arg"
-            },
-            "contact": {
-                "phoneCode": "",
-                "phoneNumber": "",
-                "email": "",
-                "address": {
-                    "street": "",
-                    "number": "",
-                    "city": "",
-                    "neighborhood": "",
-                    "other": ""
-                }
-            },
-            "gender": "Female"
-        },
-        {
-            "firstName": "Agostina",
-            "lastName": "Alaniz Rodriguez",
-            "age": "child",
-            "identification": {
-                "type": "dni",
-                "number": "55222344",
-                "country": "arg"
-            },
-            "contact": {
-                "phoneCode": "",
-                "phoneNumber": "",
-                "email": "",
-                "address": {
-                    "street": "",
-                    "number": "",
-                    "city": "",
-                    "neighborhood": "",
-                    "other": ""
-                }
-            },
-            "gender": "Female"
-        },
-        {
-            "firstName": "Fernando",
-            "lastName": "Alaniz Rodriguez",
-            "age": "baby",
-            "identification": {
-                "type": "dni",
-                "number": "66223445",
-                "country": "arg"
-            },
-            "contact": {
-                "phoneCode": "",
-                "phoneNumber": "",
-                "email": "",
-                "address": {
-                    "street": "",
-                    "number": "",
-                    "city": "",
-                    "neighborhood": "",
-                    "other": ""
-                }
-            },
-            "gender": "Male"
-        }
-    ]
+
+
+
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 
 
 const transferTypeDescription = (data: TripDataForm1) => {
@@ -165,6 +27,34 @@ const transferTypeDescription = (data: TripDataForm1) => {
     if (data.tripType.transferType.includes('int_airport')) return "Aeroportuario | Vuelo Internacional"
 }
 export default function Details() {
+    const searchParams = useSearchParams();
+    const id = searchParams.get('id');
+
+    const [data, setData] = useState<any>();
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await fetch(`${APIBASE}/api/products/${id}`, {
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: "Bearer zxcvbnm",
+                },
+            });
+            const json = await result.json();
+            setData(json.data);
+
+        };
+
+        fetchData().catch(console.log);
+    }, []);
+
+    if (!data) {
+        return <div> Loading ... </div>;
+    }
+    console.log(data)
+    const tripData = data?.form0;
+    const passengersData = data?.form1?.passengers;
+    const totalCost = data.form2.totalCost;
+    const partiallyPaid = 86000
     return (
         <>
             <PortalNavBar />
@@ -210,12 +100,12 @@ export default function Details() {
                         </p>
 
                     </div>
-                    <TravelCard tripData={tripData} departure />
+                    <TravelCard id={`VE${data._id.substring(0,6)}`} tripData={tripData} departure />
                     {
                         tripData.tripType.roundTrip &&
                         <>
                             <div className="border-2 border-gray-400"></div>
-                            <TravelCard tripData={tripData} departure={false} />
+                            <TravelCard id={`VE${data._id.substring(0,6)}`} tripData={tripData} departure={false} />
                         </>
                     }
                     <div className="flex flex-row mt-10 gap-4 items-center">
@@ -228,7 +118,7 @@ export default function Details() {
                             <Link href={"#"} className="font-semibold ml-2 cursor-pointer underline text-orange-500">Factura A 12812323</Link>
                         </div>
                         <div className="flex text-3xl font-semibold">
-                            <p>{`${"$ 86.000 / "}`}<span className="text-gray-400">$ 120.000</span></p>
+                            <p>{`${partiallyPaid.toLocaleString("es-AR", {style: "currency", currency: "ARS",})} / `}<span className="text-gray-400">{totalCost.toLocaleString("es-AR", {style: "currency", currency: "ARS",})}</span></p>
                         </div>
                     </div>
                     <div className="flex flex-row gap-3 text-[#10004F]">
@@ -242,7 +132,7 @@ export default function Details() {
                             <div className="flex font-bold gap-2">
                                 <p>{`${passengersData[0].firstName} ${passengersData[0].lastName}`}</p>
                             </div>
-                            <p>{`${"DNI"}: ${"23.222.555"} | ${passengersData[0].contact.phoneCode} ${passengersData[0].contact.phoneNumber} | `}<span className="font-bold">{passengersData[0].contact.email}</span></p>
+                            <p>{`${idTypeDetail(passengersData[0].identification.type)}: ${Number(passengersData[0].identification.number).toLocaleString('es-AR')} | ${passengersData[0].contact.phoneCode} ${passengersData[0].contact.phoneNumber} | `}<span className="font-bold">{passengersData[0].contact.email}</span></p>
 
                         </div>
                     </div>
@@ -262,10 +152,10 @@ export default function Details() {
                             <p>Map View</p>
                         </div>
                     </div>
-                    {passengersData.map((passenger, index:number) => {
+                    {passengersData.map((passenger: any, index: number) => {
                         return (
-                            <PassengerCard 
-                                passenger={passengersData[index]} 
+                            <PassengerCard
+                                passenger={passengersData[index]}
                                 index={index}
                                 key={index}
                             />

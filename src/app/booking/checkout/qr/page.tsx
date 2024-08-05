@@ -9,22 +9,54 @@ import download from "@/ui/icons/download.svg";
 import share from "@/ui/icons/share.svg";
 import { Ruda, Inter } from "next/font/google";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
 
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
+
+
+function safeJsonParse(str: string | null): any | null {
+  if (!str) return null;
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return null;
+  }
+}
+
 export default function QR() {
   const [result, setResult] = useState<any>();
   useEffect(() => {
-    const form0 = JSON.parse(localStorage.getItem("form0") || "");
-    const form1 = JSON.parse(localStorage.getItem("form1") || "");
-    const form2 = JSON.parse(localStorage.getItem("form2") || "");
-    const form3 = JSON.parse(localStorage.getItem("form3") || "");
-    const posId = localStorage.getItem("posId") || "";
+    const fetchInitialData = async () => {
+      const form0 = safeJsonParse(localStorage.getItem("form0"));
+      const form1 = safeJsonParse(localStorage.getItem("form1"));
+      const form2 = safeJsonParse(localStorage.getItem("form2"));
+      const posId = localStorage.getItem("posId");
 
-    if (form0 && form1) {
-      setResult({ form0, form1, form2, form3, posId });
+      if (posId) {
+        console.log(posId);
+        return;
+      } else if (form0 && form1) {
+        const data = { form0, form1, form2 }
+        const result = await fetch(`${APIBASE}/api/products`, {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: "Bearer zxcvbnm",
+          },
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+        const json = await result.json();
+
+        if (json.data) {
+          localStorage.setItem("posId", json.data.insertedId);
+          setResult({ ...data, posId: json.data.insertedId });
+        }
+      }
     }
+    fetchInitialData().catch(error => console.log(error))
   }, []);
 
   if (!result) {
@@ -33,7 +65,7 @@ export default function QR() {
   const { departure, return: destiny, passengers } = result.form0;
   const responsable = result.form1.passengers[0];
 
-  const handleDownload = () => {};
+  const handleDownload = () => { };
 
   return (
     <>
@@ -143,7 +175,13 @@ export default function QR() {
 
             {/* FIN DEL CONTAINER */}
             <div className="font-bold text-orange-500 text-[18px]">
-              <Link href="#">Continuar en el sitio</Link>
+              <Link href="/booking/passengers" onClick={() => {
+                  console.log("clean");
+                  localStorage.removeItem("form0");
+                  localStorage.removeItem("form1");
+                  localStorage.removeItem("form2");
+                  redirect("/booking/passengers")
+                }}>Continuar en el sitio</Link>
             </div>
 
             <div className="">

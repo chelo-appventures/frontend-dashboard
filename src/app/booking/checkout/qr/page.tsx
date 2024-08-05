@@ -28,6 +28,7 @@ function safeJsonParse(str: string | null): any | null {
 
 export default function QR() {
   const [result, setResult] = useState<any>();
+  const [idAlreadyExists, setIdAlreadyExists] = useState(false)
   useEffect(() => {
     const fetchInitialData = async () => {
       const form0 = safeJsonParse(localStorage.getItem("form0"));
@@ -37,6 +38,7 @@ export default function QR() {
 
       if (posId) {
         console.log(posId);
+        setIdAlreadyExists(true)
         return;
       } else if (form0 && form1) {
         const data = { form0, form1, form2 }
@@ -59,9 +61,24 @@ export default function QR() {
     fetchInitialData().catch(error => console.log(error))
   }, []);
 
+  if (idAlreadyExists) {
+    return ( 
+      <div>
+        <p>El pago ya fuue realizado con anterioridad</p>
+        <button onClick={() => {
+          localStorage.removeItem("posId");
+          localStorage.removeItem("form0");
+          localStorage.removeItem("form1");
+          localStorage.removeItem("form2");
+          redirect("/booking")
+        }}>Reiniciar</button>
+      </div>
+      )
+  }
   if (!result) {
     return <div> Loading ...</div>;
   }
+
   const { departure, return: destiny, passengers } = result.form0;
   const responsable = result.form1.passengers[0];
 

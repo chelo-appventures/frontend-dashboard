@@ -13,8 +13,8 @@ const TripProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [trip, setTrip] = useState<Trip>({
     tripType: { transferType: "", roundTrip: false },
     fullTime: false,
-    departure: { city: "", street:"", number:"", other:"", date: "", time: "" },
-    return: { city: "", street:"", number:"", other:"", date: "", time: "" },
+    departure: { address: "", other:"", date: "", time: "" },
+    return: { address: "", other:"", date: "", time: "" },
     passengers: { adult: 0, kid: 0, baby: 0, pets: { small: 0, big: 0 } },
     luggage: { carryOn: 0, bag23: 0, special: { quantity: 0, detail: "" } },
   });

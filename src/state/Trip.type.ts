@@ -9,9 +9,6 @@ interface GooglePlace {
 }
 
 interface DepartureOrReturn {
-  city: string;
-  street: string;
-  number: string;
   address: string;
   other: string;
   date: string;

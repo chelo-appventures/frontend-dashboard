@@ -52,7 +52,6 @@ function Budget() {
     return <div> Loading ... </div>;
   }
 
-  console.log(data);
   return (
     <>
       <PortalNavBar />

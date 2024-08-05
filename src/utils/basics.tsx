@@ -29,38 +29,26 @@ function isValid(resultJson: any, originJson: any): boolean {
   return compareStructureAndValues(resultJson, originJson);
 }
 
-// interface AddressComponent {
-//   long_name: string;
-//   short_name: string;
-//   types: string[];
-// }
+const formatDate = (originalDate: Date) => {
+  let date = new Date(originalDate);
+  let daysOfWeek = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+  let months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+  let dayOfWeek = daysOfWeek[date.getDay()];
+  let dayOfMonth = date.getDate();
+  let month = months[date.getMonth()];
+  let formattedDate = `${dayOfWeek}, ${dayOfMonth} ${month}`;
+  return formattedDate
+}
 
-// interface AddressJSON {
-//   address_components: AddressComponent[];
-//   formatted_address: string;
-//   geometry: { location: any };
-//   place_id: string;
-//   html_attributions: any[];
-//   utc_offset: number | undefined;
-// }
+const formatDateDDMMYYY = (originalDate: Date) => {
+  let date: Date = new Date(originalDate);
+  let day: number = date.getDate();
+  let month: number = date.getMonth() + 1;
+  let year: number = date.getFullYear();
+  let dayStr: string = day < 10 ? '0' + day : day.toString();
+  let monthStr: string = month < 10 ? '0' + month : month.toString();
 
-// interface LongNames {
-//   streetNumber: string;
-//   route: string;
-// }
-
-// function getLongNames(json: AddressJSON): LongNames {
-//   let streetNumber = "";
-//   let route = "";
-
-//   json.address_components.forEach((component) => {
-//     if (component.types.includes("street_number")) {
-//       streetNumber = component.long_name;
-//     } else if (component.types.includes("route")) {
-//       route = component.long_name;
-//     }
-//   });
-
-//   return { streetNumber, route };
-// }
-export { isValid };
+  let formattedDate: string = `${dayStr}/${monthStr}/${year}`;
+  return formattedDate
+}
+export { isValid, formatDate, formatDateDDMMYYY };

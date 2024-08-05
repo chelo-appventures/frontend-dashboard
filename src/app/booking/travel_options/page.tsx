@@ -403,7 +403,7 @@ export default function TravelOptions() {
                                 {driversCost[index].toLocaleString('es-AR', {style: 'currency', currency:  "ARS"})}
                               </span>
                             </div>
-                            {viaticos  &&
+                            {viaticos > 0  &&
                               <div
                                 className="flex flex-row justify-between"
                                 key={index}

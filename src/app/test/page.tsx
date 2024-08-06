@@ -1,3 +1,4 @@
+import Spinner from "@/components/Spinner"
 import { AdultIcon, BabyICON, KidIcon } from "@/components/test/paxIcon"
 
 export default function Test () {
@@ -15,14 +16,9 @@ export default function Test () {
                 } )}
                 
             </div>
-            {/* <div>
-                <KidIcon OK={true} />
-                <KidIcon OK={false} />
-            </div>
             <div>
-                <BabyICON OK={true} />
-                <BabyICON OK={false} />
-            </div> */}
+                <Spinner />
+            </div>
         </div>
     )
 }

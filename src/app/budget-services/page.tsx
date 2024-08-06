@@ -19,6 +19,7 @@ import rowSettings from "@/ui/icons/vertical-dots.svg";
 import { useRouter } from "next/navigation";
 
 import { Ruda } from "next/font/google";
+import Spinner from "@/components/Spinner";
 
 const ruda = Ruda({ subsets: ["latin"] });
 
@@ -49,7 +50,7 @@ function Budget() {
   }, []);
 
   if (!data) {
-    return <div> Loading ... </div>;
+    return <Spinner/>;
   }
 
   return (

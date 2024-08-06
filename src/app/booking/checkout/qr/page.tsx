@@ -10,6 +10,7 @@ import share from "@/ui/icons/share.svg";
 import { Ruda, Inter } from "next/font/google";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import Spinner from "@/components/Spinner";
 
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -60,7 +61,7 @@ export default function QR() {
   }, []);
 
   if (!result) {
-    return <div> Loading ...</div>;
+    return <Spinner />;
   }
   const { departure, return: destiny, passengers } = result.form0;
   const responsable = result.form1.passengers[0];

@@ -17,6 +17,7 @@ import TextArea from "./textArea";
 import { isValid } from "@/utils/basics";
 import { loadGoogleMaps } from "@/utils/loadGoogleMaps";
 import SearchAddresses from "./PlacesAutocomplete";
+import Spinner from "./Spinner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -156,7 +157,7 @@ export default function AVForm() {
   };
 
   if (!mapsLoaded) {
-    return <div>Loading...</div>;
+    return <Spinner/>;
   }
 
   const submitHandler = (e: any) => {

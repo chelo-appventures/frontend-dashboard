@@ -9,7 +9,7 @@ import download from "@/ui/icons/download.svg";
 import share from "@/ui/icons/share.svg";
 import { Ruda, Inter } from "next/font/google";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
 
 const ruda = Ruda({ subsets: ["latin"] });
@@ -30,6 +30,11 @@ function safeJsonParse(str: string | null): any | null {
 export default function QR() {
   const [result, setResult] = useState<any>();
   const [idAlreadyExists, setIdAlreadyExists] = useState(false)
+
+  const router = useRouter();
+  const redirect = (path: string) => {
+    router.push(path);
+  };
   useEffect(() => {
     const fetchInitialData = async () => {
       const form0 = safeJsonParse(localStorage.getItem("form0"));

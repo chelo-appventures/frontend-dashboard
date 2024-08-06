@@ -7,6 +7,7 @@ import Select from "@/components/select";
 
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import axios from "axios";
+import Spinner from "@/components/Spinner";
 
 const MP_SERVER = process.env.NEXT_PUBLIC_MP_SERVER;
 
@@ -45,7 +46,7 @@ export default function PartialPay() {
   }, []);
 
   if (!result || !result.form0) {
-    return <div> Loading ...</div>;
+    return <Spinner/>;
   }
 
   initMercadoPago(process.env.NEXT_PUBLIC_MP_KEY!, { locale: "es-AR" });

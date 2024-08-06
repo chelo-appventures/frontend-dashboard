@@ -5,7 +5,7 @@ import { useState } from "react";
 import LabelInput from "./input";
 import { RedAlert } from "./alert";
 
-const APIBASE = "/externalapi";
+const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 
 export default function LoginComp() {
   const router = useRouter();

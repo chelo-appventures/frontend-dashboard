@@ -19,6 +19,7 @@ import rowSettings from "@/ui/icons/vertical-dots.svg";
 import { useRouter } from "next/navigation";
 
 import { Ruda } from "next/font/google";
+import Spinner from "@/components/Spinner";
 
 const ruda = Ruda({ subsets: ["latin"] });
 
@@ -49,10 +50,9 @@ function Budget() {
   }, []);
 
   if (!data) {
-    return <div> Loading ... </div>;
+    return <Spinner/>;
   }
 
-  console.log(data);
   return (
     <>
       <PortalNavBar />
@@ -162,12 +162,12 @@ function Budget() {
                         />
                       </td>
                       <td className="text-center" rowSpan={2}>
-                        <span className="underline">VE29059</span>
+                        <Link href={{pathname:`/budget-services/details`, query: {id: sale._id} }}>{`VE${sale._id.substring(0,6)}`}</Link>
                         <div className="flex justify-center">
                           <Image src={roundTrip} alt="round-trip" />
                         </div>
                       </td>
-                      <td rowSpan={2}>Seña {sale.form3.percentage}%</td>
+                      <td rowSpan={2}>Seña {"sale.form3.percentage"}%</td>
                       <td rowSpan={2}>ME</td>
                       <td rowSpan={2}>56</td>
                       <td>IDA</td>
@@ -188,9 +188,9 @@ function Budget() {
                       </td>
                       <td rowSpan={2}>Cta Cte 1</td>
                       <td className="text-gray-400" rowSpan={2}>
-                        ${sale.form3.amount}
+                        ${"sale.form3.amount"}
                       </td>
-                      <td rowSpan={2}>${sale.form3.totalCost}</td>
+                      <td rowSpan={2}>${"sale.form3.totalCost"}</td>
                       <td rowSpan={2}>
                         <Image
                           src={rowSettings}

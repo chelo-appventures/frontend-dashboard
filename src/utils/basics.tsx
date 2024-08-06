@@ -1,3 +1,5 @@
+import { TripDataForm1 } from "@/state/Trip.type";
+
 function isValid(resultJson: any, originJson: any): boolean {
   // Helper function to check if two objects have the same structure and values
   const compareStructureAndValues = (obj1: any, obj2: any): boolean => {
@@ -68,4 +70,11 @@ const idTypeDetail = ( idType: string) => {
   return null
 
 }
-export { isValid, formatDate, formatDateDDMMYYY, ageDetail, idTypeDetail };
+
+const transferTypeDescription = (data: TripDataForm1) => {
+  if (data.tripType.transferType.includes('particular')) return "Traslado particular"
+  if (data.tripType.transferType.includes('corporative')) return "Traslado corporativo"
+  if (data.tripType.transferType.includes('nat_airport')) return "Aeroportuario | Vuelo Nacional"
+  if (data.tripType.transferType.includes('int_airport')) return "Aeroportuario | Vuelo Internacional"
+}
+export { isValid, formatDate, formatDateDDMMYYY, ageDetail, idTypeDetail, transferTypeDescription };

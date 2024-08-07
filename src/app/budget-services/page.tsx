@@ -168,7 +168,8 @@ function Budget() {
                           <Image src={roundTrip} alt="round-trip" />
                         </div>
                       </td>
-                      <td rowSpan={2}>Seña {"sale.form3.percentage"}%</td>
+                      <td rowSpan={2}>Seña {"50"}%</td>
+                      {/* <td rowSpan={2}>Seña {"sale.form3.percentage"}%</td> */}
                       <td rowSpan={2}>ME</td>
                       <td rowSpan={2}>56</td>
                       <td>IDA</td>
@@ -189,9 +190,16 @@ function Budget() {
                       </td>
                       <td rowSpan={2}>Cta Cte 1</td>
                       <td className="text-gray-400" rowSpan={2}>
-                        ${"sale.form3.amount"}
+                        {(sale.form2.totalCost/2).toLocaleString("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    })}
+                        {/* ${"sale.form3.amount"} */}
                       </td>
-                      <td rowSpan={2}>${"sale.form3.totalCost"}</td>
+                      <td rowSpan={2}>{sale.form2.totalCost.toLocaleString("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    })}</td>
                       <td rowSpan={2}>
                         <Image
                           src={rowSettings}

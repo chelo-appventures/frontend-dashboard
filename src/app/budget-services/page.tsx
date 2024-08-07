@@ -176,8 +176,8 @@ function Budget() {
                       <td>{sale.form0.departure.date}</td>
                       <td className="flex justify-between">
                         <span className="underline">
-                          {sale?.form0.departure.city.split(",")[0]} -{" "}
-                          {sale?.form0.return.city.split(",")[0]}
+                          {sale?.form0.departure.address.split(",")[0]} -{" "}
+                          {sale?.form0.return.address.split(",")[0]}
                         </span>
                         <span className="bg-yellow-200 px-2 rounded">
                           5 par
@@ -206,8 +206,8 @@ function Budget() {
                       <td>{sale.form0.return.date}</td>
                       <td className="flex justify-between">
                         <span className="underline">
-                          {sale.form0.return.city.split(",")[0]} -{" "}
-                          {sale.form0.departure.city.split(",")[0]}
+                          {sale?.form0.return.address.split(",")[0]} -{" "}
+                          {sale?.form0.departure.address.split(",")[0]}
                         </span>
                         <span className="bg-yellow-200 px-2 rounded">
                           5 par

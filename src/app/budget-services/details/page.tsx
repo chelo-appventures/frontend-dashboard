@@ -9,7 +9,7 @@ import { TravelCard, PassengerCard } from "@/components/budget-services/Cards";
 import { formatDateDDMMYYY, idTypeDetail, transferTypeDescription } from "@/utils/basics";
 import { MapIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from "react";
 import Spinner from "@/components/Spinner";
 
@@ -18,6 +18,11 @@ const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 function DetailsContent() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
+
+    const router = useRouter();
+    const redirect = (path: string) => {
+        router.push(path);
+    };
 
     const [data, setData] = useState<any>();
     useEffect(() => {
@@ -54,7 +59,10 @@ function DetailsContent() {
                 </div>
                 <div className="flex flex-row mt-10 items-center justify-between">
                     <div className="flex">
-                        <div className="flex text-orange-500 font-semibold items-center mr-5">
+                        <div 
+                            className="flex text-orange-500 font-semibold items-center mr-5 cursor-pointer"
+                            onClick={() => redirect("/budget-services")}
+                        >
                             <ArrowLeftIcon className="size-4 mr-2" /> <p>Volver</p>
                         </div>
                         <div className="flex text-3xl">

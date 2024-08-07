@@ -77,4 +77,15 @@ const transferTypeDescription = (data: TripDataForm1) => {
   if (data.tripType.transferType.includes('nat_airport')) return "Aeroportuario | Vuelo Nacional"
   if (data.tripType.transferType.includes('int_airport')) return "Aeroportuario | Vuelo Internacional"
 }
-export { isValid, formatDate, formatDateDDMMYYY, ageDetail, idTypeDetail, transferTypeDescription };
+
+function obtenerFechaDeHoy(): string {
+  const hoy = new Date();
+  const dia = hoy.getDate();
+  const mes = hoy.toLocaleString('es-ES', { month: 'long' });
+  const año = hoy.getFullYear();
+
+  return `${dia} de ${mes.charAt(0).toUpperCase() + mes.slice(1)} de ${año}`;
+}
+
+
+export { isValid, formatDate, formatDateDDMMYYY, ageDetail, idTypeDetail, transferTypeDescription, obtenerFechaDeHoy };

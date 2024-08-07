@@ -198,12 +198,12 @@ export default function QR() {
 
             {/* FIN DEL CONTAINER */}
             <div className="font-bold text-orange-500 text-[18px]">
-              <Link href="/booking/passengers" onClick={() => {
+              <Link href="#" onClick={() => {
                   console.log("clean");
                   localStorage.removeItem("form0");
                   localStorage.removeItem("form1");
                   localStorage.removeItem("form2");
-                  redirect("/booking/passengers")
+                  redirect("/booking")
                 }}>Continuar en el sitio</Link>
             </div>
 

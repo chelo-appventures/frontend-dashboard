@@ -5,6 +5,7 @@ import HeaderAV, { OptionHeader } from "@/components/header";
 import { driverPrice, driverQuantitys, foodExpenses, lodgingExpenses } from "@/utils/pricing";
 import { useRouter } from "next/navigation";
 import LabelInput from "@/components/input";
+import Spinner from "@/components/Spinner";
 
 const options = [
   {
@@ -146,7 +147,7 @@ export default function TravelOptions() {
 
   
   if (!result) {
-    return <div> Loading ...</div>;
+    return <Spinner/>;
   }
 
   const distanciaTotal = distanciaIda + distanciaVuelta;

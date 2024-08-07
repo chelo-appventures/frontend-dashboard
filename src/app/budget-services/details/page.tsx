@@ -6,29 +6,23 @@ import logo from "@/ui/img/Logo.png"
 import Image from "next/image";
 import adultIcon from "@/ui/icons/adult.svg"
 import { TravelCard, PassengerCard } from "@/components/budget-services/Cards";
-import { TripDataForm1 } from "@/state/Trip.type";
-import { formatDateDDMMYYY, idTypeDetail } from "@/utils/basics";
+import { formatDateDDMMYYY, idTypeDetail, transferTypeDescription } from "@/utils/basics";
 import { MapIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from "react";
-
-
-
-
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from "react";
+import Spinner from "@/components/Spinner";
 
 const APIBASE = process.env.NEXT_PUBLIC_APIBASE;
 
-
-const transferTypeDescription = (data: TripDataForm1) => {
-    if (data.tripType.transferType.includes('particular')) return "Traslado particular"
-    if (data.tripType.transferType.includes('corporative')) return "Traslado corporativo"
-    if (data.tripType.transferType.includes('nat_airport')) return "Aeroportuario | Vuelo Nacional"
-    if (data.tripType.transferType.includes('int_airport')) return "Aeroportuario | Vuelo Internacional"
-}
-export default function Details() {
+function DetailsContent() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
+
+    const router = useRouter();
+    const redirect = (path: string) => {
+        router.push(path);
+    };
 
     const [data, setData] = useState<any>();
     useEffect(() => {
@@ -48,27 +42,31 @@ export default function Details() {
     }, []);
 
     if (!data) {
-        return <div> Loading ... </div>;
+        return <Spinner />;
     }
-    console.log(data)
+
+    console.log(data);
     const tripData = data?.form0;
     const passengersData = data?.form1?.passengers;
     const totalCost = data.form2.totalCost;
-    const partiallyPaid = 86000
+    const partiallyPaid = 86000;
     return (
         <>
             <PortalNavBar />
             <div className="px-10 py-3 bg-gray-100">
                 <div className="flex flex-row">
-                    <p className="font-semibold"><span className="text-orange-500 underline">Viajes exclusivos</span> {" > "} {"VE29059"}</p>
+                    <p className="font-semibold"><span className="text-orange-500 underline">Viajes exclusivos</span> {" > "} {`VE${data._id.substring(0, 6)}`}</p>
                 </div>
                 <div className="flex flex-row mt-10 items-center justify-between">
                     <div className="flex">
-                        <div className="flex text-orange-500 font-semibold items-center mr-5">
+                        <div 
+                            className="flex text-orange-500 font-semibold items-center mr-5 cursor-pointer"
+                            onClick={() => redirect("/budget-services")}
+                        >
                             <ArrowLeftIcon className="size-4 mr-2" /> <p>Volver</p>
                         </div>
                         <div className="flex text-3xl">
-                            <p className="font-bold">SERVICIO {"VE29059"} <span className="font-light">| {"15/02/2024"}</span> </p>
+                            <p className="font-bold">SERVICIO {`VE${data._id.substring(0, 6)}`} <span className="font-light">| {"15/02/2024"}</span> </p>
                         </div>
                         <QrCodeIcon className="flex mx-2 size-8 items-center" />
                     </div>
@@ -100,12 +98,12 @@ export default function Details() {
                         </p>
 
                     </div>
-                    <TravelCard id={`VE${data._id.substring(0,6)}`} tripData={tripData} departure />
+                    <TravelCard id={`VE${data._id.substring(0, 6)}`} tripData={tripData} departure />
                     {
                         tripData.tripType.roundTrip &&
                         <>
                             <div className="border-2 border-gray-400"></div>
-                            <TravelCard id={`VE${data._id.substring(0,6)}`} tripData={tripData} departure={false} />
+                            <TravelCard id={`VE${data._id.substring(0, 6)}`} tripData={tripData} departure={false} />
                         </>
                     }
                     <div className="flex flex-row mt-10 gap-4 items-center">
@@ -118,7 +116,7 @@ export default function Details() {
                             <Link href={"#"} className="font-semibold ml-2 cursor-pointer underline text-orange-500">Factura A 12812323</Link>
                         </div>
                         <div className="flex text-3xl font-semibold">
-                            <p>{`${partiallyPaid.toLocaleString("es-AR", {style: "currency", currency: "ARS",})} / `}<span className="text-gray-400">{totalCost.toLocaleString("es-AR", {style: "currency", currency: "ARS",})}</span></p>
+                            <p>{`${partiallyPaid.toLocaleString("es-AR", { style: "currency", currency: "ARS", })} / `}<span className="text-gray-400">{totalCost.toLocaleString("es-AR", { style: "currency", currency: "ARS", })}</span></p>
                         </div>
                     </div>
                     <div className="flex flex-row gap-3 text-[#10004F]">
@@ -167,3 +165,10 @@ export default function Details() {
     )
 }
 
+export default function Details() {
+    return (
+        <Suspense fallback={<Spinner />}>
+            <DetailsContent />
+        </Suspense>
+    );
+}

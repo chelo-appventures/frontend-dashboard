@@ -19,6 +19,8 @@ import rowSettings from "@/ui/icons/vertical-dots.svg";
 import { useRouter } from "next/navigation";
 
 import { Ruda } from "next/font/google";
+import Spinner from "@/components/Spinner";
+import { obtenerFechaDeHoy } from "@/utils/basics";
 
 const ruda = Ruda({ subsets: ["latin"] });
 
@@ -42,14 +44,14 @@ function Budget() {
       });
       const json = await result.json();
       console.log(json);
-      setData(json.data.filter((x: any) => x.form0));
+      setData(json.data.reverse().filter((x: any) => x.form0));
     };
 
     fetchData().catch(console.log);
   }, []);
 
   if (!data) {
-    return <div> Loading ... </div>;
+    return <Spinner/>;
   }
 
   return (
@@ -174,8 +176,8 @@ function Budget() {
                       <td>{sale.form0.departure.date}</td>
                       <td className="flex justify-between">
                         <span className="underline">
-                          {sale.form0.departure.city.split(",")[0]} -{" "}
-                          {sale.form0.return.city.split(",")[0]}
+                          {sale?.form0.departure.city.split(",")[0]} -{" "}
+                          {sale?.form0.return.city.split(",")[0]}
                         </span>
                         <span className="bg-yellow-200 px-2 rounded">
                           5 par
@@ -219,7 +221,7 @@ function Budget() {
             <tfoot>
               <tr>
                 <td colSpan={14} className="px-2 border border-gray-200">
-                  Actualizado al 1 de Julio de 2024 | Sitio en construccion
+                  {`Actualizado al ${obtenerFechaDeHoy()} | Sitio en construcción`}
                 </td>
               </tr>
             </tfoot>

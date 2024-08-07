@@ -15,6 +15,7 @@ import cardxl from "@/ui/icons/card_xl.svg";
 import cards from "@/ui/icons/cards.svg";
 import { CardPaymentMethod } from "@/components/card";
 import { IconType } from "@/components/card";
+import Spinner from "@/components/Spinner";
 
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -38,7 +39,7 @@ export default function PaymentMethod() {
   };
 
   if (!data) {
-    return <div> Loading ... </div>;
+    return <Spinner/>;
   }
 
   const handleContinuar = async () => {

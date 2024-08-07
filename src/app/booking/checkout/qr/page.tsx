@@ -9,7 +9,8 @@ import download from "@/ui/icons/download.svg";
 import share from "@/ui/icons/share.svg";
 import { Ruda, Inter } from "next/font/google";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Spinner from "@/components/Spinner";
 
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -28,6 +29,12 @@ function safeJsonParse(str: string | null): any | null {
 
 export default function QR() {
   const [result, setResult] = useState<any>();
+  const [idAlreadyExists, setIdAlreadyExists] = useState(false)
+
+  const router = useRouter();
+  const redirect = (path: string) => {
+    router.push(path);
+  };
   useEffect(() => {
     const fetchInitialData = async () => {
       const form0 = safeJsonParse(localStorage.getItem("form0"));
@@ -37,6 +44,7 @@ export default function QR() {
 
       if (posId) {
         console.log(posId);
+        setIdAlreadyExists(true)
         return;
       } else if (form0 && form1) {
         const data = { form0, form1, form2 }
@@ -59,9 +67,24 @@ export default function QR() {
     fetchInitialData().catch(error => console.log(error))
   }, []);
 
-  if (!result) {
-    return <div> Loading ...</div>;
+  if (idAlreadyExists) {
+    return ( 
+      <div>
+        <p>El pago ya fuue realizado con anterioridad</p>
+        <button onClick={() => {
+          localStorage.removeItem("posId");
+          localStorage.removeItem("form0");
+          localStorage.removeItem("form1");
+          localStorage.removeItem("form2");
+          redirect("/booking")
+        }}>Reiniciar</button>
+      </div>
+      )
   }
+  if (!result) {
+    return <Spinner />;
+  }
+
   const { departure, return: destiny, passengers } = result.form0;
   const responsable = result.form1.passengers[0];
 
@@ -175,12 +198,12 @@ export default function QR() {
 
             {/* FIN DEL CONTAINER */}
             <div className="font-bold text-orange-500 text-[18px]">
-              <Link href="/booking/passengers" onClick={() => {
+              <Link href="#" onClick={() => {
                   console.log("clean");
                   localStorage.removeItem("form0");
                   localStorage.removeItem("form1");
                   localStorage.removeItem("form2");
-                  redirect("/booking/passengers")
+                  redirect("/booking")
                 }}>Continuar en el sitio</Link>
             </div>
 

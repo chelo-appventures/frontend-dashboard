@@ -25,7 +25,7 @@ export default function Passengers({
 }) {
   const { passengerData, setPassengerData } = usePassengerData();
   const [errors, setError] = useState(errorInitialState);
-  const [isDisabled, setIsDisabled] = useState(true)
+  const [isDisabled, setIsDisabled] = useState(passengerData.agreements.termsCondition)
 
   const router = useRouter();
   const redirect = (path: string) => {

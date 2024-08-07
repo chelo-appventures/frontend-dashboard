@@ -1,15 +1,12 @@
 "use client";
-import Separator, { SeparatorPersona } from "@/components/separator";
+import Separator from "@/components/separator";
 import LabelInput from "@/components/input";
 import React, { useState } from "react";
 import Important from "@/components/important";
-import { usePassengerData } from "@/state/booking/PassengerContext";
 import { Passenger, Gender } from "@/state/Passenger.type";
 import { ErrorMessage, isError } from "@/components/ErrorMessage";
 import Select from "@/components/select";
-import { stringify } from "querystring";
 import Accordion from "@/components/Accordion";
-import CountryPhoneSelect from "@/components/CountryCode";
 
 export default function PassengerForm({
   errors,
@@ -24,10 +21,11 @@ export default function PassengerForm({
   setPassenger: (passenger: Passenger) => void;
   index: number;
 }) {
-  const [sameAdress, setSameAdress] = useState(true);
+  const [sameAddress, setSameAddress] = useState(false);
+  const [passenger1Address, setPassengerAddress] = useState<any>(null);
 
   const handleSameAddress = (e: any) => {
-    setSameAdress(e.currentTarget.checked);
+    setSameAddress(e.currentTarget.checked);
   };
 
   const isResponsible = index === 0;
@@ -54,6 +52,7 @@ export default function PassengerForm({
                   ...passenger,
                   firstName: e.target.value,
                 });
+
               }}
             />
           </div>
@@ -75,6 +74,7 @@ export default function PassengerForm({
                   ...passenger,
                   lastName: e.target.value,
                 });
+
               }}
             />
           </div>
@@ -143,6 +143,7 @@ export default function PassengerForm({
                         number: e.target.value,
                       },
                     });
+                    
                   }}
                 />
               </div>
@@ -171,6 +172,7 @@ export default function PassengerForm({
                       country: e.target.value,
                     },
                   });
+
                 }}
               >
                 <option disabled defaultValue=""></option>
@@ -205,6 +207,7 @@ export default function PassengerForm({
                     ...passenger,
                     age: e.target.value,
                   });
+
                 }}
               >
                 <option disabled defaultValue=""></option>
@@ -227,6 +230,7 @@ export default function PassengerForm({
                       ...passenger,
                       gender: Gender.Male,
                     });
+
                   }}
                 />
                 <label htmlFor="man">Hombre</label>
@@ -254,6 +258,7 @@ export default function PassengerForm({
                       ...passenger,
                       gender: Gender.Other,
                     });
+
                   }}
                 />
                 <label htmlFor="other">Prefiero no decirlo</label>
@@ -277,8 +282,21 @@ export default function PassengerForm({
               type="checkbox"
               className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
                       focus:outline-none duration-500 hover:shadow-md "
-              checked={sameAdress}
-              onChange={handleSameAddress}
+              checked={sameAddress}
+              // onChange={handleSameAddress}
+              onChange={(e:any) => {
+                setSameAddress(e.currentTarget.checked)
+                setPassenger({
+                  ...passenger,
+                  contact: {
+                    ...passenger.contact,
+                    address: {
+                      ...passenger1Address
+                    }
+                  }
+                });
+                console.log(passenger)
+              }}
             />
             <label className="text-black p-2">
               Es la misma dirección que la anterior
@@ -287,7 +305,7 @@ export default function PassengerForm({
         </>
       ) : null}
 
-      {(isResponsible || !sameAdress) && (
+      {(isResponsible || !sameAddress) && (
         <div>
           {isResponsible ? (
             <>
@@ -298,32 +316,6 @@ export default function PassengerForm({
                 <div className="w-1/2 flex flex-row">
                   <div className="w-1/3">
                     <div>
-                      {/* <CountryPhoneSelect
-                      selectLabel="Código de Área"
-                      errorField={errors.contact.phoneCode}
-                      className={`
-                                    ${isError(errors.contact.phoneCode)
-                          ? "border-red-500 "
-                          : ""}`}
-                      onChange={(e) => {
-                        if (isError(errors.contact.phoneCode)) {
-                          setError({
-                            ...errors,
-                            contact: {
-                              ...errors.contact,
-                              phoneCode: "",
-                            },
-                          });
-                        }
-                        setPassenger({
-                          ...passenger,
-                          contact: {
-                            ...passenger.contact,
-                            phoneCode: e.target.value,
-                          },
-                        });
-                      } }                      
-                      /> */}
                       <Select
                         label="Código de Área"
                         errorField={errors.contact.phoneCode}
@@ -349,16 +341,19 @@ export default function PassengerForm({
                               phoneCode: e.target.value,
                             },
                           });
+                          console.log(passenger.contact)
                         }}
                       >
                         <option disabled defaultValue=""></option>
-                        <option value="arg">+54</option>
-                        <option value="bra">+55</option>
-                        <option value="chi">+56</option>
-                        <option value="uru">+598</option>
-                        <option value="bol">+591</option>
-                        <option value="col">+57</option>
-                        <option value="ven">+58</option>
+                        <option value="+54">(+54) ARG</option>
+                        <option value="+55">(+55) BRA</option>
+                        <option value="+56">(+56) CHI</option>
+                        <option value="+598">(+598) URU</option>
+                        <option value="+591">(+591) BOL</option>
+                        <option value="+57">(+57) COL</option>
+                        <option value="+58">(+58) VEN</option>
+                        <option value="+593">(+593) ECU</option>
+                        <option value="+595">(+595) PAR</option>
                       </Select>
                     </div>
                   </div>
@@ -455,6 +450,7 @@ export default function PassengerForm({
                           },
                         },
                       });
+                      index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                     }}
                   />
                 </div>
@@ -488,7 +484,9 @@ export default function PassengerForm({
                           },
                         },
                       });
+                      index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                     }}
+                    
                   />
                 </div>
               </div>
@@ -526,6 +524,7 @@ export default function PassengerForm({
                       },
                     },
                   });
+                  index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                 }}
               />
             </div>
@@ -560,6 +559,7 @@ export default function PassengerForm({
                         },
                       },
                     });
+                    index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                   }}
                 />
               </div>
@@ -593,6 +593,7 @@ export default function PassengerForm({
                         },
                       },
                     });
+                    index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                   }}
                 />
               </div>

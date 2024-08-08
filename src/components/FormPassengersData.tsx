@@ -25,7 +25,7 @@ export default function Passengers({
 }) {
   const { passengerData, setPassengerData } = usePassengerData();
   const [errors, setError] = useState(errorInitialState);
-  const [isDisabled, setIsDisabled] = useState(passengerData.agreements.termsCondition)
+  const [isDisabled, setIsDisabled] = useState(!passengerData.agreements.termsCondition)
 
   const router = useRouter();
   const redirect = (path: string) => {
@@ -261,6 +261,7 @@ export default function Passengers({
     });
 
   };
+
   const submitHandler = (e: any) => {
     e.preventDefault();
     errorHandler();
@@ -322,6 +323,8 @@ export default function Passengers({
                 },
               })
               setIsDisabled(passengerData.agreements.termsCondition) 
+              console.log('Disabled?:',isDisabled)
+              console.log('TyC?:',passengerData.agreements.termsCondition)
             }
           }
         />

@@ -6,6 +6,7 @@ import { driverPrice, driverQuantitys, foodExpenses, lodgingExpenses } from "@/u
 import { useRouter } from "next/navigation";
 import LabelInput from "@/components/input";
 import Spinner from "@/components/Spinner";
+import { sumarDuracion } from "@/utils/basics";
 
 const options = [
   {
@@ -94,6 +95,7 @@ export default function TravelOptions() {
 
   const [distanciaIda, setDistanciaIda] = useState(0);
   const [distanciaVuelta, setDistanciaVuelta] = useState(0);
+  const [travelTime, setTravelTime] = useState(0)
 
   const [seatsNeeded, setSeatsNeeded] = useState(0);
   const [fulltime, setFulltime] = useState(false);
@@ -141,6 +143,7 @@ export default function TravelOptions() {
       console.log({ json }, dis, dur);
       setDistanciaIda(dis / 1000);
       setDistanciaVuelta(dis / 1000);
+      setTravelTime(dur);
     };
     fetchDistance().catch(console.log);
   }, []);
@@ -178,6 +181,7 @@ export default function TravelOptions() {
 
   const totalCost =  vehiclesCost.concat(driversCost).reduce((a, b) => a + b);
 
+  const vehicleTravelDuration = travelTime;
   return (
     <>
       <div className="flex min-h-screen flex-col items-center bg-gray-300 h-full">
@@ -189,7 +193,7 @@ export default function TravelOptions() {
             passengers={result.form0.passengers}
             luggage={result.form0.luggage}
           />
-          <div className="bg-white flex flex-row w-full justify-between px-2 py-5 rounded-lg">
+          {/* <div className="bg-white flex flex-row w-full justify-between px-2 py-5 rounded-lg">
             <div className="w-full mx-2">
               <LabelInput
                 type="number"
@@ -212,7 +216,7 @@ export default function TravelOptions() {
                 }}
               />
             </div>
-          </div>
+          </div> */}
           <div className="flex flex-row justify-center h-full bg-gray-200 pb-10 pt-20">
             <div className="flex flex-col items-start">
               <h1 className="text-[36px] text-black">
@@ -435,7 +439,8 @@ export default function TravelOptions() {
                           totalCost,
                           vehiclesCost,
                           driversCost,
-                          viaticos
+                          viaticos,
+                          vehicleTravelDuration
                         }),
                       );
                       redirect("/booking/checkout");

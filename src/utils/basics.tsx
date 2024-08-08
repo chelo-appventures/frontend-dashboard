@@ -87,5 +87,30 @@ function obtenerFechaDeHoy(): string {
   return `${dia} de ${mes.charAt(0).toUpperCase() + mes.slice(1)} de ${año}`;
 }
 
+function sumarDuracion(horaPartida: string, travelDuration: number): string {
+  // Paso 1: Crear un objeto Date con la hora de partida
+  const [hours, minutes] = horaPartida.split(":").map(Number);
+  const fechaPartida = new Date();
+  fechaPartida.setHours(hours, minutes, 0, 0);
 
-export { isValid, formatDate, formatDateDDMMYYY, ageDetail, idTypeDetail, transferTypeDescription, obtenerFechaDeHoy };
+  // Paso 2: Sumar la duración del viaje (convertir segundos a milisegundos)
+  fechaPartida.setSeconds(fechaPartida.getSeconds() + travelDuration);
+
+  // Paso 3: Redondear los minutos al múltiplo de 10 más cercano
+  let minutosSumados = fechaPartida.getMinutes();
+  minutosSumados = Math.ceil(minutosSumados / 10) * 10;
+
+  // Si los minutos exceden 60, ajustar la hora
+  if (minutosSumados === 60) {
+      fechaPartida.setHours(fechaPartida.getHours() + 1);
+      minutosSumados = 0;
+  }
+
+  const horasSumadas = fechaPartida.getHours().toString().padStart(2, '0');
+  const minutosFormateados = minutosSumados.toString().padStart(2, '0');
+
+  return `${horasSumadas}:${minutosFormateados}`;
+}
+
+
+export { isValid, formatDate, formatDateDDMMYYY, ageDetail, idTypeDetail, transferTypeDescription, obtenerFechaDeHoy, sumarDuracion };

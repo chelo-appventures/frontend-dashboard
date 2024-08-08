@@ -21,8 +21,7 @@ export default function PassengerForm({
   setPassenger: (passenger: Passenger) => void;
   index: number;
 }) {
-  const [sameAddress, setSameAddress] = useState(false);
-  const [passenger1Address, setPassengerAddress] = useState<any>(null);
+  const [sameAddress, setSameAddress] = useState(true);
 
   const handleSameAddress = (e: any) => {
     setSameAddress(e.currentTarget.checked);
@@ -283,20 +282,7 @@ export default function PassengerForm({
               className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
                       focus:outline-none duration-500 hover:shadow-md "
               checked={sameAddress}
-              // onChange={handleSameAddress}
-              onChange={(e:any) => {
-                setSameAddress(e.currentTarget.checked)
-                setPassenger({
-                  ...passenger,
-                  contact: {
-                    ...passenger.contact,
-                    address: {
-                      ...passenger1Address
-                    }
-                  }
-                });
-                console.log(passenger)
-              }}
+              onChange={handleSameAddress}
             />
             <label className="text-black p-2">
               Es la misma dirección que la anterior
@@ -450,7 +436,6 @@ export default function PassengerForm({
                           },
                         },
                       });
-                      index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                     }}
                   />
                 </div>
@@ -484,7 +469,6 @@ export default function PassengerForm({
                           },
                         },
                       });
-                      index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                     }}
                     
                   />
@@ -524,7 +508,6 @@ export default function PassengerForm({
                       },
                     },
                   });
-                  index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                 }}
               />
             </div>
@@ -559,7 +542,6 @@ export default function PassengerForm({
                         },
                       },
                     });
-                    index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                   }}
                 />
               </div>
@@ -593,7 +575,6 @@ export default function PassengerForm({
                         },
                       },
                     });
-                    index === 0 ? setPassengerAddress({...passenger.contact.address}) : null
                   }}
                 />
               </div>

@@ -25,6 +25,7 @@ export default function AVForm() {
   const { trip, setTrip } = useTrip();
     // useState<google.maps.LatLngBounds | null>(null);
   const [mapsLoaded, setMapsLoaded] = useState<boolean>(false);
+  const roundTrip: boolean = trip.tripType.roundTrip;
   const errorsInitialState: any = {
     globals: [],
     tripType: {
@@ -366,7 +367,7 @@ export default function AVForm() {
             />
           </div>
         </div>
-        <Separator title="Destino y Regreso" />
+        { roundTrip ? <Separator title="Destino y Regreso" /> : <Separator title="Destino" />}
         <div className="flex flex-row">
           <div className="w-1/2 ml-2">
             <SearchAddresses
@@ -386,60 +387,65 @@ export default function AVForm() {
               }}
             />
           </div>
-          <div className="w-1/4 mx-2">
-            <LabelInput
-              type="date"
-              label=""
-              placeholder="Fecha de regreso"
-              errorField={errors.return.date}
-              value={trip.return.date}
-              onChange={(e: any) => {
-                if (isError(errors.return.date)) {
-                  setErrors({
-                    ...errors,
-                    return: {
-                      ...errors.return,
-                      date: "",
-                    },
-                  });
-                }
-                setTrip({
-                  ...trip,
-                  return: {
-                    ...trip.return,
-                    date: e.currentTarget.value,
-                  },
-                });
-              }}
-            />
-          </div>
-          <div className="w-1/4 ml-2">
-            <LabelInput
-              type="time"
-              label=""
-              placeholder="Hora de regreso"
-              value={trip.return.time}
-              errorField={errors.return.time}
-              onChange={(e: any) => {
-                if (isError(errors.return.time)) {
-                  setErrors({
-                    ...errors,
-                    return: {
-                      ...errors.return,
-                      time: "",
-                    },
-                  });
-                }
-                setTrip({
-                  ...trip,
-                  return: {
-                    ...trip.return,
-                    time: e.currentTarget.value,
-                  },
-                });
-              }}
-            />
-          </div>
+          {
+            roundTrip && 
+            <>
+              <div className="w-1/4 mx-2">
+                <LabelInput
+                  type="date"
+                  label=""
+                  placeholder="Fecha de regreso"
+                  errorField={errors.return.date}
+                  value={trip.return.date}
+                  onChange={(e: any) => {
+                    if (isError(errors.return.date)) {
+                      setErrors({
+                        ...errors,
+                        return: {
+                          ...errors.return,
+                          date: "",
+                        },
+                      });
+                    }
+                    setTrip({
+                      ...trip,
+                      return: {
+                        ...trip.return,
+                        date: e.currentTarget.value,
+                      },
+                    });
+                  }}
+                />
+              </div>
+              <div className="w-1/4 ml-2">
+                <LabelInput
+                  type="time"
+                  label=""
+                  placeholder="Hora de regreso"
+                  value={trip.return.time}
+                  errorField={errors.return.time}
+                  onChange={(e: any) => {
+                    if (isError(errors.return.time)) {
+                      setErrors({
+                        ...errors,
+                        return: {
+                          ...errors.return,
+                          time: "",
+                        },
+                      });
+                    }
+                    setTrip({
+                      ...trip,
+                      return: {
+                        ...trip.return,
+                        time: e.currentTarget.value,
+                      },
+                    });
+                  }}
+                />
+              </div>
+            </>
+          }
         </div>
         <Separator title="Pasajeros" />
         <div className="flex flex-row justify-left mt-4">

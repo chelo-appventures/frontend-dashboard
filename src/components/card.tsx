@@ -280,13 +280,13 @@ function Accordion(props: any) {
             </ul>
           </div>
           <div className="flex flex-row py-3">
-            <Image src={police} alt="police" className="mr-1" />
-            <Image src={flame} alt="flame" className="mx-1" />
-            <Image src={snow_tv} alt="snow_tv" className="mx-1" />
-            <Image src={abs} alt="abs" className="mx-1" />
-            <Image src={confort_seat} alt="confort_seat" className="mx-1" />
-            <Image src={mic} alt="mic" className="mx-1" />
-            <Image src={light} alt="light" className="mx-1" />
+            <Image src={police} alt="police" className="mr-1  h-auto w-auto" />
+            <Image src={flame} alt="flame" className="mx-1 h-auto w-auto" />
+            <Image src={snow_tv} alt="snow_tv" className="mx-1 h-auto w-auto" />
+            <Image src={abs} alt="abs" className="mx-1 h-auto w-auto" />
+            <Image src={confort_seat} alt="confort_seat" className="mx-1 h-auto w-auto" />
+            <Image src={mic} alt="mic" className="mx-1 h-auto w-auto" />
+            <Image src={light} alt="light" className="mx-1 h-auto w-auto" />
           </div>
         </div>
       </div>

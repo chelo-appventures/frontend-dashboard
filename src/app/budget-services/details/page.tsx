@@ -87,7 +87,7 @@ function DetailsContent() {
                             <p><span>RECURRENTE - </span> Lunes a viernes</p>
                         </div>
                         <div>
-                            <p>Fecha inicio: {formatDateDDMMYYY(new Date(tripData.departure.date))}  |  Fecha término: {formatDateDDMMYYY(new Date(tripData.return.date))} </p>
+                            <p>Fecha inicio: {formatDateDDMMYYY(new Date(tripData.departure.date))}   {data.form0.tripType.roundTrip && `|  Fecha término: ${formatDateDDMMYYY(new Date(tripData.return.date))}`} </p>
                         </div>
                     </div>
                     <div className="flex flex-row justify-between text-gray-500 text-sm mt-2 mb-10">
@@ -98,12 +98,12 @@ function DetailsContent() {
                         </p>
 
                     </div>
-                    <TravelCard id={`VE${data._id.substring(0, 6)}`} tripData={tripData} departure />
+                    <TravelCard id={`VE${data._id.substring(0, 6)}`} tripData={tripData} departure travelDuration={data?.form2.vehicleTravelDuration} />
                     {
                         tripData.tripType.roundTrip &&
                         <>
                             <div className="border-2 border-gray-400"></div>
-                            <TravelCard id={`VE${data._id.substring(0, 6)}`} tripData={tripData} departure={false} />
+                            <TravelCard id={`VE${data._id.substring(0, 6)}`} tripData={tripData} departure={false} travelDuration={data?.form2.vehicleTravelDuration} />
                         </>
                     }
                     <div className="flex flex-row mt-10 gap-4 items-center">
@@ -112,7 +112,7 @@ function DetailsContent() {
                     </div>
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex">
-                            <p>{`${"Mercado Pago"} - ${"Tarjeta de crédito"} ${"1234 5678 1234 5678"} | `}</p>
+                            <p>{`${"Mercado Pago"} - ${"Tarjeta de crédito"} ${"**** **** **** 5678"} | `}</p>
                             <Link href={"#"} className="font-semibold ml-2 cursor-pointer underline text-orange-500">Factura A 12812323</Link>
                         </div>
                         <div className="flex text-3xl font-semibold">

@@ -112,5 +112,19 @@ function sumarDuracion(horaPartida: string, travelDuration: number): string {
   return `${horasSumadas}:${minutosFormateados}`;
 }
 
+const formatAddress = ( address: string ) => {
+  return address.split(",").slice(1, 3).join(", ").replace(/\b(?=[A-Za-z]*\d)(?=\d*[A-Za-z])[A-Za-z0-9]{4,8}\b/g, '').trim().replace(/\s{2,}/g, ' ')
+}
 
-export { isValid, formatDate, formatDateDDMMYYY, ageDetail, idTypeDetail, transferTypeDescription, obtenerFechaDeHoy, sumarDuracion };
+
+export { 
+  isValid,
+  formatDate, 
+  formatDateDDMMYYY, 
+  ageDetail, 
+  idTypeDetail, 
+  transferTypeDescription, 
+  obtenerFechaDeHoy, 
+  sumarDuracion,
+  formatAddress,
+};

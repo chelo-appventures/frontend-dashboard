@@ -10,7 +10,7 @@ import doubleCheck from "@/ui/icons/doubleCheck.svg"
 import adultIcon from "@/ui/icons/adult.svg"
 import kidIcon from "@/ui/icons/child.svg"
 import babyIcon from "@/ui/icons/baby.svg"
-import { ageDetail, formatDate, idTypeDetail } from "@/utils/basics";
+import { ageDetail, formatAddress, formatDate, idTypeDetail, sumarDuracion } from "@/utils/basics";
 import { TripDataForm1 } from "@/state/Trip.type";
 import { useState } from "react";
 
@@ -24,10 +24,12 @@ function TravelCard (
         id,
         tripData,
         departure,
+        travelDuration
     }:{
         id: string,
         tripData:TripDataForm1,
-        departure: boolean
+        departure: boolean,
+        travelDuration: number,
     }) 
     {
         const [departureCity, setDepartureCity] = useState(tripData.departure.address.split(",").slice(1, 3).join(", "))
@@ -49,7 +51,11 @@ function TravelCard (
                                     <span className="font-bold mr-2">
                                         {departure ? tripData.departure.time : tripData.return.time}
                                     </span>
-                                    {departure ? tripData.departure.address.split(",").slice(1, 3).join(", "): tripData.return.address.split(",").slice(1, 3).join(", ")}
+                                    {
+                                        departure 
+                                        ? formatAddress(tripData.departure.address)
+                                        : formatAddress(tripData.return.address)
+                                    }
                                 </p>
                                 <p className="text-sm text-gray-500 font-semibold">
                                     {departure ? formatDate(new Date(tripData.departure.date)) : formatDate(new Date(tripData.return.date))}
@@ -58,9 +64,12 @@ function TravelCard (
                             <span className="mx-3">-</span>
                             <div>
                                 <p>
-                                    <span className="font-bold mr-2">{"8:00"}</span>
-                                    {/* ACÁ HAY QUE DEFINIR UNA FECHA Y HORA ESTIMADA DE LLEGADA */}
-                                    {departure ? tripData.return.address.split(",").slice(1, 3).join(", "): tripData.departure.address.split(",").slice(1, 3).join(", ")}
+                                    <span className="font-bold mr-2">{departure ? sumarDuracion(tripData.departure.time, travelDuration) : sumarDuracion(tripData.return.time, travelDuration)}</span>
+                                    {
+                                        departure 
+                                        ? formatAddress(tripData.return.address)
+                                        : formatAddress(tripData.departure.address)
+                                    }
                                 </p>
                                 <p className="text-sm text-gray-500 font-semibold">{"Vie, 18 FEB"}</p>
                             </div>
@@ -68,7 +77,8 @@ function TravelCard (
                         <div className="flex flex-row border-t-2 border-gray-300 mt-5 items-center justify-between">
                             <div className={`${ruda.className} flex flex-row my-2 font-semibold`}>
                                 <p>ID: {id}</p>
-                                <Image src={minibus} alt="" className="text-black mx-4 h-6 w-8"/>
+
+                                {/* <Image src={minibus} alt="" className="text-black mx-4 h-6 w-8"/>
                                 <div className="flex">
                                     <p className="mx-2">
                                         <span className="mr-2">{"1"}</span>
@@ -89,7 +99,7 @@ function TravelCard (
                                         <ChevronDownIcon className="size-5"/>
                                         <Image src={doubleCheck} alt="" className="mx-1 h-6 w-6"/>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="flex gap-2">
                                 <p>

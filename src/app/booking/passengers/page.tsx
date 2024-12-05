@@ -33,9 +33,6 @@ export default function Passengers() {
               className="bg-white rounded-md shadow-lg flex flex-col items-center 
               -mt-20 mb-10 border border-solid w-3/4"
             >
-              <h3 className="font-bold text-[#10004F] text-[32px] my-6 w-10/12">
-                Datos de los pasajeros
-              </h3>
               <PassengerDataProvider>
                 <FormPassengersData passengers={passengers} />
               </PassengerDataProvider>

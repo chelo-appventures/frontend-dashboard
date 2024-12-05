@@ -2,19 +2,17 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HeaderAV, { OptionHeader } from "@/components/header";
-import RadioButton from "@/components/radioButton";
 import Image from "next/image";
 import { Ruda, Inter } from "next/font/google";
 import Link from "next/link";
 import LabelInput from "@/components/input";
 
-import card from "@/ui/icons/card.svg";
-import mp from "@/ui/icons/mercadopago.png";
 import cardxl from "@/ui/icons/card_xl.svg";
 
 import cards from "@/ui/icons/cards.svg";
 import { CardPaymentMethod } from "@/components/card";
 import { IconType } from "@/components/card";
+import Spinner from "@/components/Spinner";
 
 const ruda = Ruda({ subsets: ["latin"] });
 const inter = Inter({ subsets: ["latin"] });
@@ -38,25 +36,28 @@ export default function PaymentMethod() {
   };
 
   if (!data) {
-    return <div> Loading ... </div>;
+    return <Spinner/>;
   }
 
   const handleContinuar = async () => {
-    console.log(data);
-    const result = await fetch(`${APIBASE}/api/products`, {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: "Bearer zxcvbnm",
-      },
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-    const json = await result.json();
-
-    if (json.data) {
-      localStorage.setItem("posId", json.data.insertedId);
-      redirect("/booking/checkout/qr");
-      return;
+    if (!localStorage.getItem('form0')) {
+      redirect('/booking')
+    } else {
+      const result = await fetch(`${APIBASE}/api/products`, {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: "Bearer zxcvbnm",
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      const json = await result.json();
+  
+      if (json.data) {
+        localStorage.setItem("posId", json.data.insertedId);
+        redirect("/booking/checkout/qr");
+        return;
+      }
     }
   };
 

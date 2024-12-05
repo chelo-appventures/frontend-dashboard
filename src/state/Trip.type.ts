@@ -10,10 +10,14 @@ interface GooglePlace {
 
 interface DepartureOrReturn {
   address: string;
+  streetBetween1: string;
+  streetBetween2: string;
   other: string;
   date: string;
   time: string;
-  googlePlace?: GooglePlace; 
+  googlePlace?: GooglePlace;
+  onePoint: boolean;
+  stops: number | string; 
 }
 
 interface Pets {

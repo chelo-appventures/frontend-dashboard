@@ -2,16 +2,17 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import HeaderAV, { OptionHeader } from "@/components/header";
-import { Ruda, Inter } from "next/font/google";
+import { Ruda } from "next/font/google";
 import Select from "@/components/select";
 
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import axios from "axios";
+import Spinner from "@/components/Spinner";
 
 const MP_SERVER = process.env.NEXT_PUBLIC_MP_SERVER;
+const COEFICIENTE_PRUEBA: number = Number(process.env.NEXT_PUBLIC_TEST_COEF);
 
 const ruda = Ruda({ subsets: ["latin"] });
-const inter = Inter({ subsets: ["latin"] });
 
 export default function PartialPay() {
   const router = useRouter();
@@ -25,12 +26,11 @@ export default function PartialPay() {
     percentage: "50",
     amount: 0,
   });
-  const currency = new Intl.NumberFormat();
 
   const [result, setResult] = useState<any>();
   const [preferenceId, setPreferenceId] = useState(null);
-  const [enableButton, setEnableButton] = useState(false);
 
+  console.log(COEFICIENTE_PRUEBA)
   useEffect(() => {
     const form0 = JSON.parse(localStorage.getItem("form0") || "");
     const form2 = JSON.parse(localStorage.getItem("form2") || "");
@@ -39,13 +39,14 @@ export default function PartialPay() {
       setCheckout({
         ...checkout,
         totalCost: form2.totalCost,
-        amount: form2.totalCost * (parseInt(checkout.percentage) / 100),
+        amount: (form2.totalCost * (parseInt(checkout.percentage) / 100))/COEFICIENTE_PRUEBA
       });
+      console.log('amount',( form2.totalCost * (parseInt(checkout.percentage) / 100))/COEFICIENTE_PRUEBA)
     }
   }, []);
 
   if (!result || !result.form0) {
-    return <div> Loading ...</div>;
+    return <Spinner/>;
   }
 
   initMercadoPago(process.env.NEXT_PUBLIC_MP_KEY!, { locale: "es-AR" });
@@ -66,10 +67,15 @@ export default function PartialPay() {
   };
 
   const handleBuy = async () => {
-    const id = await createPreference();
+    if ( !localStorage.getItem('form0') ) {
+      redirect('/booking')
+    } else {
+      localStorage.setItem('form3', JSON.stringify( checkout ))
+      const id = await createPreference();
 
-    if (id) {
-      setPreferenceId(id);
+      if (id) {
+        setPreferenceId(id);
+      }
     }
   };
 
@@ -149,13 +155,13 @@ export default function PartialPay() {
                       ¿Qué porcentaje del viaje abonarás ahora para señar el
                       viaje?
                     </p>
-                    <div className="relative font-semibold">
+                    <div className="relative font-semibold mt-5">
                       <Select
                         label="Porcentaje de pago"
                         name="percentage_pay"
                         id="percentage_pay"
                         className="w-3/4"
-                        onChange={(e) => {
+                        onChange={(e:any) => {
                           setCheckout({
                             ...checkout,
                             amount:
@@ -178,7 +184,7 @@ export default function PartialPay() {
                       Monto a pagar como reserva
                     </p>
                     <p className="font-bold text-[26px] text-right my-6 text-gray-500">
-                      {checkout.amount.toLocaleString("es-AR", {
+                      { (COEFICIENTE_PRUEBA * checkout.amount).toLocaleString("es-AR", {
                         style: "currency",
                         currency: "ARS",
                       })}
@@ -189,10 +195,6 @@ export default function PartialPay() {
                   <button
                     className="outline-none bg-orange-500 text-[18px] font-bold text-white w-1/2 my-4 mr-2 h-12 disabled:bg-gray-300 disabled:text-gray-500"
                     onClick={handleBuy}
-                    // {() => {
-                    //   localStorage.setItem("form3", JSON.stringify(checkout));
-                    //   redirect("/booking/checkout/payment-method");
-                    // }}
                   >
                     Continuar
                   </button>
@@ -200,7 +202,6 @@ export default function PartialPay() {
                     <div className="w-1/2 ml-2">
                       {" "}
                       <Wallet
-                        // onClick={() => console.log("hola")}
                         initialization={{ preferenceId: preferenceId! }}
                       />{" "}
                     </div>

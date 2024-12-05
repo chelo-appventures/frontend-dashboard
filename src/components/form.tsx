@@ -14,16 +14,18 @@ import LabelInput from "./input";
 import { RedAlert } from "./alert";
 import { isError } from "./ErrorMessage";
 import TextArea from "./textArea";
-import { isValid } from "@/utils/basics";
+import { isValid, updateLocalStorage } from "@/utils/basics";
 import { loadGoogleMaps } from "@/utils/loadGoogleMaps";
 import SearchAddresses from "./PlacesAutocomplete";
+import Spinner from "./Spinner";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function AVForm() {
   const { trip, setTrip } = useTrip();
-    // useState<google.maps.LatLngBounds | null>(null);
+  // useState<google.maps.LatLngBounds | null>(null);
   const [mapsLoaded, setMapsLoaded] = useState<boolean>(false);
+  const roundTrip: boolean = trip.tripType.roundTrip;
   const errorsInitialState: any = {
     globals: [],
     tripType: {
@@ -35,11 +37,13 @@ export default function AVForm() {
       address: "",
       date: "",
       time: "",
+      stops: "",
     },
     return: {
       address: "",
       date: "",
       time: "",
+      stops: "",
     },
     passengers: {
       adult: "",
@@ -65,6 +69,7 @@ export default function AVForm() {
   function errorChecker(resObj: any) {
     const INCOMPLETE_FORM = "Hay datos incompletos en el formulario";
     const NO_ADULTS = "Debe haber al menos 1 pasajero adulto";
+    const passengersQuantity = resObj?.passengers?.adult + resObj?.passengers?.kid + resObj?.passengers?.baby;
     const newErrors = { ...errors };
 
     if (resObj?.tripType?.transferType === "")
@@ -73,20 +78,35 @@ export default function AVForm() {
     if (resObj?.departure?.address === "")
       newErrors.departure.address = "Selecciona un origen";
 
-    if (resObj?.departure?.date === "")
-      newErrors.departure.date = "Selecciona una fecha de salida";
+    if (!resObj?.departure?.onePoint && resObj?.departure?.stops < 2)
+      newErrors.departure.stops = "No puede haber menos de 2 puntos";
+
+    if (!resObj?.departure?.onePoint && resObj?.departure?.stops > passengersQuantity)
+      newErrors.departure.stops = "Hay más puntos que pasajeros";
 
     if (resObj?.departure?.time === "")
       newErrors.departure.time = "Selecciona una hora de salida";
 
+    if (resObj?.departure?.time && new Date(resObj?.departure?.date + 'T' + resObj?.departure?.time).getTime() < Date.now())
+      newErrors.departure.date = "La fecha de salida no puede ser anterior a la fecha actual";
+
+    if (!resObj?.departure?.time && new Date(resObj?.departure?.date + 'T00:00:00').getTime() < Date.now())
+      newErrors.departure.date = "La fecha de salida no puede ser anterior a la fecha actual";
+
     if (resObj?.return?.address === "")
       newErrors.return.address = "Selecciona un destino";
 
-    if (resObj?.return?.date === "")
+    if (resObj?.return?.address && resObj?.return?.address === resObj?.departure?.address)
+      newErrors.return.address = "La dirección de destino no puede ser igual a la de salida";
+
+    if (resObj?.tripType.roundTrip && resObj?.return?.date === "")
       newErrors.return.date = "Selecciona una fecha de regreso";
 
-    if (resObj?.return?.time === "")
+    if (resObj?.tripType.roundTrip && resObj?.return?.time === "")
       newErrors.return.time = "Selecciona una hora de regreso";
+
+    if (resObj?.tripType.roundTrip && resObj?.return?.date < resObj?.departure?.date)
+      newErrors.return.date = "La fecha de regreso debe ser posterior a la de salida";
 
     if (resObj?.passengers?.adult === 0)
       newErrors.passengers.adult = "Debe haber al menos 1 pasajero adulto";
@@ -113,7 +133,6 @@ export default function AVForm() {
     try {
       const form0Data = window.localStorage.getItem("form0");
       initialData = form0Data ? JSON.parse(form0Data) : trip;
-      console.log(initialData);
     } catch (error) {
       console.log(error);
     }
@@ -136,6 +155,13 @@ export default function AVForm() {
         },
       },
     }));
+    setErrors((errors: any) => ({
+      ...errors,
+      departure: {
+        ...errors.departure,
+        address: "",
+      },
+    }))
   };
   const handleReturnAddressSelected = (
     place: any,
@@ -153,21 +179,29 @@ export default function AVForm() {
         },
       },
     }));
+    setErrors((errors: any) => ({
+      ...errors,
+      return: {
+        ...errors.return,
+        address: "",
+      },
+    }))
   };
 
   if (!mapsLoaded) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   const submitHandler = (e: any) => {
     e.preventDefault();
     errorChecker(trip);
     const persistedData = JSON.stringify(trip);
-    window.localStorage.setItem("form0", persistedData);
+    updateLocalStorage("form0", persistedData);
+    console.log('form valido', isValid(errors, errorsInitialState))
+    console.log({ errors }, { errorsInitialState })
     isValid(errors, errorsInitialState)
       ? redirect("/booking/passengers")
       : null;
-    console.log(isValid(errors, errorsInitialState));
   };
 
   return (
@@ -181,45 +215,43 @@ export default function AVForm() {
       <form action="#" className="py-8 text-sm text-gray-500 font-bold w-11/12">
         {errors.globals.length > 0
           ? errors.globals.map((err: string, index: number) => (
-              <RedAlert key={index}>{err}</RedAlert>
-            ))
+            <RedAlert key={index}>{err}</RedAlert>
+          ))
           : null}
         <Separator title="Tipo de viaje" />
-        <div className="flex items-center">
-          <div className="w-1/2">
-            <Select
-              errorField={errors.tripType.transferType}
-              label="Tipo de traslado"
-              value={trip.tripType.transferType}
-              onChange={(e: any) => {
-                if (isError(errors.tripType.transferType)) {
-                  setErrors({
-                    ...errors,
-                    tripType: {
-                      ...errors.tripType,
-                      transferType: "",
-                    },
-                  });
-                }
-                setTrip({
-                  ...trip,
+        <div className="grid grid-cols-2 grid-rows-1 gap-2 mt-5">
+          <Select
+            errorField={errors.tripType.transferType}
+            label="Tipo de traslado"
+            value={trip.tripType.transferType}
+            onChange={(e: any) => {
+              if (isError(errors.tripType.transferType)) {
+                setErrors({
+                  ...errors,
                   tripType: {
-                    ...trip.tripType,
-                    transferType: e.currentTarget.value,
+                    ...errors.tripType,
+                    transferType: "",
                   },
                 });
-              }}
-            >
-              <option value="" defaultValue="" disabled>
-                Selecciona una opción
-              </option>
-              <option value="particular">Traslado Particular</option>
-              <option value="corporative">Traslado Corporativo</option>
-              <option value="nat_airport">Aeroportuario Nacional</option>
-              <option value="int_airport">Aeroportuario Internacional</option>
-            </Select>
-          </div>
-          <div className="flex">
+              }
+              setTrip({
+                ...trip,
+                tripType: {
+                  ...trip.tripType,
+                  transferType: e.currentTarget.value,
+                },
+              });
+            }}
+          >
+            <option value="" defaultValue="" disabled>
+              Selecciona una opción
+            </option>
+            <option value="particular">Traslado Particular</option>
+            <option value="corporative">Traslado Corporativo</option>
+            <option value="nat_airport">Aeroportuario Nacional</option>
+            <option value="int_airport">Aeroportuario Internacional</option>
+          </Select>
+          <div className="grid grid-cols-3">
             <RadioButtonComponent
               name="type"
               label="Ida y vuelta"
@@ -257,33 +289,31 @@ export default function AVForm() {
           <>
             <div>
               <Separator title="Disponibilidad de vehículos" />
-              <div className="py-6">
-                <div className="flex">
-                  <RadioButtonComponent
-                    name="disp"
-                    label="Solo durante la ida/vuelta"
-                    value="false"
-                    checked={!trip.fullTime}
-                    onChange={() => {
-                      setTrip({
-                        ...trip,
-                        fullTime: false,
-                      });
-                    }}
-                  />
-                  <RadioButtonComponent
-                    name="disp"
-                    label="100% del tiempo"
-                    value="true"
-                    checked={trip.fullTime}
-                    onChange={() => {
-                      setTrip({
-                        ...trip,
-                        fullTime: true,
-                      });
-                    }}
-                  />
-                </div>
+              <div className="grid grid-cols-2 gap-5 mt-5">
+                <RadioButtonComponent
+                  name="disp"
+                  label="Solo durante los tramos de ida y/o vuelta"
+                  value="false"
+                  checked={!trip.fullTime}
+                  onChange={() => {
+                    setTrip({
+                      ...trip,
+                      fullTime: false,
+                    });
+                  }}
+                />
+                <RadioButtonComponent
+                  name="disp"
+                  label="Quiero disponer del vehículo el 100% del tiempo (incluso durante mi estadía)"
+                  value="true"
+                  checked={trip.fullTime}
+                  onChange={() => {
+                    setTrip({
+                      ...trip,
+                      fullTime: true,
+                    });
+                  }}
+                />
               </div>
               {trip.fullTime && <FullTimeMessage />}
             </div>
@@ -291,26 +321,56 @@ export default function AVForm() {
         )}
 
         <Separator title="Salida" />
-        <div className="flex flex-row">
-          <div className="w-1/2 ml-2">
-            <SearchAddresses
-              label="Dirección"
-              errorField={errors.departure.address}
-              onPlaceSelected={handleDepartureAddressSelected}
+        <div className="grid grid-cols-2 grid-rows-2 gap-x-2 gap-y-5 mt-5">
+          <SearchAddresses
+            label="Dirección"
+            value={trip.departure.address}
+            errorField={errors.departure.address}
+            onPlaceSelected={handleDepartureAddressSelected}
+            onChange={(e: any) => {
+              if (isError(errors.departure.address)) {
+                setErrors((errors: any) => ({
+                  ...errors,
+                  departure: {
+                    ...errors.departure,
+                    address: "",
+                  },
+                }));
+              }
+            }}
+          />
+          <div className="grid grid-cols-2 gap-x-2 gap-y-5">
+            <LabelInput
+              label=""
+              placeholder="Entre calle..."
+              value={trip.departure.streetBetween1}
               onChange={(e: any) => {
-                if (isError(errors.departure.address)) {
-                  setErrors((errors: any) => ({
-                    ...errors,
-                    departure: {
-                      ...errors.departure,
-                      address: "",
-                    },
-                  }));
-                }
+                setTrip({
+                  ...trip,
+                  departure: {
+                    ...trip.departure,
+                    streetBetween1: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+            <LabelInput
+              label=""
+              placeholder="Y calle..."
+              value={trip.departure.streetBetween2}
+              onChange={(e: any) => {
+                setTrip({
+                  ...trip,
+                  departure: {
+                    ...trip.departure,
+                    streetBetween2: e.currentTarget.value,
+                  },
+                });
               }}
             />
           </div>
-          <div className="w-1/4 mx-2">
+          <div className="grid grid-cols-2 gap-2">
+
             <LabelInput
               label=""
               type="date"
@@ -336,8 +396,6 @@ export default function AVForm() {
                 });
               }}
             />
-          </div>
-          <div className="w-1/4 ml-2">
             <LabelInput
               type="time"
               label=""
@@ -365,11 +423,74 @@ export default function AVForm() {
             />
           </div>
         </div>
-        <Separator title="Destino y Regreso" />
-        <div className="flex flex-row">
-          <div className="w-1/2 ml-2">
+        <div className="grid grid-cols-3 mt-5">
+          <RadioButtonComponent
+            name="stops"
+            label="Partimos todos desde un lugar"
+            checked={trip.departure.onePoint}
+            value="true"
+            onChange={() => {
+              setTrip({
+                ...trip,
+                departure: {
+                  ...trip.departure,
+                  onePoint: true,
+                  stops: 1,
+                }
+              })
+            }}
+          />
+          <RadioButtonComponent
+            name="stops"
+            label="Recogeremos en más de un punto"
+            value="false"
+            checked={!trip.departure.onePoint}
+            onChange={() => {
+              setTrip({
+                ...trip,
+                departure: {
+                  ...trip.departure,
+                  onePoint: false,
+                  stops: 2,
+                }
+              })
+            }}
+          />
+          {
+            // !trip.departure.onePoint &&
+            <LabelInput
+              // type="number"
+              label="Puntos"
+              placeholder="Puntos"
+              value={trip.departure.stops}
+              errorField={errors.departure.stops}
+              disabled={trip.departure.onePoint}
+              onChange={(e: any) => {
+                const value = e.target.value;
+                const numericValue = value.replace(/\D/g, '');
+                setErrors({
+                  ...errors,
+                  departure: {
+                    ...errors.departure,
+                    stops: "",
+                  }
+                })
+                setTrip({
+                  ...trip,
+                  departure: {
+                    ...trip.departure,
+                    stops: numericValue,
+                  }
+                })
+              }}
+            />
+          }
+        </div>
+        {roundTrip ? <Separator title="Destino y Regreso" /> : <Separator title="Destino" />}
+        <div className="grid grid-cols-2 grid-rows-2 gap-x-2 gap-y-5 mt-5">
             <SearchAddresses
               label="Dirección"
+              value={trip.return.address}
               errorField={errors.return.address}
               onPlaceSelected={handleReturnAddressSelected}
               onChange={(e: any) => {
@@ -384,61 +505,91 @@ export default function AVForm() {
                 }
               }}
             />
-          </div>
-          <div className="w-1/4 mx-2">
+          <div className="grid grid-cols-2 gap-x-2">
             <LabelInput
-              type="date"
               label=""
-              placeholder="Fecha de regreso"
-              errorField={errors.return.date}
-              value={trip.return.date}
+              placeholder="Entre calle..."
+              value={trip.return.streetBetween1}
               onChange={(e: any) => {
-                if (isError(errors.return.date)) {
-                  setErrors({
-                    ...errors,
-                    return: {
-                      ...errors.return,
-                      date: "",
-                    },
-                  });
-                }
                 setTrip({
                   ...trip,
                   return: {
                     ...trip.return,
-                    date: e.currentTarget.value,
+                    streetBetween1: e.currentTarget.value,
+                  },
+                });
+              }}
+            />
+            <LabelInput
+              label=""
+              placeholder="Y calle..."
+              value={trip.return.streetBetween2}
+              onChange={(e: any) => {
+                setTrip({
+                  ...trip,
+                  return: {
+                    ...trip.return,
+                    streetBetween2: e.currentTarget.value,
                   },
                 });
               }}
             />
           </div>
-          <div className="w-1/4 ml-2">
-            <LabelInput
-              type="time"
-              label=""
-              placeholder="Hora de regreso"
-              value={trip.return.time}
-              errorField={errors.return.time}
-              onChange={(e: any) => {
-                if (isError(errors.return.time)) {
-                  setErrors({
-                    ...errors,
-                    return: {
-                      ...errors.return,
-                      time: "",
-                    },
-                  });
-                }
-                setTrip({
-                  ...trip,
-                  return: {
-                    ...trip.return,
-                    time: e.currentTarget.value,
-                  },
-                });
-              }}
-            />
-          </div>
+          {
+            roundTrip &&
+            <div className="grid grid-cols-2 gap-x-2">
+                <LabelInput
+                  type="date"
+                  label=""
+                  placeholder="Fecha de regreso"
+                  errorField={errors.return.date}
+                  value={trip.return.date}
+                  onChange={(e: any) => {
+                    if (isError(errors.return.date)) {
+                      setErrors({
+                        ...errors,
+                        return: {
+                          ...errors.return,
+                          date: "",
+                        },
+                      });
+                    }
+                    setTrip({
+                      ...trip,
+                      return: {
+                        ...trip.return,
+                        date: e.currentTarget.value,
+                      },
+                    });
+                  }}
+                />
+                <LabelInput
+                  type="time"
+                  label=""
+                  placeholder="Hora de regreso"
+                  value={trip.return.time}
+                  errorField={errors.return.time}
+                  onChange={(e: any) => {
+                    if (isError(errors.return.time)) {
+                      setErrors({
+                        ...errors,
+                        return: {
+                          ...errors.return,
+                          time: "",
+                        },
+                      });
+                    }
+                    setTrip({
+                      ...trip,
+                      return: {
+                        ...trip.return,
+                        time: e.currentTarget.value,
+                      },
+                    });
+                  }}
+                />
+            </div>
+          }
         </div>
         <Separator title="Pasajeros" />
         <div className="flex flex-row justify-left mt-4">
@@ -531,7 +682,7 @@ export default function AVForm() {
           <div className="w-1/3 mx-2">
             <AVCounter
               icon={"puppyBig" as IconType}
-              title="Mas de 8kg"
+              title="Más de 8kg"
               subtitle="Mascota en asiento"
               value={trip.passengers.pets.big}
               errorField={errors.passengers.pets.big}
@@ -709,7 +860,7 @@ function FullTimeMessage() {
         </p>
 
         <div className="border border-[#4658DF] rounded-lg bg-[#D9DDF8] mt-4 p-2 flex flex-row">
-          <Image src={exclamation} alt="exclamation" className="m-2" />
+          <Image src={exclamation || ""} alt="exclamation" className="m-2" />
           <p>
             Si las necesidades del viaje excedieran este tope emitiremos una
             factura posterior con este detalle. El valor del km extra es de $300

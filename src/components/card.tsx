@@ -14,7 +14,9 @@ import vehicles from "@/ui/img/vehicles/index";
 import logos from "@/ui/icons/index";
 import { Ruda } from "next/font/google";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { ExclamationCircleIcon } from "@heroicons/react/16/solid";
+
+import { Tooltip } from 'react-tooltip';
 
 const ruda = Ruda({ subsets: ["latin"] });
 
@@ -77,15 +79,27 @@ interface Vehicle {
   cant_handBag: number
   cant_bag: number
   cant_littleBag: number
+  cant_special: number
   quantity: number
-  price: number
+  price_less_15: number,
+  price_15_to_50: number,
+  price_50_to_100: number,
+  price_100_to_600: number,
+  price_more_600: number,
+  nominal_data: any
 }
 
 export default function CardOption(props: {
   setVehicle: Function;
   vehicle: Vehicle;
-  seatsNeeded: number;
-  setSeatsNeeded: Function;
+  totalSeatsNeeded: number;
+  setTotalSeatsNeeded: Function;
+  bigBagsNeeded: number;
+  setBigBagsNeeded: Function;
+  littleBagsNeeded: number;
+  setLittleBagsNeeded: Function;
+  specialLuggageNeeded: number;
+  setSpecialLuggageNeeded: Function;
 }) {
   const [open, setOpen] = useState(false);
   const openAccordion = (e: any) => {
@@ -97,19 +111,28 @@ export default function CardOption(props: {
     
     setVehicle,
     vehicle,
-    seatsNeeded,
-    setSeatsNeeded
+    totalSeatsNeeded,
+    setTotalSeatsNeeded,
+    bigBagsNeeded,
+    setBigBagsNeeded,
+    littleBagsNeeded,
+    setLittleBagsNeeded,
+    specialLuggageNeeded,
+    setSpecialLuggageNeeded,
   } = props;
 
   const {
     id,
     name,
     car_img,
-    seats,
     cant_handBag,
     cant_bag,
     cant_littleBag,
-    price,
+    price_less_15,
+    price_15_to_50,
+    price_50_to_100,
+    price_100_to_600,
+    price_more_600,
   } = vehicle
   return (
     <>
@@ -120,15 +143,14 @@ export default function CardOption(props: {
               <Icon icon={car_img} />
               <div className="mt-5 ">
                 <h4 className="font-bold text-[20px]">
-                  {/* {cant_car} x  */}
                   {name} 
                 </h4>
                 <h4 className={`${ruda.className} font-semibold text-[16px]`}>
-                  {seats} asientos útiles + 1 chofer calificado*
+                  {vehicle.nominal_data.seats} asientos útiles + 1 chofer calificado
                 </h4>
                 <div>
 
-                <Luggage cant_handBag={cant_handBag} cant_bag={cant_bag} cant_littleBag={cant_littleBag} />
+                <Luggage cant_handBag={vehicle.nominal_data.seats} cant_bag={vehicle.nominal_data.cant_bag} cant_littleBag={vehicle.nominal_data.cant_littleBag} />
                 </div>
               </div>
             </div>
@@ -145,7 +167,7 @@ export default function CardOption(props: {
           
         </div>
         {open && <Accordion {...props} />}
-        <div className="flex flex-row items-center font-bold border-t-2 border-gray-300 rounded-b-lg w-[814px] bg-white">
+        <div className="flex flex-row items-center font-bold border-t-2 border-gray-300 rounded-b-lg w-[814px] bg-white justify-between">
           <div className="flex items-center mx-10 my-1 text-gray-500">
             <p>Seleccionar cantidad</p>
             <button 
@@ -156,7 +178,10 @@ export default function CardOption(props: {
                   ...vehicle,
                   quantity: vehicle.quantity > 0 ? vehicle.quantity - 1 : vehicle.quantity
                 })
-                setSeatsNeeded(seatsNeeded + vehicle.seats)
+                setTotalSeatsNeeded(totalSeatsNeeded + vehicle.seats)
+                setBigBagsNeeded(bigBagsNeeded + vehicle.cant_bag)
+                setLittleBagsNeeded(littleBagsNeeded + vehicle.cant_littleBag)
+                setSpecialLuggageNeeded(specialLuggageNeeded + vehicle.cant_special)
               }}
               disabled={vehicle.quantity === 0}
             >-</button>
@@ -169,10 +194,25 @@ export default function CardOption(props: {
                   ...vehicle,
                   quantity: vehicle.quantity + 1
                 })
-                setSeatsNeeded(seatsNeeded - vehicle.seats)
+                setTotalSeatsNeeded(totalSeatsNeeded - vehicle.seats )
+                setBigBagsNeeded(bigBagsNeeded - vehicle.cant_bag)
+                setLittleBagsNeeded(littleBagsNeeded - vehicle.cant_littleBag)
+                setSpecialLuggageNeeded(specialLuggageNeeded - vehicle.cant_special)
               }}
-              disabled={seatsNeeded <= 0}
+              disabled={ totalSeatsNeeded <= 0 && bigBagsNeeded <= 0 && littleBagsNeeded <= 0 && specialLuggageNeeded <= 0 }
             >+</button>
+          </div>
+          <div className="text-gray-500 text-xs flex mr-10">
+            <p>* Los equipajes excedentes ocuparán asientos</p>
+            <ExclamationCircleIcon 
+              className="size-4 mx-1"
+              data-tooltip-id="important-tooltip"
+              data-tooltip-place="right"
+            />
+            <Tooltip id="important-tooltip" className="bg-white" style={{ backgroundColor: "rgb(107, 114, 128)", color: "#ffffff" }}>
+              <p>En un asiento entran 1 valija grande ó 2 chicas</p>
+              <p>El equipaje especial ocupa 2 asientos</p>
+            </Tooltip>
           </div>
         </div>
       </div>
@@ -244,24 +284,12 @@ export function CardPaymentMethod({
 }
 
 function Accordion(props: any) {
-  const router = useRouter();
-  const redirect = (path: string) => {
-    router.push(path);
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    console.log(props);
-    console.log;
-    localStorage.setItem("form2", JSON.stringify(props));
-    redirect("/booking/checkout");
-  };
+  
   return (
     <>
       <div className="">
         <div
-          className={`${ruda.className} option__accordion 
-                    text-[16px] bg-white  w-[814px] px-6 pt-6`}
+          className={`${ruda.className} option__accordion text-[16px] bg-white  w-[814px] px-6 pt-6`}
         >
           <div>
             <p>Los horarios son referenciales y aproximados</p>
@@ -280,13 +308,13 @@ function Accordion(props: any) {
             </ul>
           </div>
           <div className="flex flex-row py-3">
-            <Image src={police} alt="police" className="mr-1" />
-            <Image src={flame} alt="flame" className="mx-1" />
-            <Image src={snow_tv} alt="snow_tv" className="mx-1" />
-            <Image src={abs} alt="abs" className="mx-1" />
-            <Image src={confort_seat} alt="confort_seat" className="mx-1" />
-            <Image src={mic} alt="mic" className="mx-1" />
-            <Image src={light} alt="light" className="mx-1" />
+            <Image src={police || ""} alt="police" className="mr-1  h-auto w-auto" />
+            <Image src={flame || ""} alt="flame" className="mx-1 h-auto w-auto" />
+            <Image src={snow_tv || ""} alt="snow_tv" className="mx-1 h-auto w-auto" />
+            <Image src={abs || ""} alt="abs" className="mx-1 h-auto w-auto" />
+            <Image src={confort_seat || ""} alt="confort_seat" className="mx-1 h-auto w-auto" />
+            <Image src={mic || ""} alt="mic" className="mx-1 h-auto w-auto" />
+            <Image src={light || ""} alt="light" className="mx-1 h-auto w-auto" />
           </div>
         </div>
       </div>

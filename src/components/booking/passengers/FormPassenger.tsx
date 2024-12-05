@@ -1,15 +1,15 @@
 "use client";
-import Separator, { SeparatorPersona } from "@/components/separator";
+import Separator from "@/components/separator";
 import LabelInput from "@/components/input";
-import React, { useState } from "react";
-import Important from "@/components/important";
-import { usePassengerData } from "@/state/booking/PassengerContext";
+import React, { useEffect, useState } from "react";
 import { Passenger, Gender } from "@/state/Passenger.type";
 import { ErrorMessage, isError } from "@/components/ErrorMessage";
 import Select from "@/components/select";
-import { stringify } from "querystring";
 import Accordion from "@/components/Accordion";
-import CountryPhoneSelect from "@/components/CountryCode";
+import SearchAddresses from "@/components/PlacesAutocomplete";
+import Image from "next/image";
+import adultIcon from "@/ui/icons/adultBold.svg"
+import Alert from "@/components/alert";
 
 export default function PassengerForm({
   errors,
@@ -17,77 +17,149 @@ export default function PassengerForm({
   passenger,
   setPassenger,
   index,
+  responsiblePassenger,
+  totalPassengers
 }: {
   errors: any;
   setError: (error: any) => void;
   passenger: Passenger;
-  setPassenger: (passenger: Passenger) => void;
+  setPassenger: Function;
   index: number;
+  responsiblePassenger: Passenger;
+  totalPassengers: number;
 }) {
-  const [sameAdress, setSameAdress] = useState(true);
+  const [sameAddress, setSameAddress] = useState(true);
+  const [render, setRender] = useState(true);
+
 
   const handleSameAddress = (e: any) => {
-    setSameAdress(e.currentTarget.checked);
+    const isChecked = e.currentTarget.checked;
+    setSameAddress(isChecked);
+
+    // Si está marcado y no es el responsable, copiar la dirección
+    if (isChecked && responsiblePassenger) {
+      setPassenger((passenger: Passenger) => {
+        return {
+          ...passenger,
+          contact: {
+            ...passenger.contact,
+            address: { ...responsiblePassenger.contact.address }, // Copiar la dirección completa
+          },
+        };
+      });
+    }
+  };
+
+
+
+  const handleContactAddressSelected = (place: any): void => {
+    setPassenger((passenger: Passenger) => {
+      return {
+        ...passenger,
+        contact: {
+          ...passenger.contact,
+          address: {
+            ...passenger.contact.address,
+            street: place?.formatted_address,
+            googlePlace: {
+              ...passenger.contact.address.googlePlace,
+              lat: place?.geometry.location.lat(),
+              lng: place?.geometry.location.lng(),
+            },
+          },
+        }
+      }
+    });
+    setError({
+      ...errors,
+      contact: {
+        ...errors.contact,
+        address: {
+          ...errors.contact.address,
+          street: "",
+        },
+      },
+    });
   };
 
   const isResponsible = index === 0;
-  return (
-    <Accordion
-      title={isResponsible ? "Responsable del viaje" : `Pasajero ${index + 1}`}
-    >
-      <>
-        <div className="flex flex-row ">
-          <div className="w-1/2 mr-2">
-            <LabelInput
-              label=""
-              placeholder="Nombre"
-              value={passenger.firstName}
-              errorField={errors.firstName}
-              onChange={(e: any) => {
-                if (isError(errors.firstName)) {
-                  setError({
-                    ...errors,
-                    firstName: "",
-                  });
-                }
-                setPassenger({
-                  ...passenger,
-                  firstName: e.target.value,
-                });
-              }}
-            />
-          </div>
-          <div className="w-1/2 ml-2">
-            <LabelInput
-              label=""
-              placeholder="Apellido"
-              value={passenger.lastName}
-              errorField={errors.lastName}
-              onChange={(e: any) => {
-                if (isError(errors.lastName)) {
-                  setError({
-                    ...errors,
-                    lastName: "",
-                  });
-                }
 
-                setPassenger({
-                  ...passenger,
-                  lastName: e.target.value,
-                });
-              }}
-            />
-          </div>
-        </div>
-        <div className="flex flex-row">
-          <div className="w-1/2 flex flex-row">
-            <div className="w-1/3">
-              <div>
+  useEffect(() => {
+    // Si el checkbox está marcado y no es el pasajero responsable, copiar la dirección
+    if (sameAddress && responsiblePassenger && !isResponsible) {
+      setPassenger((passenger: Passenger) => ({
+        ...passenger,
+        contact: {
+          ...passenger.contact,
+          address: { ...responsiblePassenger.contact.address }, // Copiar la dirección completa
+        },
+      }));
+    }
+  }, [sameAddress, responsiblePassenger, isResponsible]);
+  return (
+    <div>
+      {
+        index === 0 &&
+        <>
+          <div>
+            <div className="w-full mt-10 mb-5">
+              <div
+                className="flex justify-between items-center px-5 pt-3 pb-1 border-b border-blue-900 text-black font-bold rounded-t-lg cursor-pointer
+                hover:drop-shadow-xl hover:shadow-blue-500 duration-300"
+              >
+
+                <h1 className='text-[22px] font-bold text-blue-900 flex items-center'>
+                  <Image src={adultIcon} alt="paxbold" className="size-8 mr-2" />
+                  Responsable del viaje
+                </h1>
+              </div>
+            </div>
+            <Alert />
+            <div className="grid grid-cols-2 grid-row-3 gap-x-2 gap-y-5 mt-5">
+              <LabelInput
+                label=""
+                placeholder="Nombre"
+                value={passenger.firstName}
+                errorField={errors.firstName}
+                onChange={(e: any) => {
+                  if (isError(errors.firstName) && index === 0) {
+                    setError({
+                      ...errors,
+                      firstName: "",
+                    });
+                  }
+                  setPassenger({
+                    ...passenger,
+                    firstName: e.target.value,
+                  });
+
+                }}
+              />
+              <LabelInput
+                label=""
+                placeholder="Apellido"
+                value={passenger.lastName}
+                errorField={errors.lastName}
+                onChange={(e: any) => {
+                  if (isError(errors.lastName)) {
+                    setError({
+                      ...errors,
+                      lastName: "",
+                    });
+                  }
+
+                  setPassenger({
+                    ...passenger,
+                    lastName: e.target.value,
+                  });
+                }}
+              />
+              <div className="grid grid-cols-3 gap-x-2 gap-y-5">
                 <Select
                   label="Documento"
                   errorField={errors.identification.type}
                   className={`
-                        ${isError(errors.identification.type)
+                          ${isError(errors.identification.type)
                       ? "border-red-500"
                       : ""
                     }`}
@@ -117,39 +189,37 @@ export default function PassengerForm({
                   <option value="ci">CI (URU)</option>
                   <option value="rut">RUT (CHI)</option>
                 </Select>
-              </div>
-            </div>
-            <div className="w-3/4">
-              <div className="ml-2 mr-4">
-                <LabelInput
-                  label=""
-                  placeholder="Número de documento"
-                  value={passenger.identification.number}
-                  errorField={errors.identification.number}
-                  onChange={(e: any) => {
-                    if (isError(errors.identification.number)) {
-                      setError({
-                        ...errors,
+                <div className="grid col-span-2">
+                  <LabelInput
+                    label=""
+                    placeholder="Número de documento"
+                    value={passenger.identification.number}
+                    errorField={errors.identification.number}
+                    onChange={(e: any) => {
+                      const value = e.target.value;
+                      const numericValue = value.replace(/\D/g, ''); // Elimina cualquier caracter que no sea numérico
+                      if (isError(errors.identification.number)) {
+                        setError({
+                          ...errors,
+                          identification: {
+                            ...errors.identification,
+                            number: "",
+                          },
+                        });
+                      }
+                      setPassenger({
+                        ...passenger,
                         identification: {
-                          ...errors.identification,
-                          number: "",
+                          ...passenger.identification,
+                          number: numericValue,
                         },
                       });
-                    }
-                    setPassenger({
-                      ...passenger,
-                      identification: {
-                        ...passenger.identification,
-                        number: e.target.value,
-                      },
-                    });
-                  }}
-                />
+
+                    }}
+                  />
+
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="w-1/2">
-            <div>
               <Select
                 label="País de emisión"
                 errorField={errors.identification.country}
@@ -171,6 +241,7 @@ export default function PassengerForm({
                       country: e.target.value,
                     },
                   });
+
                 }}
               >
                 <option disabled defaultValue=""></option>
@@ -182,17 +253,14 @@ export default function PassengerForm({
                 <option value="col">Colombia</option>
                 <option value="ven">Venezuela</option>
               </Select>
+
             </div>
-          </div>
-        </div>
-        <div className="flex flex-row w-full justify-between">
-          <div className="flex flex-col w-3/12">
-            <div>
+            <div className="grid grid-cols-6 gap-x-2 mt-5">
               <Select
                 label="Edad"
                 errorField={errors.age}
                 className={` 
-                      ${isError(errors.age) ? "border-red-500" : ""}`}
+                        ${isError(errors.age) ? "border-red-500" : ""}`}
                 value={passenger.age}
                 onChange={(e) => {
                   if (isError(errors.age)) {
@@ -205,6 +273,7 @@ export default function PassengerForm({
                     ...passenger,
                     age: e.target.value,
                   });
+
                 }}
               >
                 <option disabled defaultValue=""></option>
@@ -212,307 +281,93 @@ export default function PassengerForm({
                 <option value="child">Niño</option>
                 <option value="baby">Bebé</option>
               </Select>
-            </div>
-          </div>
-          <div className="flex flex-row items-center w-9/12">
-            <div className="flex flex-col">
-              <div className="flex items-center">
-                <input
-                  className="mx-4 "
-                  type="radio"
-                  name={`gender${index}`}
-                  checked={passenger.gender === Gender.Male}
-                  onChange={() => {
-                    setPassenger({
-                      ...passenger,
-                      gender: Gender.Male,
-                    });
-                  }}
-                />
-                <label htmlFor="man">Hombre</label>
-
-                <input
-                  className="mx-4"
-                  type="radio"
-                  name={`gender${index}`}
-                  checked={passenger.gender === Gender.Female}
-                  onChange={() => {
-                    setPassenger({
-                      ...passenger,
-                      gender: Gender.Female,
-                    });
-                  }}
-                />
-                <label htmlFor="man">Mujer</label>
-                <input
-                  className="mx-4"
-                  type="radio"
-                  name={`gender${index}`}
-                  checked={passenger.gender === Gender.Other}
-                  onChange={() => {
-                    setPassenger({
-                      ...passenger,
-                      gender: Gender.Other,
-                    });
-                  }}
-                />
-                <label htmlFor="other">Prefiero no decirlo</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-row">
-          <div className="w-3/12"></div>
-          <div className="w-9/12 px-4">
-            {isError(errors.gender) && (
-              <ErrorMessage field={errors.gender} />
-            )}
-          </div>
-        </div>
-      </>
-      {!isResponsible ? (
-        <>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
-                      focus:outline-none duration-500 hover:shadow-md "
-              checked={sameAdress}
-              onChange={handleSameAddress}
-            />
-            <label className="text-black p-2">
-              Es la misma dirección que la anterior
-            </label>
-          </div>
-        </>
-      ) : null}
-
-      {(isResponsible || !sameAdress) && (
-        <div>
-          {isResponsible ? (
-            <>
-              <div>
-                <Separator title="Datos de contacto" />
-              </div>
-              <div className="flex flex-row">
-                <div className="w-1/2 flex flex-row">
-                  <div className="w-1/3">
-                    <div>
-                      {/* <CountryPhoneSelect
-                      selectLabel="Código de Área"
-                      errorField={errors.contact.phoneCode}
-                      className={`
-                                    ${isError(errors.contact.phoneCode)
-                          ? "border-red-500 "
-                          : ""}`}
-                      onChange={(e) => {
-                        if (isError(errors.contact.phoneCode)) {
-                          setError({
-                            ...errors,
-                            contact: {
-                              ...errors.contact,
-                              phoneCode: "",
-                            },
-                          });
-                        }
+              <div className="grid col-span-3">
+                <div className="flex items-center">
+                  <div className="grid grid-flow-col">
+                    <input
+                      className="mx-4 "
+                      type="radio"
+                      name={`gender${index}`}
+                      checked={passenger.gender === Gender.Male}
+                      onChange={() => {
+                        setError({
+                          ...errors,
+                          gender: ""
+                        })
                         setPassenger({
                           ...passenger,
-                          contact: {
-                            ...passenger.contact,
-                            phoneCode: e.target.value,
-                          },
+                          gender: Gender.Male,
                         });
-                      } }                      
-                      /> */}
-                      <Select
-                        label="Código de Área"
-                        errorField={errors.contact.phoneCode}
-                        className={`
-                                      ${isError(errors.contact.phoneCode)
-                            ? "border-red-500 "
-                            : ""
-                          }`}
-                        onChange={(e) => {
-                          if (isError(errors.contact.phoneCode)) {
-                            setError({
-                              ...errors,
-                              contact: {
-                                ...errors.contact,
-                                phoneCode: "",
-                              },
-                            });
-                          }
-                          setPassenger({
-                            ...passenger,
-                            contact: {
-                              ...passenger.contact,
-                              phoneCode: e.target.value,
-                            },
-                          });
-                        }}
-                      >
-                        <option disabled defaultValue=""></option>
-                        <option value="arg">+54</option>
-                        <option value="bra">+55</option>
-                        <option value="chi">+56</option>
-                        <option value="uru">+598</option>
-                        <option value="bol">+591</option>
-                        <option value="col">+57</option>
-                        <option value="ven">+58</option>
-                      </Select>
-                    </div>
+
+                      }}
+                    />
+                    <label htmlFor="man">Hombre</label>
                   </div>
-                  <div className="w-3/4">
-                    <div className="ml-2 mr-4">
-                      <LabelInput
-                        label=""
-                        placeholder="Número de teléfono"
-                        value={passenger.contact.phoneNumber}
-                        errorField={errors.contact.phoneNumber}
-                        onChange={(e: any) => {
-                          if (isError(errors.contact.phoneNumber)) {
-                            setError({
-                              ...errors,
-                              contact: {
-                                ...errors.contact,
-                                phoneNumber: "",
-                              },
-                            });
-                          }
-                          setPassenger({
-                            ...passenger,
-                            contact: {
-                              ...passenger.contact,
-                              phoneNumber: e.target.value,
-                            },
-                          });
-                        }}
-                      />
-                    </div>
+                  <div className="flex">
+                    <input
+                      className="mx-4"
+                      type="radio"
+                      name={`gender${index}`}
+                      checked={passenger.gender === Gender.Female}
+                      onChange={() => {
+                        setError({
+                          ...errors,
+                          gender: ""
+                        })
+                        setPassenger({
+                          ...passenger,
+                          gender: Gender.Female,
+                        });
+                      }}
+                    />
+                    <label htmlFor="man">Mujer</label>
                   </div>
-                </div>
-                <div className="w-1/2">
-                  <LabelInput
-                    label=""
-                    type="text"
-                    placeholder="Correo Electrónico"
-                    value={passenger.contact.email}
-                    errorField={errors.contact.email}
-                    onChange={(e: any) => {
-                      if (isError(errors.contact.email)) {
+                  <div className="flex">
+                    <input
+                      className="mx-4"
+                      type="radio"
+                      name={`gender${index}`}
+                      checked={passenger.gender === Gender.Other}
+                      onChange={() => {
                         setError({
                           ...errors,
-                          contact: {
-                            ...errors.contact,
-                            email: "",
-                          },
+                          gender: ""
+                        })
+                        setPassenger({
+                          ...passenger,
+                          gender: Gender.Other,
                         });
-                      }
-                      setPassenger({
-                        ...passenger,
-                        contact: {
-                          ...passenger.contact,
-                          email: e.target.value,
-                        },
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            </>
-          ) : null}
-          <Separator title="Dirección (por donde pasaremos a buscarte)" />
-          <div className="flex flex-row ">
-            <div className="w-1/2">
-              <div className="flex justify-between">
-                <div className="w-1/2 mx-1">
-                  <LabelInput
-                    label=""
-                    type="text"
-                    placeholder="Ciudad"
-                    errorField={errors.contact.address.city}
-                    value={passenger.contact.address.city}
-                    onChange={(e: any) => {
-                      if (isError(errors.contact.address.city)) {
-                        setError({
-                          ...errors,
-                          contact: {
-                            ...errors.contact,
-                            address: {
-                              ...errors.contact.address,
-                              city: "",
-                            },
-                          },
-                        });
-                      }
-                      setPassenger({
-                        ...passenger,
-                        contact: {
-                          ...passenger.contact,
-                          address: {
-                            ...passenger.contact.address,
-                            city: e.target.value,
-                          },
-                        },
-                      });
-                    }}
-                  />
-                </div>
-                <div className="w-1/2 mx-1">
-                  <LabelInput
-                    label=""
-                    type="text"
-                    placeholder="Barrio"
-                    value={passenger.contact.address.neighborhood}
-                    errorField={errors.contact.address.neighborhood}
-                    onChange={(e: any) => {
-                      if (isError(errors.contact.address.neighborhood)) {
-                        setError({
-                          ...errors,
-                          contact: {
-                            ...errors.contact,
-                            address: {
-                              ...errors.contact.address,
-                              neighborhood: "",
-                            },
-                          },
-                        });
-                      }
-                      setPassenger({
-                        ...passenger,
-                        contact: {
-                          ...passenger.contact,
-                          address: {
-                            ...passenger.contact.address,
-                            neighborhood: e.target.value,
-                          },
-                        },
-                      });
-                    }}
-                  />
+
+                      }}
+                    />
+                    <label htmlFor="other">Prefiero no decirlo</label>
+                  </div>
+                  {isError(errors.gender) && (
+                    <ErrorMessage field={errors.gender} />
+                  )}
                 </div>
               </div>
             </div>
-            <div className="w-1/2"></div>
-          </div>
-          <div className="flex flex-row">
-            <div className="w-1/2 mr-2">
-              <LabelInput
-                label=""
-                placeholder="Calle"
-                type="text"
-                value={passenger.contact.address.street}
-                errorField={errors.contact.address.street}
-                onChange={(e: any) => {
-                  if (isError(errors.contact.address.street)) {
+
+            <div>
+              <Separator title="Datos de contacto" />
+            </div>
+            <div className="grid grid-cols-6 gap-2 mt-5">
+              <Select
+                label="Código de Área"
+                errorField={errors.contact.phoneCode}
+                className={`
+                                        ${isError(errors.contact.phoneCode)
+                    ? "border-red-500 "
+                    : ""
+                  }`}
+                onChange={(e) => {
+                  if (isError(errors.contact.phoneCode)) {
                     setError({
                       ...errors,
                       contact: {
                         ...errors.contact,
-                        address: {
-                          ...errors.contact.address,
-                          street: "",
-                        },
+                        phoneCode: "",
                       },
                     });
                   }
@@ -520,33 +375,37 @@ export default function PassengerForm({
                     ...passenger,
                     contact: {
                       ...passenger.contact,
-                      address: {
-                        ...passenger.contact.address,
-                        street: e.target.value,
-                      },
+                      phoneCode: e.target.value,
                     },
                   });
                 }}
-              />
-            </div>
-            <div className="flex w-1/2 justify-between">
-              <div className="w-1/2 mx-1">
+              >
+                <option defaultValue=""></option>
+                <option value="+54">(+54) ARG</option>
+                <option value="+55">(+55) BRA</option>
+                <option value="+56">(+56) CHI</option>
+                <option value="+598">(+598) URU</option>
+                <option value="+591">(+591) BOL</option>
+                <option value="+57">(+57) COL</option>
+                <option value="+58">(+58) VEN</option>
+                <option value="+593">(+593) ECU</option>
+                <option value="+595">(+595) PAR</option>
+              </Select>
+              <div className="grid col-span-2">
                 <LabelInput
                   label=""
-                  type="text"
-                  placeholder="Número"
-                  value={passenger.contact.address.number}
-                  errorField={errors.contact.address.number}
+                  placeholder="Número de teléfono"
+                  value={passenger.contact.phoneNumber}
+                  errorField={errors.contact.phoneNumber}
                   onChange={(e: any) => {
-                    if (isError(errors.contact.address.number)) {
+                    const value = e.target.value;
+                    const numericValue = value.replace(/\D/g, '');
+                    if (isError(errors.contact.phoneNumber)) {
                       setError({
                         ...errors,
                         contact: {
                           ...errors.contact,
-                          address: {
-                            ...errors.contact.address,
-                            number: "",
-                          },
+                          phoneNumber: "",
                         },
                       });
                     }
@@ -554,32 +413,26 @@ export default function PassengerForm({
                       ...passenger,
                       contact: {
                         ...passenger.contact,
-                        address: {
-                          ...passenger.contact.address,
-                          number: e.target.value,
-                        },
+                        phoneNumber: numericValue,
                       },
                     });
                   }}
                 />
               </div>
-              <div className=" w-1/2 mx-1">
+              <div className="grid col-span-3">
                 <LabelInput
                   label=""
                   type="text"
-                  placeholder="Depto./Timbre/Otro"
-                  value={passenger.contact.address.other}
-                  errorField={errors.contact.address.other}
+                  placeholder="Correo Electrónico"
+                  value={passenger.contact.email}
+                  errorField={errors.contact.email}
                   onChange={(e: any) => {
-                    if (isError(errors.contact.address.other)) {
+                    if (isError(errors.contact.email)) {
                       setError({
                         ...errors,
                         contact: {
                           ...errors.contact,
-                          address: {
-                            ...errors.contact.address,
-                            other: "",
-                          },
+                          email: "",
                         },
                       });
                     }
@@ -587,10 +440,7 @@ export default function PassengerForm({
                       ...passenger,
                       contact: {
                         ...passenger.contact,
-                        address: {
-                          ...passenger.contact.address,
-                          other: e.target.value,
-                        },
+                        email: e.target.value,
                       },
                     });
                   }}
@@ -598,10 +448,554 @@ export default function PassengerForm({
               </div>
             </div>
           </div>
+          {!isResponsible ? (
+            <>
+              <div className="flex items-center mt-5">
+                <input
+                  type="checkbox"
+                  className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
+                focus:outline-none duration-500 hover:shadow-md "
+                  checked={sameAddress}
+                  onChange={handleSameAddress}
+                />
+                <label className="text-black p-2">
+                  Es la dirección cargada para la salida
+                </label>
+              </div>
 
-          {isResponsible && <Important />}
-        </div>
-      )}
-    </Accordion>
+            </>
+          ) : null}
+
+          {(isResponsible || !sameAddress) && (
+            <div>
+              <Separator title="Dirección (por donde pasaremos a buscarte)" />
+              <div className="grid grid-cols-2 grid-rows-2 gap-x-2 gap-y-5 mt-5">
+                <SearchAddresses
+                  label="Dirección"
+                  errorField={errors.contact.address.street}
+                  onPlaceSelected={handleContactAddressSelected}
+                  value={passenger.contact.address.street}
+                  onChange={() => {
+                    if (isError(errors.contact.address.street)) {
+                      setError({
+                        ...errors,
+                        contact: {
+                          ...errors.contact,
+                          address: {
+                            ...errors.contact.address,
+                            street: "",
+                          },
+                        },
+                      });
+                    }
+                  }}
+                />
+                <div>
+                  <LabelInput
+                    label=""
+                    type="text"
+                    placeholder="Depto./Timbre/Otro"
+                    value={passenger.contact.address.other}
+                    errorField={errors.contact.address.other}
+                    onChange={(e: any) => {
+                      setPassenger({
+                        ...passenger,
+                        contact: {
+                          ...passenger.contact,
+                          address: {
+                            ...passenger.contact.address,
+                            other: e.target.value,
+                          },
+                        },
+                      });
+                    }}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <LabelInput
+                    label=""
+                    placeholder="Entre calle..."
+                    value={passenger.contact.address.streetBetween1}
+                    onChange={(e: any) => {
+                      setPassenger({
+                        ...passenger,
+                        contact: {
+                          ...passenger.contact,
+                          address: {
+                            ...passenger.contact.address,
+                            streetBetween1: e.target.value,
+                          },
+                        },
+                      });
+                    }}
+                  />
+                  <LabelInput
+                    label=""
+                    placeholder="Y calle..."
+                    value={passenger.contact.address.streetBetween2}
+                    onChange={(e: any) => {
+                      setPassenger({
+                        ...passenger,
+                        contact: {
+                          ...passenger.contact,
+                          address: {
+                            ...passenger.contact.address,
+                            streetBetween2: e.target.value,
+                          },
+                        },
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      }
+      {(totalPassengers > 1 && index > 0 && render) &&
+        <Accordion
+          title={isResponsible ? "Responsable del viaje" : `Pasajero ${index + 1}`}
+          open={true}
+          key={index}
+        >
+          <>
+          <div className="grid grid-cols-2 grid-row-3 gap-x-2 gap-y-5 mt-5">
+              <LabelInput
+                label=""
+                placeholder="Nombre"
+                value={passenger.firstName}
+                errorField={errors.firstName}
+                onChange={(e: any) => {
+                  if (isError(errors.firstName) && index === 0) {
+                    setError({
+                      ...errors,
+                      firstName: "",
+                    });
+                  }
+                  setPassenger({
+                    ...passenger,
+                    firstName: e.target.value,
+                  });
+
+                }}
+              />
+              <LabelInput
+                label=""
+                placeholder="Apellido"
+                value={passenger.lastName}
+                errorField={errors.lastName}
+                onChange={(e: any) => {
+                  if (isError(errors.lastName)) {
+                    setError({
+                      ...errors,
+                      lastName: "",
+                    });
+                  }
+
+                  setPassenger({
+                    ...passenger,
+                    lastName: e.target.value,
+                  });
+                }}
+              />
+              <div className="grid grid-cols-3 gap-x-2 gap-y-5">
+                <Select
+                  label="Documento"
+                  errorField={errors.identification.type}
+                  className={`
+                          ${isError(errors.identification.type)
+                      ? "border-red-500"
+                      : ""
+                    }`}
+                  value={passenger.identification.type}
+                  onChange={(e) => {
+                    if (isError(errors.identification.type)) {
+                      setError({
+                        ...errors,
+                        identification: {
+                          ...errors.identification,
+                          type: "",
+                        },
+                      });
+                    }
+                    setPassenger({
+                      ...passenger,
+                      identification: {
+                        ...passenger.identification,
+                        type: e.target.value,
+                      },
+                    });
+                  }}
+                >
+                  <option defaultValue="" disabled></option>
+                  <option value="dni">DNI</option>
+                  <option value="passport">Pasaporte</option>
+                  <option value="ci">CI (URU)</option>
+                  <option value="rut">RUT (CHI)</option>
+                </Select>
+                <div className="grid col-span-2">
+                  <LabelInput
+                    label=""
+                    placeholder="Número de documento"
+                    value={passenger.identification.number}
+                    errorField={errors.identification.number}
+                    onChange={(e: any) => {
+                      const value = e.target.value;
+                      const numericValue = value.replace(/\D/g, ''); // Elimina cualquier caracter que no sea numérico
+                      if (isError(errors.identification.number)) {
+                        setError({
+                          ...errors,
+                          identification: {
+                            ...errors.identification,
+                            number: "",
+                          },
+                        });
+                      }
+                      setPassenger({
+                        ...passenger,
+                        identification: {
+                          ...passenger.identification,
+                          number: numericValue,
+                        },
+                      });
+
+                    }}
+                  />
+
+                </div>
+              </div>
+              <Select
+                label="País de emisión"
+                errorField={errors.identification.country}
+                value={passenger.identification.country}
+                onChange={(e) => {
+                  if (isError(errors.identification.country)) {
+                    setError({
+                      ...errors,
+                      identification: {
+                        ...errors.identification,
+                        country: "",
+                      },
+                    });
+                  }
+                  setPassenger({
+                    ...passenger,
+                    identification: {
+                      ...passenger.identification,
+                      country: e.target.value,
+                    },
+                  });
+
+                }}
+              >
+                <option disabled defaultValue=""></option>
+                <option value="arg">Argentina</option>
+                <option value="bra">Brasil</option>
+                <option value="chi">Chile</option>
+                <option value="uru">Uruguay</option>
+                <option value="bol">Bolivia</option>
+                <option value="col">Colombia</option>
+                <option value="ven">Venezuela</option>
+              </Select>
+
+            </div>
+            <div className="grid grid-cols-6 gap-x-2 mt-5">
+              <Select
+                label="Edad"
+                errorField={errors.age}
+                className={` 
+                        ${isError(errors.age) ? "border-red-500" : ""}`}
+                value={passenger.age}
+                onChange={(e) => {
+                  if (isError(errors.age)) {
+                    setError({
+                      ...errors,
+                      age: "",
+                    });
+                  }
+                  setPassenger({
+                    ...passenger,
+                    age: e.target.value,
+                  });
+
+                }}
+              >
+                <option disabled defaultValue=""></option>
+                <option value="adult">Adulto</option>
+                <option value="child">Niño</option>
+                <option value="baby">Bebé</option>
+              </Select>
+              <div className="grid col-span-3">
+                <div className="flex items-center">
+                  <div className="grid grid-flow-col">
+                    <input
+                      className="mx-4 "
+                      type="radio"
+                      name={`gender${index}`}
+                      checked={passenger.gender === Gender.Male}
+                      onChange={() => {
+                        setError({
+                          ...errors,
+                          gender: ""
+                        })
+                        setPassenger({
+                          ...passenger,
+                          gender: Gender.Male,
+                        });
+
+                      }}
+                    />
+                    <label htmlFor="man">Hombre</label>
+                  </div>
+                  <div className="flex">
+                    <input
+                      className="mx-4"
+                      type="radio"
+                      name={`gender${index}`}
+                      checked={passenger.gender === Gender.Female}
+                      onChange={() => {
+                        setError({
+                          ...errors,
+                          gender: ""
+                        })
+                        setPassenger({
+                          ...passenger,
+                          gender: Gender.Female,
+                        });
+                      }}
+                    />
+                    <label htmlFor="man">Mujer</label>
+                  </div>
+                  <div className="flex">
+                    <input
+                      className="mx-4"
+                      type="radio"
+                      name={`gender${index}`}
+                      checked={passenger.gender === Gender.Other}
+                      onChange={() => {
+                        setError({
+                          ...errors,
+                          gender: ""
+                        })
+                        setPassenger({
+                          ...passenger,
+                          gender: Gender.Other,
+                        });
+
+                      }}
+                    />
+                    <label htmlFor="other">Prefiero no decirlo</label>
+                  </div>
+                  {isError(errors.gender) && (
+                    <ErrorMessage field={errors.gender} />
+                  )}
+                </div>
+              </div>
+            </div>
+            <div>
+              <Separator title="Datos de contacto" />
+            </div>
+            <div className="grid grid-cols-6 gap-2 mt-5">
+              <Select
+                label="Código de Área"
+                errorField={errors.contact.phoneCode}
+                className={`
+                                        ${isError(errors.contact.phoneCode)
+                    ? "border-red-500 "
+                    : ""
+                  }`}
+                onChange={(e) => {
+                  if (isError(errors.contact.phoneCode)) {
+                    setError({
+                      ...errors,
+                      contact: {
+                        ...errors.contact,
+                        phoneCode: "",
+                      },
+                    });
+                  }
+                  setPassenger({
+                    ...passenger,
+                    contact: {
+                      ...passenger.contact,
+                      phoneCode: e.target.value,
+                    },
+                  });
+                }}
+              >
+                <option defaultValue=""></option>
+                <option value="+54">(+54) ARG</option>
+                <option value="+55">(+55) BRA</option>
+                <option value="+56">(+56) CHI</option>
+                <option value="+598">(+598) URU</option>
+                <option value="+591">(+591) BOL</option>
+                <option value="+57">(+57) COL</option>
+                <option value="+58">(+58) VEN</option>
+                <option value="+593">(+593) ECU</option>
+                <option value="+595">(+595) PAR</option>
+              </Select>
+              <div className="grid col-span-2">
+                <LabelInput
+                  label=""
+                  placeholder="Número de teléfono"
+                  value={passenger.contact.phoneNumber}
+                  errorField={errors.contact.phoneNumber}
+                  onChange={(e: any) => {
+                    const value = e.target.value;
+                    const numericValue = value.replace(/\D/g, '');
+                    if (isError(errors.contact.phoneNumber)) {
+                      setError({
+                        ...errors,
+                        contact: {
+                          ...errors.contact,
+                          phoneNumber: "",
+                        },
+                      });
+                    }
+                    setPassenger({
+                      ...passenger,
+                      contact: {
+                        ...passenger.contact,
+                        phoneNumber: numericValue,
+                      },
+                    });
+                  }}
+                />
+              </div>
+              <div className="grid col-span-3">
+                <LabelInput
+                  label=""
+                  type="text"
+                  placeholder="Correo Electrónico"
+                  value={passenger.contact.email}
+                  errorField={errors.contact.email}
+                  onChange={(e: any) => {
+                    if (isError(errors.contact.email)) {
+                      setError({
+                        ...errors,
+                        contact: {
+                          ...errors.contact,
+                          email: "",
+                        },
+                      });
+                    }
+                    setPassenger({
+                      ...passenger,
+                      contact: {
+                        ...passenger.contact,
+                        email: e.target.value,
+                      },
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          </>
+          {!isResponsible ? (
+            <>
+              <div className="flex items-center mt-5">
+                <input
+                  type="checkbox"
+                  className="px-2 h-5 w-5 accent-orange-500 rounded-md border-1 border-orange-500
+              focus:outline-none duration-500 hover:shadow-md "
+                  checked={sameAddress}
+                  onChange={handleSameAddress}
+                />
+                <label className="text-black p-2">
+                  Es la dirección cargada para la salida
+                </label>
+              </div>
+
+            </>
+          ) : null}
+
+          {(isResponsible || !sameAddress) && (
+            <div>
+              <Separator title="Dirección (por donde pasaremos a buscarte)" />
+              <div className="grid grid-cols-2 grid-rows-2 gap-x-2 gap-y-5 mt-5">
+                <SearchAddresses
+                  label="Dirección"
+                  errorField={errors.contact.address.street}
+                  onPlaceSelected={handleContactAddressSelected}
+                  value={passenger.contact.address.street}
+                  onChange={() => {
+                    if (isError(errors.contact.address.street)) {
+                      setError({
+                        ...errors,
+                        contact: {
+                          ...errors.contact,
+                          address: {
+                            ...errors.contact.address,
+                            street: "",
+                          },
+                        },
+                      });
+                    }
+                  }}
+                />
+                <div>
+                  <LabelInput
+                    label=""
+                    type="text"
+                    placeholder="Depto./Timbre/Otro"
+                    value={passenger.contact.address.other}
+                    errorField={errors.contact.address.other}
+                    onChange={(e: any) => {
+                      setPassenger({
+                        ...passenger,
+                        contact: {
+                          ...passenger.contact,
+                          address: {
+                            ...passenger.contact.address,
+                            other: e.target.value,
+                          },
+                        },
+                      });
+                    }}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <LabelInput
+                    label=""
+                    placeholder="Entre calle..."
+                    value={passenger.contact.address.streetBetween1}
+                    onChange={(e: any) => {
+                      setPassenger({
+                        ...passenger,
+                        contact: {
+                          ...passenger.contact,
+                          address: {
+                            ...passenger.contact.address,
+                            streetBetween1: e.target.value,
+                          },
+                        },
+                      });
+                    }}
+                  />
+                  <LabelInput
+                    label=""
+                    placeholder="Y calle..."
+                    value={passenger.contact.address.streetBetween2}
+                    onChange={(e: any) => {
+                      setPassenger({
+                        ...passenger,
+                        contact: {
+                          ...passenger.contact,
+                          address: {
+                            ...passenger.contact.address,
+                            streetBetween2: e.target.value,
+                          },
+                        },
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </Accordion>
+      }
+    </div>
   );
 }
+
